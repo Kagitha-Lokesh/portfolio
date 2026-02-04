@@ -8,9 +8,10 @@ function About() {
                 <p className='text-4xl font-bold inline border-b-4 border-gray-500'>About</p>
                 
             </div>
-                <p className='text-xl mt-20'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam eaque nisi deserunt veniam quasi similique, tempora, architecto iste quis saepe alias, eius officia sed ipsam soluta sunt tenetur doloremque veritatis impedit quas molestias facilis nihil eveniet? Repellat adipisci quia vitae officiis, sapiente aperiam eius ipsa atque aliquid, nobis porro voluptates!</p>
+                <p className='text-xl mt-20'>Hi, I’m Lokesh, a Full Stack Developer with a strong interest in building modern, responsive, and scalable web applications. I enjoy working across the stack — from creating clean user interfaces with React to developing reliable backend services using Java, REST APIs, and SQL databases. I like turning real-world problems into simple, efficient software solutions that users can actually enjoy using.
+</p>
                 <br/>
-                <p className='text-xl'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos dolore eaque consequatur excepturi, tempore tenetur explicabo quibusdam facilis iusto sed, quam laudantium in cupiditate? Exercitationem illum optio minus aut. Quos impedit iste dolorem obcaecati nesciunt incidunt atque. Sequi excepturi veniam nesciunt aspernatur porro dolore voluptates exercitationem, laborum aperiam, non tempore?</p>
+                <p className='text-xl'>I have hands-on experience building full-stack projects such as portfolio websites, dashboards, and CRUD-based web applications with API and database integration. I focus on writing clean, maintainable code and following best practices. Currently, I’m strengthening my backend fundamentals, learning system design basics, and preparing for software engineering roles in product-based companies.</p>
             
         </div>
     </div>

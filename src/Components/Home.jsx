@@ -7,9 +7,20 @@ function Home() {
     <div name="home" className='h-screen w-full bg-gradient-to-b from-black via-black to-gray-800'>
         <div className='max-w-screen-lg mx-auto flex flex-col items-center justify-center h-full px-4 md:flex-row'>
             <div className='flex flex-col justify-center h-full'>
-                <h1 className='text-4xl sm:text-7xl font-bold text-white'>I'm a Full Stack Developer</h1>
-                <p className='text-gray-500'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat, aspernatur excepturi laudantium porro sunt eos similique suscipit laboriosam unde a neque! Neque maiores asperiores eius enim ipsa numquam, tempora aliquid?
+                <h1 className='text-4xl sm:text-7xl font-bold text-white'>
+                    Hi, I’m{' '}
+                    <span className='bg-gradient-to-b from-cyan-50 to-cyan-500 bg-clip-text text-transparent'>
+                        Lokesh
+                    </span>{' '}
+                    <br />
+                    Full Stack Developer
+                </h1>
+
+                <p className='text-gray-400 my-4'>
+                    I’m Lokesh, a Full Stack Developer who builds modern, responsive, and scalable web applications using React, Java, REST APIs, and SQL databases. 
+I enjoy solving real-world problems through clean UI and efficient backend logic. 
+Currently, I’m focused on building production-ready projects and preparing for roles in product-based companies.
+
                 </p>
                 <div>
                     <button className='group text-white w-fit px-6 py-3 my-2 flex items-center rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 cursor-pointer'>
