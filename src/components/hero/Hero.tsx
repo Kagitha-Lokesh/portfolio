@@ -1,0 +1,253 @@
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import { PROFILE } from "@/lib/data";
+import { useScroll } from "@/lib/scroll";
+
+export function Hero() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [soundBlocked, setSoundBlocked] = useState(true);
+  const { scrollToTarget } = useScroll();
+
+  // 1. Audio and video autoplay / interaction unlock
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Try playing with sound initially
+    video.muted = false;
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setIsMuted(false);
+          setSoundBlocked(false);
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          // Autoplay with sound blocked, fallback to muted
+          video.muted = true;
+          video.play().then(() => {
+            setIsMuted(true);
+            setSoundBlocked(true);
+            setIsPlaying(true);
+          });
+        });
+    }
+
+    // Unlock sound on first user interaction
+    const unlockSound = () => {
+      if (video && video.muted) {
+        video.muted = false;
+        video
+          .play()
+          .then(() => {
+            setIsMuted(false);
+            setSoundBlocked(false);
+          })
+          .catch(() => {});
+      }
+      cleanupListeners();
+    };
+
+    const cleanupListeners = () => {
+      window.removeEventListener("pointerdown", unlockSound);
+      window.removeEventListener("keydown", unlockSound);
+      window.removeEventListener("touchend", unlockSound);
+    };
+
+    window.addEventListener("pointerdown", unlockSound, { once: true });
+    window.addEventListener("keydown", unlockSound, { once: true });
+    window.addEventListener("touchend", unlockSound, { once: true });
+
+    return () => {
+      cleanupListeners();
+    };
+  }, []);
+
+  // 2. IntersectionObserver pauses video when < 35% visible, resumes when >= 35%
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    const video = videoRef.current;
+    if (!heroEl || !video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio < 0.35) {
+            video.pause();
+            setIsPlaying(false);
+          } else {
+            video.play().then(() => setIsPlaying(true)).catch(() => {});
+          }
+        });
+      },
+      {
+        threshold: [0, 0.35, 0.7, 1.0],
+      }
+    );
+
+    observer.observe(heroEl);
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.muted) {
+      video.muted = false;
+      setIsMuted(false);
+      setSoundBlocked(false);
+      video.play().catch(() => {});
+    } else {
+      video.muted = true;
+      setIsMuted(true);
+    }
+  };
+
+  return (
+    <section
+      id="hero"
+      ref={heroRef}
+      className="relative min-h-[100svh] w-full flex flex-col justify-between pt-20 pb-12 overflow-hidden bg-[#f4f2ee]"
+    >
+      {/* Background Ghost Name Typography with center torso occlusion mask */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
+        aria-hidden="true"
+        style={{
+          maskImage:
+            "linear-gradient(to right, black 0%, black calc(50% - 30px), transparent calc(50% - 15px), transparent calc(50% + 20px), black calc(50% + 35px), black 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, black 0%, black calc(50% - 30px), transparent calc(50% - 15px), transparent calc(50% + 20px), black calc(50% + 35px), black 100%)",
+        }}
+      >
+        <span
+          className="font-black uppercase tracking-tighter text-transparent whitespace-nowrap opacity-60"
+          style={{
+            fontSize: "clamp(100px, 22vw, 320px)",
+            WebkitTextStroke: "1.5px rgba(13, 13, 13, 0.12)",
+            transform: "translateY(-5%)",
+          }}
+        >
+          {PROFILE.firstName}
+        </span>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="content-container relative my-auto flex flex-col items-center justify-center">
+        {/* Centered Video Container */}
+        <div className="relative flex items-center justify-center w-full">
+          <div
+            className="relative flex items-center justify-center select-none"
+            style={{
+              aspectRatio: "768/960",
+              height: "clamp(380px, 64svh, 680px)",
+              maxWidth: "100%",
+            }}
+          >
+            {/* Native Hardware-Accelerated Video with Seamless Multiply Blend */}
+            <video
+              ref={videoRef}
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className="w-full h-full object-contain select-none pointer-events-none"
+              style={{
+                mixBlendMode: "multiply",
+              }}
+            >
+              <source src="/hero/hero.webm" type="video/webm" />
+              <source src="/hero/hero.mp4" type="video/mp4" />
+            </video>
+
+            {/* Sound Toggle Floating Button */}
+            <div className="absolute bottom-4 right-4 z-20">
+              <button
+                onClick={toggleSound}
+                className="relative w-[46px] h-[46px] rounded-full bg-[#0d0d0d] text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300 focus-visible:outline-none"
+                aria-label={isMuted ? "Unmute introduction video" : "Mute introduction video"}
+              >
+                {soundBlocked && isMuted && (
+                  <span className="absolute inset-0 rounded-full animate-ping bg-[#0d0d0d]/30 pointer-events-none" />
+                )}
+                {isMuted ? (
+                  // ▶ Triangle Play Sound icon
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="translate-x-0.5"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                ) : (
+                  // ❚❚ Pause / Sound On two bars icon
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" rx="1" />
+                    <rect x="14" y="4" width="4" height="16" rx="1" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Role and CTAs */}
+        <div className="mt-6 text-center flex flex-col items-center max-w-xl mx-auto">
+          <div className="tag-mono mb-2">
+            <span>00 — Introduction</span>
+          </div>
+
+          <h1 className="heading-display text-4xl sm:text-5xl md:text-6xl tracking-tight mb-5">
+            <span>{PROFILE.role}</span>
+            <span className="heading-accent ml-2.5">.</span>
+          </h1>
+
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={() => scrollToTarget("#work")}
+              className="btn-primary"
+            >
+              <span>Explore work</span>
+              <span className="text-xs">→</span>
+            </button>
+
+            <button
+              onClick={() => scrollToTarget("#contact")}
+              className="btn-secondary"
+            >
+              <span>Let&apos;s talk</span>
+            </button>
+
+            <a
+              href={PROFILE.resumePath}
+              download="Lokesh_Kagitha_Resume.pdf"
+              className="btn-secondary"
+            >
+              <span>Résumé</span>
+              <span className="text-xs">↓</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Bottom Bar */}
+      <div className="content-container relative z-10 flex items-center justify-between text-xs text-[#77756f] font-mono border-t border-[#0d0d0d]/10 pt-4 mt-6">
+        <div>{PROFILE.location}</div>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#0d0d0d] animate-pulse" />
+          <span>Available for Roles &amp; Projects</span>
+        </div>
+        <div className="hidden sm:block">Scroll to explore ↓</div>
+      </div>
+    </section>
+  );
+}
