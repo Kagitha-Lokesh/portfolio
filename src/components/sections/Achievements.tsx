@@ -6,62 +6,189 @@ import { ACHIEVEMENTS, AchievementItem } from "@/lib/data";
 export function Achievements() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [scrollFraction, setScrollFraction] = useState(0);
+  const [wrapperHeight, setWrapperHeight] = useState<string>("auto");
   const [centerIndex, setCenterIndex] = useState(0);
   const [hasStartedCount, setHasStartedCount] = useState(false);
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
 
+  const currentCenterIndexRef = useRef(0);
+  const hasStartedCountRef = useRef(false);
+  const showSwipeHintRef = useRef(true);
+
+  // 1. ResizeObserver to dynamically derive wrapper height from REAL content travel + 100svh
   useEffect(() => {
-    const handleScroll = () => {
-      const container = containerRef.current;
-      const track = trackRef.current;
-      if (!container || !track) return;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setIsReducedMotion(motionQuery.matches);
 
-      const rect = container.getBoundingClientRect();
-      const containerHeight = container.offsetHeight;
-      const windowHeight = window.innerHeight;
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      setIsReducedMotion(e.matches);
+    };
+    motionQuery.addEventListener("change", handleMotionChange);
 
-      // Calculate how far down we've scrolled inside the container
-      const totalScrollable = containerHeight - windowHeight;
-      if (totalScrollable <= 0) return;
-
-      const currentScroll = -rect.top;
-      const fraction = Math.min(1, Math.max(0, currentScroll / totalScrollable));
-      setScrollFraction(fraction);
-
-      if (fraction > 0.05 && !hasStartedCount) {
-        setHasStartedCount(true);
+    const updateMeasurements = () => {
+      if (motionQuery.matches) {
+        setWrapperHeight("auto");
+        return;
       }
+      const track = trackRef.current;
+      if (!track) return;
+      const viewportWidth = window.innerWidth;
+      const travel = Math.max(0, track.scrollWidth - viewportWidth + 60);
+      setWrapperHeight(`calc(${travel}px + 100svh)`);
+    };
 
-      // Horizontal travel distance
-      const maxTranslate = track.scrollWidth - window.innerWidth + 80;
-      const translateX = fraction * maxTranslate;
-      track.style.transform = `translateX(-${translateX}px)`;
+    updateMeasurements();
 
-      // Determine card nearest viewport center
-      const windowCenter = window.innerWidth / 2;
-      let minDistance = Infinity;
-      let closestIdx = 0;
+    const ro = new ResizeObserver(updateMeasurements);
+    if (trackRef.current) {
+      ro.observe(trackRef.current);
+    }
+    window.addEventListener("resize", updateMeasurements);
 
-      cardRefs.current.forEach((card, idx) => {
-        if (!card) return;
-        const cardRect = card.getBoundingClientRect();
-        const cardCenter = cardRect.left + cardRect.width / 2;
-        const distance = Math.abs(cardCenter - windowCenter);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIdx = idx;
-        }
-      });
+    return () => {
+      motionQuery.removeEventListener("change", handleMotionChange);
+      ro.disconnect();
+      window.removeEventListener("resize", updateMeasurements);
+    };
+  }, []);
 
-      setCenterIndex(closestIdx);
+  // 2. High performance single rAF scroll listener with direct DOM transform
+  useEffect(() => {
+    if (isReducedMotion) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const container = containerRef.current;
+          const track = trackRef.current;
+          if (!container || !track) {
+            ticking = false;
+            return;
+          }
+
+          const rect = container.getBoundingClientRect();
+          const containerHeight = container.offsetHeight;
+          const windowHeight = window.innerHeight;
+
+          const totalScrollable = containerHeight - windowHeight;
+          if (totalScrollable <= 0) {
+            ticking = false;
+            return;
+          }
+
+          const currentScroll = -rect.top;
+          const fraction = Math.min(1, Math.max(0, currentScroll / totalScrollable));
+
+          // Hide swipe hint after first interaction
+          if (fraction > 0.02 && showSwipeHintRef.current) {
+            showSwipeHintRef.current = false;
+            setShowSwipeHint(false);
+          }
+
+          // Trigger counter once passed threshold
+          if (fraction > 0.05 && !hasStartedCountRef.current) {
+            hasStartedCountRef.current = true;
+            setHasStartedCount(true);
+          }
+
+          // Write transform directly to track without triggering React re-render
+          const maxTranslate = Math.max(0, track.scrollWidth - window.innerWidth + 60);
+          const translateX = fraction * maxTranslate;
+          track.style.transform = `translate3d(-${translateX}px, 0, 0)`;
+
+          // Write progress bar directly
+          if (progressBarRef.current) {
+            progressBarRef.current.style.width = `${fraction * 100}%`;
+          }
+
+          // Calculate center card index
+          const windowCenter = window.innerWidth / 2;
+          let minDistance = Infinity;
+          let closestIdx = 0;
+
+          cardRefs.current.forEach((card, idx) => {
+            if (!card) return;
+            const cardRect = card.getBoundingClientRect();
+            const cardCenter = cardRect.left + cardRect.width / 2;
+            const distance = Math.abs(cardCenter - windowCenter);
+            if (distance < minDistance) {
+              minDistance = distance;
+              closestIdx = idx;
+            }
+          });
+
+          if (closestIdx !== currentCenterIndexRef.current) {
+            currentCenterIndexRef.current = closestIdx;
+            setCenterIndex(closestIdx);
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasStartedCount]);
+  }, [isReducedMotion]);
+
+  // Reduced motion: fallback to vertical list
+  if (isReducedMotion) {
+    return (
+      <section id="achievements" className="section-padding bg-[#f4f2ee]">
+        <div className="content-container">
+          <div className="mb-10">
+            <div className="tag-mono mb-2">
+              <span>06 — Benchmarks</span>
+            </div>
+            <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
+              <span>Milestones &amp; verified honors</span>
+              <span className="heading-accent ml-2">.</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {ACHIEVEMENTS.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-[24px] bg-white p-6 border border-[#0d0d0d]/10 flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#f4f2ee] border border-[#0d0d0d]/10 flex items-center justify-center p-2 font-mono text-xs font-bold">
+                    {item.platform}
+                  </div>
+                  <span className="font-mono text-xs text-[#a9a6a0]">{item.index}</span>
+                </div>
+
+                <div className="flex items-end justify-between gap-4 pt-4 border-t border-[#0d0d0d]/10">
+                  <div>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#77756f] block">
+                      {item.caption}
+                    </span>
+                    <h3 className="font-bold text-base text-[#0d0d0d]">{item.metricLabel}</h3>
+                    <p className="text-xs text-[#77756f] mt-1">{item.detail}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-3xl text-[#0d0d0d]">
+                      {item.value}
+                      {item.suffix && <span className="text-sm ml-0.5">{item.suffix}</span>}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <div
@@ -69,26 +196,31 @@ export function Achievements() {
       ref={containerRef}
       className="relative w-full"
       style={{
-        height: "calc(100vh + 1600px)",
+        height: wrapperHeight,
       }}
     >
-      {/* Sticky Viewport Container */}
-      <div className="sticky top-0 h-[100svh] w-full flex flex-col justify-between py-8 sm:py-12 overflow-hidden bg-[#f4f2ee]">
+      {/* Sticky Viewport Container using 100svh */}
+      <div className="sticky top-0 h-[100svh] w-full flex flex-col justify-between py-4 sm:py-8 lg:py-12 overflow-hidden bg-[#f4f2ee]">
         {/* Header with Title and Thin Progress Bar */}
-        <div className="content-container w-full">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
+        <div className="content-container w-full shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-4 mb-2 sm:mb-4">
             <div>
-              <div className="tag-mono mb-2">
+              <div className="tag-mono mb-1 sm:mb-2 text-[10px] sm:text-xs">
                 <span>06 — Benchmarks</span>
               </div>
-              <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
+              <h2 className="heading-display text-2xl sm:text-4xl md:text-5xl leading-tight">
                 <span>Milestones &amp; verified honors</span>
-                <span className="heading-accent ml-2">.</span>
+                <span className="heading-accent ml-1.5 sm:ml-2">.</span>
               </h2>
             </div>
 
-            <div className="font-mono text-xs text-[#77756f] flex items-center gap-3">
-              <span>Scroll sideways</span>
+            <div className="font-mono text-[11px] sm:text-xs text-[#77756f] flex items-center gap-2 sm:gap-3">
+              {showSwipeHint && (
+                <span className="text-[#0d0d0d] animate-pulse hidden sm:inline">
+                  Swipe up to explore →
+                </span>
+              )}
+              <span className="text-[#77756f] hidden sm:inline">Scroll sideways</span>
               <span className="text-[#0d0d0d] font-bold">
                 {String(centerIndex + 1).padStart(2, "0")} / {String(ACHIEVEMENTS.length).padStart(2, "0")}
               </span>
@@ -96,19 +228,20 @@ export function Achievements() {
           </div>
 
           {/* Thin Progress Bar */}
-          <div className="w-full h-1 bg-[#0d0d0d]/10 rounded-full overflow-hidden mt-3">
+          <div className="w-full h-1 bg-[#0d0d0d]/10 rounded-full overflow-hidden mt-1 sm:mt-3">
             <div
-              className="h-full bg-[#0d0d0d] transition-all duration-75 ease-out rounded-full"
-              style={{ width: `${Math.min(100, Math.max(0, scrollFraction * 100))}%` }}
+              ref={progressBarRef}
+              className="h-full bg-[#0d0d0d] rounded-full will-change-[width]"
+              style={{ width: "0%" }}
             />
           </div>
         </div>
 
         {/* Sliding Horizontal Card Track */}
-        <div className="my-auto w-full overflow-visible py-8">
+        <div className="my-auto w-full overflow-visible py-2 sm:py-6">
           <div
             ref={trackRef}
-            className="flex items-center gap-6 sm:gap-8 px-[clamp(18px,5vw,80px)] transition-transform duration-75 ease-out will-change-transform"
+            className="flex items-center gap-4 sm:gap-8 px-[clamp(16px,4vw,80px)] will-change-transform"
           >
             {ACHIEVEMENTS.map((item, idx) => {
               const isCenter = centerIndex === idx;
@@ -119,14 +252,14 @@ export function Achievements() {
                   ref={(el) => {
                     cardRefs.current[idx] = el;
                   }}
-                  className={`shrink-0 rounded-[28px] bg-white p-7 sm:p-9 flex flex-col justify-between transition-all duration-500 relative select-none ${
+                  className={`shrink-0 rounded-[24px] sm:rounded-[28px] bg-white p-5 sm:p-8 flex flex-col justify-between transition-all duration-300 relative select-none ${
                     isCenter
-                      ? "-translate-y-3 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.12)]"
-                      : "translate-y-0 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.05)] border border-[#0d0d0d]/8"
+                      ? "-translate-y-1 sm:-translate-y-3 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-2 border-[#0d0d0d]"
+                      : "translate-y-0 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] border border-[#0d0d0d]/10"
                   }`}
                   style={{
-                    width: "clamp(340px, 40vw, 540px)",
-                    height: "clamp(260px, 36vh, 320px)",
+                    width: "min(84vw, 480px)",
+                    height: "clamp(240px, 34svh, 310px)",
                     transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
                 >
@@ -138,12 +271,12 @@ export function Achievements() {
                     style={{ backgroundColor: item.brandColor }}
                   />
 
-                  {/* Top Row: 72px Logo Tile + Index */}
+                  {/* Top Row: 56-72px Logo Tile + Index */}
                   <div className="relative z-10 flex items-center justify-between">
                     <div
-                      className="w-[72px] h-[72px] rounded-2xl bg-[#f4f2ee] border border-[#0d0d0d]/10 flex items-center justify-center p-3 shadow-inner"
+                      className="w-[56px] h-[56px] sm:w-[72px] sm:h-[72px] rounded-xl sm:rounded-2xl bg-[#f4f2ee] border border-[#0d0d0d]/10 flex items-center justify-center p-2.5 sm:p-3 shadow-inner"
                     >
-                      <div className="font-mono text-xs font-bold text-[#0d0d0d] text-center leading-tight">
+                      <div className="font-mono text-[11px] sm:text-xs font-bold text-[#0d0d0d] text-center leading-tight">
                         {item.platform}
                       </div>
                     </div>
@@ -154,25 +287,26 @@ export function Achievements() {
                   </div>
 
                   {/* Bottom Row: Details left, Giant Count-up Number right */}
-                  <div className="relative z-10 flex items-end justify-between gap-4 pt-4 border-t border-[#0d0d0d]/10">
+                  <div className="relative z-10 flex items-end justify-between gap-3 pt-3 sm:pt-4 border-t border-[#0d0d0d]/10">
                     <div className="max-w-[55%]">
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-[#77756f] block mb-1">
+                      <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-[#77756f] block mb-0.5 sm:mb-1">
                         {item.caption}
                       </span>
-                      <h3 className="font-bold text-base sm:text-lg text-[#0d0d0d] tracking-tight leading-snug">
+                      <h3 className="font-bold text-sm sm:text-base text-[#0d0d0d] tracking-tight leading-snug">
                         {item.metricLabel}
                       </h3>
-                      <p className="text-xs text-[#77756f] mt-1 line-clamp-2">
+                      <p className="text-[11px] sm:text-xs text-[#77756f] mt-0.5 sm:mt-1 line-clamp-2">
                         {item.detail}
                       </p>
                     </div>
 
-                    {/* Giant Number Counter */}
-                    <div className="text-right">
+                    {/* Giant Number Counter with clamp typography */}
+                    <div className="text-right shrink-0">
                       <AnimatedCounter
                         value={item.value}
                         suffix={item.suffix}
                         trigger={hasStartedCount}
+                        isReducedMotion={isReducedMotion}
                       />
                     </div>
                   </div>
@@ -182,17 +316,17 @@ export function Achievements() {
 
             {/* Ending Card: "and counting →" */}
             <div
-              className="shrink-0 rounded-[28px] border-2 border-dashed border-[#0d0d0d]/25 bg-white/40 p-8 flex flex-col justify-center items-center text-center select-none"
+              className="shrink-0 rounded-[24px] sm:rounded-[28px] border-2 border-dashed border-[#0d0d0d]/25 bg-white/40 p-6 sm:p-8 flex flex-col justify-center items-center text-center select-none"
               style={{
-                width: "clamp(260px, 25vw, 340px)",
-                height: "clamp(260px, 36vh, 320px)",
+                width: "min(65vw, 320px)",
+                height: "clamp(240px, 34svh, 310px)",
               }}
             >
-              <span className="text-2xl font-bold tracking-tight text-[#0d0d0d] mb-2">
+              <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#0d0d0d] mb-1.5 sm:mb-2">
                 and counting
               </span>
-              <span className="font-mono text-xl text-[#0d0d0d]">→</span>
-              <span className="font-mono text-[11px] text-[#77756f] mt-4">
+              <span className="font-mono text-lg sm:text-xl text-[#0d0d0d]">→</span>
+              <span className="font-mono text-[10px] sm:text-[11px] text-[#77756f] mt-3 sm:mt-4">
                 Continuous growth in modern software engineering
               </span>
             </div>
@@ -200,9 +334,9 @@ export function Achievements() {
         </div>
 
         {/* Footer Bar */}
-        <div className="content-container w-full flex items-center justify-between text-xs text-[#77756f] font-mono">
+        <div className="content-container w-full flex items-center justify-between text-[11px] sm:text-xs text-[#77756f] font-mono shrink-0">
           <div>Verified Résumé Record</div>
-          <div>Drag or Scroll to traverse</div>
+          <div>Swipe up to explore</div>
         </div>
       </div>
     </div>
@@ -213,14 +347,20 @@ function AnimatedCounter({
   value,
   suffix = "",
   trigger,
+  isReducedMotion = false,
 }: {
   value: number;
   suffix?: string;
   trigger: boolean;
+  isReducedMotion?: boolean;
 }) {
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayValue, setDisplayValue] = useState(isReducedMotion ? value : 0);
 
   useEffect(() => {
+    if (isReducedMotion) {
+      setDisplayValue(value);
+      return;
+    }
     if (!trigger) return;
 
     let startTime: number | null = null;
@@ -244,15 +384,18 @@ function AnimatedCounter({
     };
 
     requestAnimationFrame(animate);
-  }, [trigger, value]);
+  }, [trigger, value, isReducedMotion]);
 
   return (
     <div className="flex items-baseline justify-end">
-      <span className="font-bold text-4xl sm:text-5xl lg:text-6xl tracking-tighter text-[#0d0d0d]">
+      <span
+        className="font-bold tracking-tighter text-[#0d0d0d]"
+        style={{ fontSize: "clamp(1.75rem, 6vw, 3.5rem)", lineHeight: 1 }}
+      >
         {displayValue}
       </span>
       {suffix && (
-        <span className="font-mono text-sm sm:text-base font-semibold text-[#3a3a3a] ml-1">
+        <span className="font-mono text-xs sm:text-base font-semibold text-[#3a3a3a] ml-1">
           {suffix}
         </span>
       )}

@@ -398,8 +398,8 @@ export function Loader() {
             />
           </svg>
           <div className="lk-mark-letters" aria-hidden="true">
-            <span className="lk-letter lk-letter-l">L</span>
-            <span className="lk-letter lk-letter-k">K</span>
+            <span className="lk-letter lk-letter-l">K</span>
+            <span className="lk-letter lk-letter-k">L</span>
           </div>
         </div>
 

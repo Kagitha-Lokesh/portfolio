@@ -148,15 +148,15 @@ export function Hero() {
         aria-hidden="true"
         style={{
           maskImage:
-            "linear-gradient(to right, black 0%, black calc(50% - 30px), transparent calc(50% - 15px), transparent calc(50% + 20px), black calc(50% + 35px), black 100%)",
+            "linear-gradient(to right, black 0%, black calc(50% - min(8vw, 45px)), transparent calc(50% - min(4vw, 20px)), transparent calc(50% + min(4vw, 20px)), black calc(50% + min(8vw, 45px)), black 100%)",
           WebkitMaskImage:
-            "linear-gradient(to right, black 0%, black calc(50% - 30px), transparent calc(50% - 15px), transparent calc(50% + 20px), black calc(50% + 35px), black 100%)",
+            "linear-gradient(to right, black 0%, black calc(50% - min(8vw, 45px)), transparent calc(50% - min(4vw, 20px)), transparent calc(50% + min(4vw, 20px)), black calc(50% + min(8vw, 45px)), black 100%)",
         }}
       >
         <span
-          className="font-black uppercase tracking-tighter text-transparent whitespace-nowrap opacity-60"
+          className="font-black uppercase tracking-tighter text-transparent whitespace-nowrap opacity-60 text-center select-none"
           style={{
-            fontSize: "clamp(100px, 22vw, 320px)",
+            fontSize: "clamp(64px, 24vw, 320px)",
             WebkitTextStroke: "1.5px rgba(13, 13, 13, 0.12)",
             transform: "translateY(-5%)",
           }}
@@ -166,14 +166,14 @@ export function Hero() {
       </div>
 
       {/* Main Content Area */}
-      <div className="content-container relative my-auto flex flex-col items-center justify-center">
+      <div className="content-container relative my-auto flex flex-col items-center justify-center pt-2 sm:pt-4">
         {/* Centered Video Container */}
         <div className="relative flex items-center justify-center w-full">
           <div
-            className="relative flex items-center justify-center select-none"
+            className="hero-video-box relative flex items-center justify-center select-none"
             style={{
               aspectRatio: "768/960",
-              height: "clamp(380px, 64svh, 680px)",
+              height: "clamp(260px, 48svh, 680px)",
               maxWidth: "100%",
             }}
           >
@@ -194,10 +194,10 @@ export function Hero() {
             </video>
 
             {/* Sound Toggle Floating Button */}
-            <div className="absolute bottom-4 right-4 z-20">
+            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20">
               <button
                 onClick={toggleSound}
-                className="relative w-[46px] h-[46px] rounded-full bg-[#0d0d0d] text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300 focus-visible:outline-none"
+                className="relative w-[46px] h-[46px] rounded-full bg-[#0d0d0d] text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform duration-300 focus-visible:outline-none"
                 aria-label={isMuted ? "Unmute introduction video" : "Mute introduction video"}
               >
                 {soundBlocked && isMuted && (
@@ -227,20 +227,21 @@ export function Hero() {
         </div>
 
         {/* Hero Role and CTAs */}
-        <div className="mt-6 text-center flex flex-col items-center max-w-xl mx-auto">
-          <div className="tag-mono mb-2">
+        <div className="mt-4 sm:mt-6 text-center flex flex-col items-center max-w-xl mx-auto w-full px-2">
+          <div className="tag-mono mb-1.5 sm:mb-2 text-[10px] sm:text-xs">
             <span>00 — Introduction</span>
           </div>
 
-          <h1 className="heading-display text-4xl sm:text-5xl md:text-6xl tracking-tight mb-5">
+          <h1 className="heading-display text-3xl sm:text-5xl md:text-6xl tracking-tight mb-3.5 sm:mb-5 leading-[1.1]">
             <span>{PROFILE.role}</span>
             <span className="heading-accent ml-2.5">.</span>
           </h1>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          {/* CTAs: Side-by-side for primary/secondary, full-width below for Resume */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2.5 sm:gap-3 w-full max-w-md sm:w-auto">
             <button
               onClick={() => scrollToTarget("#work")}
-              className="btn-primary"
+              className="btn-primary min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
               <span>Explore work</span>
               <span className="text-xs">→</span>
@@ -248,7 +249,7 @@ export function Hero() {
 
             <button
               onClick={() => scrollToTarget("#contact")}
-              className="btn-secondary"
+              className="btn-secondary min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
               <span>Let&apos;s talk</span>
             </button>
@@ -256,7 +257,7 @@ export function Hero() {
             <a
               href={PROFILE.resumePath}
               download="Lokesh_Kagitha_Resume.pdf"
-              className="btn-secondary"
+              className="btn-secondary col-span-2 sm:col-span-1 min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
               <span>Résumé</span>
               <span className="text-xs">↓</span>
@@ -266,7 +267,7 @@ export function Hero() {
       </div>
 
       {/* Hero Bottom Bar */}
-      <div className="content-container relative z-10 flex items-center justify-between text-xs text-[#77756f] font-mono border-t border-[#0d0d0d]/10 pt-4 mt-6">
+      <div className="content-container relative z-10 flex flex-col gap-1.5 sm:flex-row items-center sm:justify-between text-xs text-[#77756f] font-mono border-t border-[#0d0d0d]/10 pt-3 sm:pt-4 mt-4 sm:mt-6 text-center sm:text-left">
         <div>{PROFILE.location}</div>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#0d0d0d] animate-pulse" />
@@ -274,6 +275,19 @@ export function Hero() {
         </div>
         <div className="hidden sm:block">Scroll to explore ↓</div>
       </div>
+
+      <style jsx>{`
+        @media (max-height: 500px) and (orientation: landscape) {
+          #hero {
+            min-height: auto !important;
+            padding-top: 4.5rem !important;
+            padding-bottom: 1.5rem !important;
+          }
+          .hero-video-box {
+            height: clamp(200px, 65svh, 320px) !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

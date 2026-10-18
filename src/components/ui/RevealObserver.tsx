@@ -4,6 +4,28 @@ import { useEffect } from "react";
 
 export function RevealObserver() {
   useEffect(() => {
+    // If IntersectionObserver is unavailable, reveal everything immediately
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      document.querySelectorAll(".rv, .rv-mask").forEach((el) => {
+        el.classList.add("is-in");
+      });
+      return;
+    }
+
+    // Safety net: reveal anything already in or within 1 screen of viewport on load
+    const runSafetyNet = () => {
+      const vh = window.innerHeight;
+      const elements = document.querySelectorAll(".rv:not(.is-in), .rv-mask:not(.is-in)");
+      elements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= vh * 1.5) {
+          el.classList.add("is-in");
+        }
+      });
+    };
+
+    runSafetyNet();
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -20,7 +42,11 @@ export function RevealObserver() {
     );
 
     const elements = document.querySelectorAll(".rv, .rv-mask");
-    elements.forEach((el) => observer.observe(el));
+    elements.forEach((el) => {
+      if (!el.classList.contains("is-in")) {
+        observer.observe(el);
+      }
+    });
 
     // Handle any dynamically added elements
     const mutationObserver = new MutationObserver((mutations) => {
@@ -28,10 +54,14 @@ export function RevealObserver() {
         mutation.addedNodes.forEach((node) => {
           if (node instanceof HTMLElement) {
             if (node.classList.contains("rv") || node.classList.contains("rv-mask")) {
-              observer.observe(node);
+              if (!node.classList.contains("is-in")) {
+                observer.observe(node);
+              }
             }
             node.querySelectorAll?.(".rv, .rv-mask").forEach((child) => {
-              observer.observe(child);
+              if (!child.classList.contains("is-in")) {
+                observer.observe(child);
+              }
             });
           }
         });

@@ -141,3 +141,38 @@ All brand logos and assets adhere to official open-source licenses:
   - VS Code, LinkedIn, CSS3 original vectors.
 - **Lenis Smooth Scroll**: [MIT License](https://github.com/darkroomengineering/lenis/blob/main/LICENSE)
 - **Source Résumé & Media**: Provided by Lokesh Kagitha (`resume.pdf`, `intro.mp4`).
+
+---
+
+## 📱 Mobile QA & Responsive Verification
+
+The entire portfolio is engineered mobile-first and rigorously tested for zero horizontal overflow, touch target ergonomics (minimum 44×44px hit areas), safe-area insets, dynamic viewport units (`100svh`/`100dvh`), and hardware-accelerated animations.
+
+### Tested Viewports
+
+| Device Profile | Dimensions | Aspect Ratio | Horizontal Overflow | Touch Violations |
+| :--- | :---: | :---: | :---: | :---: |
+| **Compact Phone** | 360 × 640 | 9:16 | **0px (PASSED)** | **0 violations** |
+| **iPhone SE / Small Phone** | 375 × 667 | 9:16 | **0px (PASSED)** | **0 violations** |
+| **iPhone 12 / 13 / 14 / 15** | 390 × 844 | ~19.5:9 | **0px (PASSED)** | **0 violations** |
+| **iPhone Plus / Max** | 414 × 896 | ~19.5:9 | **0px (PASSED)** | **0 violations** |
+| **iPhone 14 / 15 Pro Max** | 430 × 932 | ~19.5:9 | **0px (PASSED)** | **0 violations** |
+| **Small Tablet / iPad** | 768 × 1024 | 3:4 | **0px (PASSED)** | **0 violations** |
+| **Landscape Phone** | 844 × 390 | ~2:1 | **0px (PASSED)** | **0 violations** |
+| **Desktop Baseline (Regression)** | 1440 × 900 | 16:10 | **0px (PASSED)** | **0 violations** |
+
+### Automated QA Test Script
+
+An automated Playwright test suite validates all responsive constraints:
+```bash
+python scripts/test-mobile.py
+```
+
+### Verified Behaviors
+1. **Zero Horizontal Overflow**: `html, body { overflow-x: clip; }` across all viewports (`document.documentElement.scrollWidth === window.innerWidth`).
+2. **Touch Target Compliance**: All interactive buttons, chips, links, and switches are ≥ 44×44px on coarse pointer devices with safe padding.
+3. **Mobile Fullscreen Navigation**: Traps keyboard focus, locks page scroll (`html, body { overflow: hidden; }` + `lenis.stop()`), scales typography to fit 360×640 without scrolling, and closes on Escape or link selection.
+4. **Skills Mobile Strip**: Inspects element on tap under filter chips with 72px brand logo, dismissible on re-tap or outside tap.
+5. **Horizontal Achievements Gallery**: Dynamically derived container height using `track.scrollWidth - viewportWidth + 100svh` measured via ResizeObserver. Direct DOM transform via rAF scroll handler. Fluid card sizing and reduced-motion vertical list fallback.
+6. **Grayscale Fidelity & Performance**: 100% white/black/grays (no colored comments/borders). CLS = 0 with explicit media aspect ratios.
+

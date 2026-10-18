@@ -22,21 +22,27 @@ export function Contact() {
   const line2 = "something together.";
 
   return (
-    <footer id="contact" className="section-padding pb-12 relative overflow-hidden bg-white border-t border-[#0d0d0d]/10">
+    <footer
+      id="contact"
+      className="section-padding pb-[calc(2rem+var(--sab))] relative overflow-hidden bg-white border-t border-[#0d0d0d]/10"
+    >
       <div className="content-container">
         {/* Section Heading Tag */}
-        <div className="tag-mono mb-4">
+        <div className="tag-mono mb-3 sm:mb-4">
           <span>07 — Contact</span>
         </div>
 
-        {/* Huge Interactive Bouncing Letters Heading */}
-        <div className="mb-14 select-none">
-          <h2 className="heading-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05]">
+        {/* Interactive Letters Heading with clamp sizing & hover-only hop */}
+        <div className="mb-10 sm:mb-14 select-none">
+          <h2
+            className="heading-display tracking-tight leading-[1.08] text-[#0d0d0d]"
+            style={{ fontSize: "clamp(2rem, 7.5vw, 6rem)" }}
+          >
             <div className="block">
               {line1.split("").map((char, i) => (
                 <span
                   key={i}
-                  className="inline-block transition-transform duration-300 hover:-translate-y-3 hover:text-[#77756f] cursor-default"
+                  className="hop-char inline-block transition-transform duration-300 cursor-default"
                   style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                 >
                   {char === " " ? "\u00A0" : char}
@@ -47,7 +53,7 @@ export function Contact() {
               {line2.split("").map((char, i) => (
                 <span
                   key={i}
-                  className="inline-block transition-transform duration-300 hover:-translate-y-3 hover:text-[#77756f] cursor-default"
+                  className="hop-char inline-block transition-transform duration-300 cursor-default"
                   style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                 >
                   {char === " " ? "\u00A0" : char}
@@ -58,20 +64,21 @@ export function Contact() {
         </div>
 
         {/* Main Contact Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-12 items-end mb-20">
-          <div className="space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-8 lg:gap-12 items-end mb-16 sm:mb-20">
+          <div className="space-y-6 sm:space-y-8">
             {/* Large Underlined Email + Copy Chip */}
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <a
                 href={`mailto:${PROFILE.email}`}
-                className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#0d0d0d] underline underline-offset-8 decoration-[#0d0d0d]/30 hover:decoration-[#0d0d0d] transition-colors"
+                className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#0d0d0d] underline underline-offset-8 decoration-[#0d0d0d]/30 hover:decoration-[#0d0d0d] transition-colors break-all min-h-[44px] flex items-center py-2"
+                style={{ overflowWrap: "anywhere" }}
               >
                 {PROFILE.email}
               </a>
 
               <button
                 onClick={handleCopyEmail}
-                className="px-4 py-2 rounded-full border border-[#0d0d0d]/20 hover:border-[#0d0d0d] bg-[#f4f2ee] hover:bg-[#0d0d0d] hover:text-white text-xs font-mono transition-all duration-200 focus-visible:outline-none"
+                className="self-start sm:self-auto min-h-[44px] px-4 py-2.5 rounded-full border border-[#0d0d0d]/20 hover:border-[#0d0d0d] bg-[#f4f2ee] hover:bg-[#0d0d0d] hover:text-white text-xs font-mono transition-all duration-200 focus-visible:outline-none flex items-center justify-center shrink-0"
                 aria-label="Copy email address"
               >
                 <span aria-live="polite">
@@ -80,11 +87,11 @@ export function Contact() {
               </button>
             </div>
 
-            {/* Phone, GitHub, LinkedIn Links */}
-            <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-4 text-sm font-medium">
+            {/* Phone, GitHub, LinkedIn Links with min 48px tap height */}
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-6 lg:gap-8 pt-2 text-sm font-medium">
               <a
                 href={PROFILE.phoneHref}
-                className="flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors"
+                className="min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
               >
                 <span className="font-mono text-xs text-[#a9a6a0]">TEL:</span>
                 <span>{PROFILE.phone}</span>
@@ -95,10 +102,10 @@ export function Contact() {
                   href={PROFILE.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors"
+                  className="min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
                 >
                   <span className="font-mono text-xs text-[#a9a6a0]">GH:</span>
-                  <span>github.com/Kagitha-Lokesh</span>
+                  <span className="truncate">github.com/Kagitha-Lokesh</span>
                   <span className="text-xs">↗</span>
                 </a>
               )}
@@ -108,18 +115,18 @@ export function Contact() {
                   href={PROFILE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors"
+                  className="min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
                 >
                   <span className="font-mono text-xs text-[#a9a6a0]">IN:</span>
-                  <span>linkedin.com/in/lokesh-kagitha</span>
+                  <span className="truncate">linkedin.com/in/lokesh-kagitha</span>
                   <span className="text-xs">↗</span>
                 </a>
               )}
             </div>
           </div>
 
-          {/* Circular Slowly Spinning "Say Hello" Badge */}
-          <div className="relative w-32 h-32 sm:w-36 sm:h-36 self-center lg:self-end shrink-0">
+          {/* Circular Slowly Spinning Badge: scaled to 96px on mobile, never overlapping text */}
+          <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36 self-start sm:self-center lg:self-end shrink-0 my-2">
             <svg
               viewBox="0 0 100 100"
               className="w-full h-full animate-spin"
@@ -139,28 +146,37 @@ export function Contact() {
               </text>
             </svg>
             <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-bold text-[#0d0d0d]">
-              LK
+              KL
             </div>
           </div>
         </div>
 
-        {/* Bottom Footer Line */}
-        <div className="pt-8 border-t border-[#0d0d0d]/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#77756f] font-mono">
-          <div>
+        {/* Bottom Footer Line: Stacked on mobile with safe-area bottom padding */}
+        <div className="pt-6 sm:pt-8 border-t border-[#0d0d0d]/10 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs text-[#77756f] font-mono text-center sm:text-left">
+          <div className="leading-relaxed">
             © {new Date().getFullYear()} {PROFILE.name}. All verified content from source résumé.
           </div>
 
-          <div className="flex items-center gap-6">
-            <span>Built with Next.js 15 &amp; Tailwind</span>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <span className="hidden sm:inline">Built with Next.js 15 &amp; Tailwind</span>
             <button
               onClick={() => scrollToTarget("#hero")}
-              className="text-[#0d0d0d] hover:underline font-semibold"
+              className="min-h-[44px] px-2 py-2 text-[#0d0d0d] hover:underline font-semibold flex items-center"
             >
               Back to top ↑
             </button>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (hover: hover) and (pointer: fine) {
+          .hop-char:hover {
+            transform: translateY(-0.75rem);
+            color: #77756f;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

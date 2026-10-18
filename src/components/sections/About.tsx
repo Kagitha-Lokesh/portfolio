@@ -4,41 +4,64 @@ import React, { useState, useEffect, useRef } from "react";
 import { PROFILE, EDUCATION, EXPERIENCE } from "@/lib/data";
 
 export function About() {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const cardContainerRef = useRef<HTMLDivElement | null>(null);
   const [angle, setAngle] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const isVisibleRef = useRef(true);
   const physicsRef = useRef({
     angle: 0,
     velocity: 0,
     targetAngle: 0,
     lastTime: performance.now(),
-    lastMouseX: 0,
+    lastPointerX: 0,
   });
 
-  // Spring physics for lanyard pendulum motion with subtle idle sway
+  // Spring physics for lanyard pendulum motion with battery-saving IntersectionObserver
   useEffect(() => {
     let animId: number;
 
+    const sectionEl = sectionRef.current;
+    if (sectionEl) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isVisibleRef.current = entry.isIntersecting;
+            if (entry.isIntersecting) {
+              physicsRef.current.lastTime = performance.now();
+            }
+          });
+        },
+        { threshold: 0.05 }
+      );
+      io.observe(sectionEl);
+      // cleanup io in return
+    }
+
     const updatePhysics = (now: number) => {
-      const dt = Math.min((now - physicsRef.current.lastTime) / 1000, 0.05);
-      physicsRef.current.lastTime = now;
+      if (isVisibleRef.current) {
+        const dt = Math.min((now - physicsRef.current.lastTime) / 1000, 0.05);
+        physicsRef.current.lastTime = now;
 
-      // Subtle natural idle sway (period ~ 3.5s)
-      const idleSway = Math.sin(now * 0.0018) * 1.5;
+        // Subtle natural idle sway (period ~ 3.5s)
+        const idleSway = Math.sin(now * 0.0018) * 1.5;
 
-      // Spring constants
-      const k = 18.0; // Spring stiffness
-      const damping = 3.2; // Damping ratio
+        // Spring constants
+        const k = 18.0; // Spring stiffness
+        const damping = 3.2; // Damping ratio
 
-      const displacement = physicsRef.current.angle - idleSway;
-      const springForce = -k * displacement;
-      const dampingForce = -damping * physicsRef.current.velocity;
-      const acceleration = springForce + dampingForce;
+        const displacement = physicsRef.current.angle - idleSway;
+        const springForce = -k * displacement;
+        const dampingForce = -damping * physicsRef.current.velocity;
+        const acceleration = springForce + dampingForce;
 
-      physicsRef.current.velocity += acceleration * dt;
-      physicsRef.current.angle += physicsRef.current.velocity * dt;
+        physicsRef.current.velocity += acceleration * dt;
+        physicsRef.current.angle += physicsRef.current.velocity * dt;
 
-      setAngle(physicsRef.current.angle);
+        setAngle(physicsRef.current.angle);
+      } else {
+        physicsRef.current.lastTime = now;
+      }
 
       animId = requestAnimationFrame(updatePhysics);
     };
@@ -47,20 +70,41 @@ export function About() {
 
     const handlePointerMove = (e: MouseEvent) => {
       const currentX = e.clientX;
-      const deltaX = currentX - physicsRef.current.lastMouseX;
-      physicsRef.current.lastMouseX = currentX;
+      const deltaX = currentX - physicsRef.current.lastPointerX;
+      physicsRef.current.lastPointerX = currentX;
 
-      // Add impulse based on mouse velocity
       if (Math.abs(deltaX) > 0.5) {
         physicsRef.current.velocity += Math.max(-15, Math.min(15, deltaX * 0.4));
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        physicsRef.current.lastPointerX = e.touches[0].clientX;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const currentX = e.touches[0].clientX;
+        const deltaX = currentX - physicsRef.current.lastPointerX;
+        physicsRef.current.lastPointerX = currentX;
+
+        if (Math.abs(deltaX) > 0.5) {
+          physicsRef.current.velocity += Math.max(-15, Math.min(15, deltaX * 0.45));
+        }
+      }
+    };
+
     window.addEventListener("mousemove", handlePointerMove, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("mousemove", handlePointerMove);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
@@ -75,10 +119,10 @@ export function About() {
   const currentExp = EXPERIENCE[0];
 
   return (
-    <section id="about" className="section-padding relative overflow-hidden">
+    <section id="about" ref={sectionRef} className="section-padding relative overflow-hidden">
       <div className="content-container">
         {/* Section Heading Tag */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-12">
           <div className="tag-mono mb-2">
             <span>01 — About</span>
           </div>
@@ -88,10 +132,10 @@ export function About() {
           </h2>
         </div>
 
-        {/* 3-Column Equal Height Grid */}
+        {/* 3-Column Equal Height Grid: On mobile ID card (order-1) -> Bio (order-2) -> Facts (order-3) */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)] gap-8 items-stretch">
-          {/* Left Column: Bio & Verbatim Summary */}
-          <div className="card-base p-8 sm:p-10 flex flex-col justify-between rv">
+          {/* Left Column: Bio & Verbatim Summary - order-2 on mobile, order-1 on lg */}
+          <div className="card-base p-6 sm:p-10 flex flex-col justify-between rv order-2 lg:order-1">
             <div>
               <span className="font-mono text-xs text-[#77756f] uppercase tracking-wider block mb-4">
                 Profile Overview
@@ -107,11 +151,11 @@ export function About() {
               </p>
             </div>
 
-            <div className="pt-8 mt-6 border-t border-[#0d0d0d]/10 flex flex-wrap items-center gap-3">
+            <div className="pt-6 sm:pt-8 mt-6 border-t border-[#0d0d0d]/10 flex flex-wrap items-center gap-2.5 sm:gap-3">
               <a
                 href={PROFILE.resumePath}
                 download="Lokesh_Kagitha_Resume.pdf"
-                className="btn-primary text-xs"
+                className="btn-primary min-h-[44px] text-xs px-4 py-2.5"
               >
                 <span>Download Résumé</span>
                 <span className="text-[10px]">↓</span>
@@ -122,7 +166,7 @@ export function About() {
                   href={PROFILE.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-secondary text-xs"
+                  className="btn-secondary min-h-[44px] text-xs px-4 py-2.5"
                 >
                   <span>GitHub</span>
                   <span className="text-[10px]">↗</span>
@@ -134,7 +178,7 @@ export function About() {
                   href={PROFILE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-secondary text-xs"
+                  className="btn-secondary min-h-[44px] text-xs px-4 py-2.5"
                 >
                   <span>LinkedIn</span>
                   <span className="text-[10px]">↗</span>
@@ -143,10 +187,10 @@ export function About() {
             </div>
           </div>
 
-          {/* Centre Column: Hanging Lanyard ID Card */}
+          {/* Centre Column: Hanging Lanyard ID Card - order-1 on mobile, order-2 on lg */}
           <div
             ref={cardContainerRef}
-            className="flex flex-col items-center justify-start min-h-[490px] py-2 rv"
+            className="flex flex-col items-center justify-start min-h-0 lg:min-h-[490px] py-2 rv order-1 lg:order-2 overflow-visible w-full"
             style={{ "--i": 1 } as React.CSSProperties}
           >
             {/* Lanyard Top Strap */}
@@ -162,7 +206,7 @@ export function About() {
                   <span
                     className="font-mono text-[6px] tracking-widest text-[#f4f2ee] uppercase whitespace-nowrap rotate-90 select-none animate-pulse"
                   >
-                    DEV ID · LK · 2026
+                    DEV ID · KL · 2026
                   </span>
                 </div>
               </div>
@@ -183,23 +227,32 @@ export function About() {
 
             {/* Pendulum Swinging & Flipping Card Container */}
             <div
-              className="relative -mt-1 cursor-pointer select-none"
+              className="relative -mt-1 cursor-pointer select-none max-w-full flex flex-col items-center"
               style={{
                 transformOrigin: "top center",
                 transform: `rotate(${angle}deg)`,
                 perspective: "1000px",
               }}
-              onMouseEnter={() => setIsFlipped(true)}
-              onMouseLeave={() => setIsFlipped(false)}
+              onMouseEnter={() => {
+                if (typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                  setIsFlipped(true);
+                }
+              }}
+              onMouseLeave={() => {
+                if (typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                  setIsFlipped(false);
+                }
+              }}
               onClick={() => setIsFlipped((prev) => !prev)}
               onKeyDown={handleKeyDown}
               tabIndex={0}
               role="button"
+              aria-pressed={isFlipped}
               aria-label={`Developer ID badge for ${PROFILE.name}. Press Enter or Space to flip card.`}
             >
-              {/* Card Frame 300x404px with 3D Flip */}
+              {/* Card Frame scaled so it never exceeds 100% - 2*gutter */}
               <div
-                className="relative w-[300px] h-[404px] rounded-[22px] transition-transform duration-700 shadow-2xl"
+                className="relative w-[300px] max-w-[calc(100vw-3rem)] h-[404px] rounded-[22px] transition-transform duration-700 shadow-2xl"
                 style={{
                   transformStyle: "preserve-3d",
                   transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -307,7 +360,7 @@ export function About() {
                       title="Verified Identity"
                     >
                       <div className="w-full h-full rounded-full border border-white/50 flex items-center justify-center font-mono text-[7px] text-[#171717] font-bold">
-                        LK
+                        KL
                       </div>
                     </div>
                   </div>
@@ -403,48 +456,49 @@ export function About() {
             </div>
           </div>
 
-          {/* Right Column: Quick Facts & Verbatim Paraphrase Quote */}
-          <div className="card-base p-8 sm:p-10 flex flex-col justify-between rv" style={{ "--i": 2 } as React.CSSProperties}>
+          {/* Right Column: Quick Facts & Verbatim Paraphrase Quote - order-3 on mobile and lg */}
+          <div className="card-base p-6 sm:p-10 flex flex-col justify-between rv order-3 lg:order-3" style={{ "--i": 2 } as React.CSSProperties}>
             <div>
               <span className="font-mono text-xs text-[#77756f] uppercase tracking-wider block mb-4">
                 Quick Facts
               </span>
 
               <div className="divide-y divide-[#0d0d0d]/10 text-sm">
-                <div className="py-3 flex justify-between items-baseline gap-2">
+                <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 sm:gap-2">
                   <span className="text-[#77756f] font-mono text-xs uppercase">
                     Location
                   </span>
-                  <span className="font-medium text-[#0d0d0d] text-right">
+                  <span className="font-medium text-[#0d0d0d] sm:text-right">
                     {PROFILE.location}
                   </span>
                 </div>
 
-                <div className="py-3 flex justify-between items-baseline gap-2">
+                <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 sm:gap-2">
                   <span className="text-[#77756f] font-mono text-xs uppercase">
                     Degree
                   </span>
-                  <span className="font-medium text-[#0d0d0d] text-right text-xs">
+                  <span className="font-medium text-[#0d0d0d] sm:text-right text-xs">
                     B.Tech CSE (AI &amp; ML) · 8.0 CGPA
                   </span>
                 </div>
 
-                <div className="py-3 flex justify-between items-baseline gap-2">
+                <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 sm:gap-2">
                   <span className="text-[#77756f] font-mono text-xs uppercase">
                     Current Role
                   </span>
-                  <span className="font-medium text-[#0d0d0d] text-right text-xs">
+                  <span className="font-medium text-[#0d0d0d] sm:text-right text-xs">
                     Full Stack Developer Intern
                   </span>
                 </div>
 
-                <div className="py-3 flex justify-between items-baseline gap-2">
+                <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 sm:gap-2">
                   <span className="text-[#77756f] font-mono text-xs uppercase">
                     Email
                   </span>
                   <a
                     href={`mailto:${PROFILE.email}`}
-                    className="font-medium text-[#0d0d0d] hover:underline truncate text-right text-xs"
+                    className="font-medium text-[#0d0d0d] hover:underline sm:text-right text-xs break-all min-h-[44px] flex items-center py-2"
+                    style={{ overflowWrap: "anywhere" }}
                   >
                     {PROFILE.email}
                   </a>

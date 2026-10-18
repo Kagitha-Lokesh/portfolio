@@ -10,20 +10,28 @@ export function Experience() {
   const { scrollToTarget } = useScroll();
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const el = sectionRef.current;
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
 
-      const rect = el.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+            // Start drawing when section enters middle of viewport
+            const start = windowHeight * 0.7;
+            const total = rect.height + windowHeight * 0.2;
+            const current = start - rect.top;
 
-      // Start drawing when section enters middle of viewport
-      const start = windowHeight * 0.7;
-      const total = rect.height + windowHeight * 0.2;
-      const current = start - rect.top;
-
-      const progress = Math.min(1, Math.max(0, current / total));
-      setScrollProgress(progress);
+            const progress = Math.min(1, Math.max(0, current / total));
+            setScrollProgress(progress);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -35,7 +43,7 @@ export function Experience() {
     <section id="experience" ref={sectionRef} className="section-padding relative">
       <div className="content-container">
         {/* Section Heading Tag */}
-        <div className="mb-16">
+        <div className="mb-10 sm:mb-16">
           <div className="tag-mono mb-2">
             <span>05 — Trajectory</span>
           </div>
@@ -49,22 +57,22 @@ export function Experience() {
         </div>
 
         {/* Timeline Container with Dynamic Spine */}
-        <div className="relative max-w-3xl mx-auto pl-6 sm:pl-10">
+        <div className="relative max-w-3xl mx-auto pl-4 sm:pl-10">
           {/* Background Pale Spine Line */}
           <div
-            className="absolute left-[11px] sm:left-[19px] top-4 bottom-12 w-[2px] bg-[#0d0d0d]/10"
+            className="absolute left-[9px] sm:left-[19px] top-4 bottom-12 w-[2px] bg-[#0d0d0d]/10"
             aria-hidden="true"
           />
 
           {/* Active Ink Spine Line (draws with scroll progress) */}
           <div
-            className="absolute left-[11px] sm:left-[19px] top-4 bottom-12 w-[2px] bg-[#0d0d0d] origin-top transition-transform duration-100 ease-out"
+            className="absolute left-[9px] sm:left-[19px] top-4 bottom-12 w-[2px] bg-[#0d0d0d] origin-top transition-transform duration-100 ease-out"
             style={{ transform: `scaleY(${scrollProgress})` }}
             aria-hidden="true"
           />
 
           {/* Timeline Stops */}
-          <div className="space-y-12 sm:space-y-16">
+          <div className="space-y-10 sm:space-y-16">
             {TIMELINE.map((item, idx) => {
               // Calculate threshold when this stop should light up
               const stopThreshold = (idx + 0.5) / (TIMELINE.length + 1);
@@ -79,7 +87,7 @@ export function Experience() {
                 >
                   {/* Stop Marker Node */}
                   <div
-                    className={`absolute -left-[24px] sm:-left-[32px] top-1.5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-400 ${
+                    className={`absolute -left-[19px] sm:-left-[32px] top-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all duration-400 ${
                       isLit
                         ? "border-[#0d0d0d] bg-[#0d0d0d] text-white shadow-md scale-110"
                         : "border-[#0d0d0d]/20 bg-[#f4f2ee] text-transparent"
@@ -89,7 +97,7 @@ export function Experience() {
                   </div>
 
                   {/* Stop Card */}
-                  <div className="card-base p-6 sm:p-8 ml-4 transition-all duration-300 hover:shadow-lg">
+                  <div className="card-base p-5 sm:p-8 ml-2 sm:ml-4 transition-all duration-300 hover:shadow-lg">
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                       <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#f4f2ee] text-[#0d0d0d] border border-[#0d0d0d]/10">
                         {item.year}
@@ -99,7 +107,7 @@ export function Experience() {
                       </span>
                     </div>
 
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0d0d0d] mt-2 mb-1">
+                    <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-[#0d0d0d] mt-2 mb-1 leading-snug break-words">
                       {item.title}
                     </h3>
 
@@ -119,18 +127,18 @@ export function Experience() {
             <div className="relative pt-4">
               {/* Pulsing Marker */}
               <div
-                className={`absolute -left-[24px] sm:-left-[32px] top-6 w-6 h-6 rounded-full border-2 border-dashed border-[#0d0d0d] flex items-center justify-center ${
+                className={`absolute -left-[19px] sm:-left-[32px] top-6 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-dashed border-[#0d0d0d] flex items-center justify-center ${
                   scrollProgress >= 0.85 ? "bg-[#0d0d0d] text-white" : "bg-transparent text-transparent"
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10a37f] animate-ping" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0d0d0d] animate-ping" />
               </div>
 
-              <div className="rounded-[26px] border-2 border-dashed border-[#0d0d0d]/30 bg-white/50 p-8 ml-4 transition-all duration-300 hover:border-[#0d0d0d] hover:bg-white">
+              <div className="rounded-[26px] border-2 border-dashed border-[#0d0d0d]/30 bg-white/50 p-5 sm:p-8 ml-2 sm:ml-4 transition-all duration-300 hover:border-[#0d0d0d] hover:bg-white">
                 <div className="font-mono text-xs uppercase tracking-wider text-[#77756f] mb-2">
                   Up Next · 2026 &amp; Beyond
                 </div>
-                <h3 className="text-2xl font-bold text-[#0d0d0d] mb-2">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#0d0d0d] mb-2">
                   Next — Your team?
                 </h3>
                 <p className="text-sm text-[#3a3a3a] leading-relaxed max-w-lg mb-6">
@@ -138,7 +146,7 @@ export function Experience() {
                 </p>
                 <button
                   onClick={() => scrollToTarget("#contact")}
-                  className="btn-primary text-xs"
+                  className="btn-primary w-full sm:w-auto min-h-[44px] justify-center text-xs"
                 >
                   <span>Start a conversation</span>
                   <span className="text-[10px]">→</span>
