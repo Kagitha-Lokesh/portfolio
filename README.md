@@ -101,6 +101,36 @@ Defined in `src/app/globals.css`:
 
 ---
 
+## ⏳ Intro Loader ("Ink on paper")
+
+The site features an editorial, high-performance intro loading animation adhering strictly to the "ink on paper" aesthetic:
+
+### How It Works
+1. **Real Signal Tracking**: Progress is computed as a weighted average of genuine browser signals—not a fake timer:
+   - **30%**: `document.fonts.ready` resolution
+   - **50%**: Hero video reaching `readyState >= 3` (`canplay` / `canplaythrough`) or poster still
+   - **20%**: `window` load event
+2. **Smooth rAF Interpolation**: A requestAnimationFrame loop eases toward the target progress so the counter (`000` → `100`) and the 1px hairline progress bar never jump backward.
+3. **Pacing & Safety**: Minimum display time is 1.2s (600ms for `prefers-reduced-motion`) so it is never a jarring flash. A hard cap of 3.5s guarantees that slow network conditions or video buffering never block the visitor.
+4. **Visual Elements**:
+   - Center initials mark (`LK`) drawn with SVG `stroke-dashoffset` (~1.1s, `var(--ease)`), followed by sequential letter fade-ins.
+   - Padded tabular-nums counter and 1px ink hairline progress bar.
+   - Masked line reveals (`.rv-mask`) for "Lokesh Kagitha / Full Stack Developer" (bottom-left) and "Loading" (bottom-right).
+   - Once complete, counter/bar fade out and the overlay lifts away via `clip-path: inset(0 0 100% 0)` over 0.9s `var(--ease)`, seamlessly revealing the hero underneath while hero typography rises in.
+5. **Scroll & Motion Safety**: Scroll is locked (`html overflow hidden`, `lenis.stop()`) while visible and unlocked immediately on exit (`lenis.start()`). Focus transitions smoothly to the hero heading.
+6. **Runs on Reload**: The loading animation triggers on initial visit and whenever the visitor reloads the page.
+7. **No-JS Fallback**: Client-rendered only; with JavaScript disabled, the loader markup is omitted entirely.
+
+### How to Disable the Loader
+To disable the intro loader globally across the entire project, set `SHOW_LOADER = false` in `src/lib/data.ts`:
+
+```ts
+// src/lib/data.ts
+export const SHOW_LOADER = false;
+```
+
+---
+
 ## 🛡️ Credits & Licenses
 
 All brand logos and assets adhere to official open-source licenses:

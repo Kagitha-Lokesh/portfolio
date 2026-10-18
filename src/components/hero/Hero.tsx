@@ -12,31 +12,54 @@ export function Hero() {
   const [soundBlocked, setSoundBlocked] = useState(true);
   const { scrollToTarget } = useScroll();
 
-  // 1. Audio and video autoplay / interaction unlock
+  // 1. Audio and video autoplay / interaction unlock (starts when loading animation completes)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Try playing with sound initially
-    video.muted = false;
-    const playPromise = video.play();
+    const startVideo = () => {
+      try {
+        video.currentTime = 0;
+      } catch {}
 
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsMuted(false);
-          setSoundBlocked(false);
-          setIsPlaying(true);
-        })
-        .catch(() => {
-          // Autoplay with sound blocked, fallback to muted
-          video.muted = true;
-          video.play().then(() => {
-            setIsMuted(true);
-            setSoundBlocked(true);
+      // Try playing with sound initially
+      video.muted = false;
+      const playPromise = video.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsMuted(false);
+            setSoundBlocked(false);
             setIsPlaying(true);
+          })
+          .catch(() => {
+            // Autoplay with sound blocked, fallback to muted
+            video.muted = true;
+            video.play().then(() => {
+              setIsMuted(true);
+              setSoundBlocked(true);
+              setIsPlaying(true);
+            }).catch(() => {});
           });
-        });
+      }
+    };
+
+    // If already loaded or loader is bypassed, start immediately
+    if (typeof document !== "undefined" && document.documentElement.hasAttribute("data-loaded")) {
+      startVideo();
+    } else {
+      // Pause at beginning while loading animation is visible
+      try {
+        video.pause();
+        video.currentTime = 0;
+      } catch {}
+
+      const onLoaderComplete = () => {
+        startVideo();
+      };
+
+      window.addEventListener("intro-loader-complete", onLoaderComplete, { once: true });
     }
 
     // Unlock sound on first user interaction
@@ -78,6 +101,9 @@ export function Hero() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          if (!document.documentElement.hasAttribute("data-loaded")) {
+            return;
+          }
           if (entry.intersectionRatio < 0.35) {
             video.pause();
             setIsPlaying(false);

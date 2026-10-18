@@ -183,6 +183,34 @@
   transform: translateY(0);
 }
 
+/* Hold reveal animations until intro loader exit begins (via data-loaded on html) */
+html:not([data-loaded]) .rv {
+  opacity: 0 !important;
+  transform: translateY(24px) !important;
+  transition: none !important;
+}
+
+html:not([data-loaded]) .rv-mask > * {
+  transform: translateY(100%) !important;
+  transition: none !important;
+}
+
+/* Hero elements rise in gracefully as the intro overlay lifts away */
+html:not([data-loaded]) #hero .heading-display,
+html:not([data-loaded]) #hero .tag-mono,
+html:not([data-loaded]) #hero .btn-primary,
+html:not([data-loaded]) #hero .btn-secondary {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+#hero .heading-display,
+#hero .tag-mono,
+#hero .btn-primary,
+#hero .btn-secondary {
+  transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rv {
     opacity: 1 !important;
@@ -197,4 +225,31 @@
   .btn-secondary:hover {
     transform: none !important;
   }
+  html:not([data-loaded]) #hero .heading-display,
+  html:not([data-loaded]) #hero .tag-mono,
+  html:not([data-loaded]) #hero .btn-primary,
+  html:not([data-loaded]) #hero .btn-secondary {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
+
+/* No-JS fallback: render immediately without holding */
+@media (scripting: none) {
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .rv-mask > * {
+    transform: none !important;
+  }
+  #hero .heading-display,
+  #hero .tag-mono,
+  #hero .btn-primary,
+  #hero .btn-secondary {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+

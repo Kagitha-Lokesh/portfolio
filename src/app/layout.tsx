@@ -82,6 +82,13 @@ export default function RootLayout({
       className={`${interTight.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var o=new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i].target;if(t&&t.removeAttribute&&t.hasAttribute('bis_skin_checked')){t.removeAttribute('bis_skin_checked');}}});o.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['bis_skin_checked']});window.addEventListener('DOMContentLoaded',function(){setTimeout(function(){o.disconnect()},3000)})}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body
         className="antialiased selection:bg-[#0d0d0d] selection:text-[#f4f2ee]"
         suppressHydrationWarning

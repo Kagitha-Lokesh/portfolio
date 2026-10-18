@@ -1,3 +1,6 @@
+// Configuration to enable or disable the intro loading animation
+export const SHOW_LOADER = true;
+
 export interface Profile {
   name: string;
   firstName: string;
