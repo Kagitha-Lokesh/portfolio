@@ -134,15 +134,15 @@ def main():
 
     # 5. Extract portrait still: head-to-shirt crop at 480x600 saved as portrait-bust.webp
     temp_frame = os.path.abspath("scratch/frame_bust.png")
-    # Take clear frame around t=2.0s
+    # Take clear, confident closed-mouth frame at t=0.05s
     bust_cmd = (
-        f'ffmpeg -y -ss 2.0 -i "{input_video}" -vframes 1 '
-        f'-vf "crop=540:675:592:10,scale=480:600,colorlevels=rimax=0.98:gimax=0.98:bimax=0.98" "{temp_frame}"'
+        f'ffmpeg -y -ss 0.05 -i "{input_video}" -vframes 1 '
+        f'-vf "crop=520:650:658:15,scale=480:600,colorlevels=rimax=0.98:gimax=0.98:bimax=0.98" "{temp_frame}"'
     )
     run_cmd(bust_cmd, "Extracting portrait still")
 
     img_bust = Image.open(temp_frame)
-    img_bust.save("public/portrait-bust.webp", "WEBP", quality=92)
+    img_bust.save("public/portrait-bust.webp", "WEBP", quality=95)
     print("--> Saved public/portrait-bust.webp (480x600)")
 
     # 6. Generate og.jpg (1200x630)

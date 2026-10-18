@@ -72,7 +72,7 @@ python scripts/build-hero-assets.py
    - `public/hero/hero.mp4`: H.264 YUV420p (CRF 24, `-preset slow`), AAC 96 kbps, `+faststart`.
    - `public/hero/hero.webm`: VP9 (CRF 36), Opus 80 kbps.
 6. **Portrait & OG Export**:
-   - `public/portrait-bust.webp`: 480×600 head-to-shirt crop at 2.0s frame for the ID badge and avatar.
+   - `public/portrait-bust.webp`: 480×600 head-to-shirt crop at 0.05s frame for the ID badge and avatar.
    - `public/og.jpg`: 1200×630 OpenGraph social preview card.
 
 ---
