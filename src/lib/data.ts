@@ -164,8 +164,8 @@ export const EXPERIENCE: ExperienceItem[] = [
   {
     id: "exp-1",
     company: "CHARANI INFOTECH PVT LTD",
-    role: "Full Stack Developer Intern",
-    period: "02 Feb 2026 – 01 May 2026",
+    role: "Associate Software Engineer · Full Stack Developer",
+    period: "02 Feb 2026 – Present",
     location: "Hyderabad, Telangana",
     bullets: [
       "Developing scalable full-stack web applications using React.js, Node.js, Express.js, Firebase, and REST APIs.",
@@ -203,7 +203,7 @@ export const TIMELINE: TimelineItem[] = [
   {
     id: "tl-4",
     year: "2026",
-    title: "Full Stack Developer Intern",
+    title: "Associate Software Engineer · Full Stack Developer",
     place: "Charani Infotech Pvt Ltd · Hyderabad, Telangana",
     detail: "Engineered enterprise HRM modules, attendance systems, payroll workflows, and REST APIs with React.js, Node.js, Express, and Firebase.",
     type: "experience",
@@ -342,11 +342,11 @@ export const ACHIEVEMENTS: AchievementItem[] = [
     id: "ach-4",
     index: "04 / 05",
     platform: "Industry Experience",
-    metricLabel: "Enterprise Internship",
+    metricLabel: "Enterprise Experience",
     caption: "CHARANI INFOTECH PVT LTD",
     detail: "HRM modules, role-based access, attendance & e-commerce platform APIs",
     value: 1,
-    suffix: " Internship",
+    suffix: " Enterprise Role",
     brandColor: "#339933",
   },
   {

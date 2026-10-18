@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PROFILE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
+import { SectionTag } from "@/components/ui/SectionTag";
 
 export function Contact() {
   const [copied, setCopied] = useState(false);
+  const [touchHopActive, setTouchHopActive] = useState(false);
+  const headingRef = useRef<HTMLDivElement | null>(null);
   const { scrollToTarget } = useScroll();
 
   const handleCopyEmail = async () => {
@@ -18,6 +21,29 @@ export function Contact() {
     }
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isTouch = window.matchMedia("(hover: none) or (pointer: coarse)").matches;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!isTouch || prefersReduced) return;
+
+    const el = headingRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTouchHopActive(true);
+          io.unobserve(el);
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const line1 = "Let's build";
   const line2 = "something together.";
 
@@ -28,22 +54,26 @@ export function Contact() {
     >
       <div className="content-container">
         {/* Section Heading Tag */}
-        <div className="tag-mono mb-3 sm:mb-4">
-          <span>07 — Contact</span>
-        </div>
+        <SectionTag index="07" label="Contact" className="mb-3 sm:mb-4" />
 
-        {/* Interactive Letters Heading with clamp sizing & hover-only hop */}
-        <div className="mb-10 sm:mb-14 select-none">
+        {/* Interactive Letters Heading with clamp sizing & hover/touch hop */}
+        <div ref={headingRef} className="mb-10 sm:mb-14 select-none">
           <h2
             className="heading-display tracking-tight leading-[1.08] text-[#0d0d0d]"
             style={{ fontSize: "clamp(2rem, 7.5vw, 6rem)" }}
+            aria-label="Let's build something together."
           >
             <div className="block">
               {line1.split("").map((char, i) => (
                 <span
                   key={i}
-                  className="hop-char inline-block transition-transform duration-300 cursor-default"
-                  style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                  className={`hop-char inline-block transition-transform duration-300 cursor-default ${
+                    touchHopActive ? "touch-hop" : ""
+                  }`}
+                  style={{
+                    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                    animationDelay: `${i * 35}ms`,
+                  }}
                 >
                   {char === " " ? "\u00A0" : char}
                 </span>
@@ -53,8 +83,13 @@ export function Contact() {
               {line2.split("").map((char, i) => (
                 <span
                   key={i}
-                  className="hop-char inline-block transition-transform duration-300 cursor-default"
-                  style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                  className={`hop-char inline-block transition-transform duration-300 cursor-default ${
+                    touchHopActive ? "touch-hop" : ""
+                  }`}
+                  style={{
+                    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                    animationDelay: `${(line1.length + i) * 35}ms`,
+                  }}
                 >
                   {char === " " ? "\u00A0" : char}
                 </span>
@@ -102,11 +137,11 @@ export function Contact() {
                   href={PROFILE.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
+                  className="link-draw min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
                 >
                   <span className="font-mono text-xs text-[#a9a6a0]">GH:</span>
                   <span className="truncate">github.com/Kagitha-Lokesh</span>
-                  <span className="text-xs">↗</span>
+                  <span className="arrow-move arrow-diag text-xs">↗</span>
                 </a>
               )}
 
@@ -115,11 +150,11 @@ export function Contact() {
                   href={PROFILE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
+                  className="link-draw min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
                 >
                   <span className="font-mono text-xs text-[#a9a6a0]">IN:</span>
                   <span className="truncate">linkedin.com/in/lokesh-kagitha</span>
-                  <span className="text-xs">↗</span>
+                  <span className="arrow-move arrow-diag text-xs">↗</span>
                 </a>
               )}
             </div>
@@ -161,9 +196,10 @@ export function Contact() {
             <span className="hidden sm:inline">Built with Next.js 15 &amp; Tailwind</span>
             <button
               onClick={() => scrollToTarget("#hero")}
-              className="min-h-[44px] px-2 py-2 text-[#0d0d0d] hover:underline font-semibold flex items-center"
+              className="link-draw min-h-[44px] px-2 py-2 text-[#0d0d0d] font-semibold flex items-center gap-1"
             >
-              Back to top ↑
+              <span>Back to top</span>
+              <span className="arrow-move arrow-down rotate-180 text-xs">↓</span>
             </button>
           </div>
         </div>
@@ -175,6 +211,18 @@ export function Contact() {
             transform: translateY(-0.75rem);
             color: #77756f;
           }
+        }
+        @keyframes touchHopKeyframe {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-0.75rem);
+            color: #77756f;
+          }
+        }
+        :global(.touch-hop) {
+          animation: touchHopKeyframe 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
     </footer>

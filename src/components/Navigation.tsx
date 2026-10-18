@@ -169,11 +169,11 @@ export function Navigation() {
           {/* Left: Initials mark + Name (44px target) */}
           <button
             onClick={() => handleNavClick("hero")}
-            className="group flex items-center gap-3 min-h-[44px] min-w-[44px] focus-visible:outline-none"
+            className="nav-logo-mark group flex items-center gap-3 min-h-[44px] min-w-[44px] focus-visible:outline-none"
             aria-label={`${PROFILE.name} - Scroll to top`}
           >
             <div
-              className={`w-9 h-9 rounded-full flex items-center justify-center font-mono text-xs font-semibold tracking-wider transition-all duration-500 @media(hover:hover):group-hover:rotate-360 ${
+              className={`nav-logo-inner w-9 h-9 rounded-full flex items-center justify-center font-mono text-xs font-semibold tracking-wider transition-all duration-500 ${
                 scrolled
                   ? "bg-[#0d0d0d] text-[#ffffff] border border-transparent shadow-sm"
                   : "bg-transparent text-[#0d0d0d] border border-[#0d0d0d]/30"
@@ -196,7 +196,7 @@ export function Navigation() {
           {/* Desktop Nav Pill */}
           <nav
             aria-label="Main Navigation"
-            className={`hidden md:flex items-center relative p-1.5 rounded-full transition-all duration-400 ${
+            className={`nav-pill-container hidden md:flex items-center relative p-1.5 rounded-full transition-all duration-400 ${
               scrolled
                 ? "bg-white/85 backdrop-blur-md border border-[#0d0d0d]/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)]"
                 : "bg-transparent border border-transparent"
@@ -222,11 +222,14 @@ export function Navigation() {
                     navRefs.current[item.id] = el;
                   }}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative z-10 px-4 py-2 text-xs font-medium tracking-tight rounded-full transition-colors duration-200 focus-visible:outline-none min-h-[44px] flex items-center ${
+                  className={`nav-item relative z-10 px-4 py-2 text-xs font-medium tracking-tight rounded-full transition-all duration-300 focus-visible:outline-none min-h-[44px] flex items-center ${
                     isActive
                       ? "text-white"
                       : "text-[#3a3a3a] hover:text-[#0d0d0d]"
                   }`}
+                  style={{
+                    transitionDelay: isActive ? "180ms" : "0ms",
+                  }}
                 >
                   {item.label}
                 </button>
@@ -239,10 +242,12 @@ export function Navigation() {
             <a
               href={PROFILE.resumePath}
               download="Lokesh_Kagitha_Resume.pdf"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-4 py-2 min-h-[44px] rounded-full border border-[#0d0d0d]/15 hover:border-[#0d0d0d] text-[#0d0d0d] transition-all duration-300 hover:bg-[#0d0d0d] hover:text-white"
+              className="btn-secondary hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-4 py-2 min-h-[44px] rounded-full"
             >
-              <span>Résumé</span>
-              <span className="text-[10px]">↓</span>
+              <span className="btn-roll">
+                <span className="btn-roll-inner" data-text="Résumé">Résumé</span>
+              </span>
+              <span className="arrow-move arrow-down text-[10px]">↓</span>
             </a>
 
             {/* Mobile Menu Pill Button (44px min target) */}
@@ -254,7 +259,9 @@ export function Navigation() {
               aria-expanded={mobileMenuOpen}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#0d0d0d]" />
-              <span>Menu</span>
+              <span className="btn-roll">
+                <span className="btn-roll-inner" data-text="Menu">Menu</span>
+              </span>
             </button>
           </div>
         </div>

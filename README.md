@@ -176,3 +176,35 @@ python scripts/test-mobile.py
 5. **Horizontal Achievements Gallery**: Dynamically derived container height using `track.scrollWidth - viewportWidth + 100svh` measured via ResizeObserver. Direct DOM transform via rAF scroll handler. Fluid card sizing and reduced-motion vertical list fallback.
 6. **Grayscale Fidelity & Performance**: 100% white/black/grays (no colored comments/borders). CLS = 0 with explicit media aspect ratios.
 
+---
+
+## 🎬 Motion & Text-Animation System
+
+The portfolio features a unified, compositor-only text reveal and hover interaction language designed with quiet, calm editorial luxury (black, white, and warm gray only).
+
+### Global Switch
+All text animations, line splits, digit scrambles, paragraph scrubs, and card tilts can be disabled across the entire site by modifying one constant:
+
+```typescript
+// src/lib/motion.ts
+export const ENABLE_MOTION_FX = true; // Set to false to disable all motion FX
+```
+
+When disabled (or under `prefers-reduced-motion: reduce`), the site instantly falls back to static, fully-visible text with standard transitions.
+
+### Shared CSS Classes
+
+| Class | Type | Timing & Properties | Description |
+| :--- | :--- | :--- | :--- |
+| `.tx-line-mask` / `.tx-line` | Text Reveal | `1s var(--ease)`, 90ms stagger | Line slides up from behind an overflow mask (`translateY(105% → 0)`). |
+| `.tx-blur` | Text Reveal | `700ms var(--ease)`, +250ms delay | Instrument Serif accent text fades in with blur-to-sharp (`blur(6px) → 0`). |
+| `.tx-char` | Text Reveal | `900ms var(--ease)`, 16ms stagger | Hero character-level reveal (`translateY(40% → 0)` with opacity). |
+| `.tx-relax` | Text Reveal | `600ms var(--ease)` | Monospace tag labels relax letter-spacing (`0.2em → 0.08em`). |
+| `.tx-scrub` | Text Reveal | Scroll-progress rAF throttled | Editorial word-by-word opacity reveal (`0.15 → 1.0`) on viewports ≥ 768px. |
+| `.btn-roll` | Hover Effect | `350ms var(--ease)` | Button label slides up and out while duplicate slides up from below. |
+| `.link-draw` | Hover Effect | `350ms var(--ease)` | Underline draws from left-to-right on hover; retracts to right on leave. |
+| `.card-base` | Hover Effect | `500ms var(--ease)` | Lifts 6px, expands soft shadow, hairline border darkens 10% → 18%. |
+| `.skill-tile` | Hover Effect | `300ms var(--ease)` | Lifts 4px, symbol scales 1.08, sibling tiles softly dim via `:has()`. |
+| `.touch-hop` | Touch Motion | `600ms var(--ease)` | Contact heading letters hop in sequence once when entering view on touch devices. |
+
+

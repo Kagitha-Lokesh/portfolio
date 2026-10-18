@@ -3,6 +3,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TIMELINE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
+import { SplitText } from "@/components/ui/SplitText";
+import { SectionTag } from "@/components/ui/SectionTag";
+import { ScrollScrubParagraph } from "@/components/ui/ScrollScrubParagraph";
 
 export function Experience() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -44,16 +47,19 @@ export function Experience() {
       <div className="content-container">
         {/* Section Heading Tag */}
         <div className="mb-10 sm:mb-16">
-          <div className="tag-mono mb-2">
-            <span>05 — Trajectory</span>
-          </div>
+          <SectionTag index="05" label="Trajectory" className="mb-2" />
           <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
-            <span>Education &amp; experience as one path</span>
-            <span className="heading-accent ml-2">.</span>
+            <SplitText
+              text="Education & experience as one path"
+              type="lines"
+              accentText="."
+              accentClassName="heading-accent ml-2"
+            />
           </h2>
-          <p className="text-[#77756f] text-sm mt-3 max-w-xl">
-            A chronological timeline bridging foundational academics, specialized AI &amp; ML engineering, and enterprise full-stack development.
-          </p>
+          <ScrollScrubParagraph
+            text="A chronological timeline bridging foundational academics, specialized AI & ML engineering, and enterprise full-stack development."
+            className="text-[#77756f] text-sm mt-3 max-w-xl"
+          />
         </div>
 
         {/* Timeline Container with Dynamic Spine */}

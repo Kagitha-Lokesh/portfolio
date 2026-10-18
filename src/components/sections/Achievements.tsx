@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ACHIEVEMENTS, AchievementItem } from "@/lib/data";
+import { SplitText } from "@/components/ui/SplitText";
+import { SectionTag } from "@/components/ui/SectionTag";
 
 export function Achievements() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -145,12 +147,14 @@ export function Achievements() {
       <section id="achievements" className="section-padding bg-[#f4f2ee]">
         <div className="content-container">
           <div className="mb-10">
-            <div className="tag-mono mb-2">
-              <span>06 — Benchmarks</span>
-            </div>
+            <SectionTag index="06" label="Benchmarks" className="mb-2" />
             <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
-              <span>Milestones &amp; verified honors</span>
-              <span className="heading-accent ml-2">.</span>
+              <SplitText
+                text="Milestones & verified honors"
+                type="lines"
+                accentText="."
+                accentClassName="heading-accent ml-2"
+              />
             </h2>
           </div>
 
@@ -205,12 +209,18 @@ export function Achievements() {
         <div className="content-container w-full shrink-0">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-4 mb-2 sm:mb-4">
             <div>
-              <div className="tag-mono mb-1 sm:mb-2 text-[10px] sm:text-xs">
-                <span>06 — Benchmarks</span>
-              </div>
+              <SectionTag
+                index="06"
+                label="Benchmarks"
+                className="mb-1 sm:mb-2 text-[10px] sm:text-xs"
+              />
               <h2 className="heading-display text-2xl sm:text-4xl md:text-5xl leading-tight">
-                <span>Milestones &amp; verified honors</span>
-                <span className="heading-accent ml-1.5 sm:ml-2">.</span>
+                <SplitText
+                  text="Milestones & verified honors"
+                  type="lines"
+                  accentText="."
+                  accentClassName="heading-accent ml-1.5 sm:ml-2"
+                />
               </h2>
             </div>
 
@@ -355,10 +365,12 @@ function AnimatedCounter({
   isReducedMotion?: boolean;
 }) {
   const [displayValue, setDisplayValue] = useState(isReducedMotion ? value : 0);
+  const [isSettled, setIsSettled] = useState(isReducedMotion);
 
   useEffect(() => {
     if (isReducedMotion) {
       setDisplayValue(value);
+      setIsSettled(true);
       return;
     }
     if (!trigger) return;
@@ -380,6 +392,7 @@ function AnimatedCounter({
         requestAnimationFrame(animate);
       } else {
         setDisplayValue(value);
+        setIsSettled(true);
       }
     };
 
@@ -389,8 +402,12 @@ function AnimatedCounter({
   return (
     <div className="flex items-baseline justify-end">
       <span
-        className="font-bold tracking-tighter text-[#0d0d0d]"
-        style={{ fontSize: "clamp(1.75rem, 6vw, 3.5rem)", lineHeight: 1 }}
+        className="font-bold tracking-tighter text-[#0d0d0d] tabular-nums inline-block transition-transform duration-300"
+        style={{
+          fontSize: "clamp(1.75rem, 6vw, 3.5rem)",
+          lineHeight: 1,
+          transform: isSettled || isReducedMotion ? "translateY(0)" : "translateY(3px)",
+        }}
       >
         {displayValue}
       </span>

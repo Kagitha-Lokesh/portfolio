@@ -109,7 +109,7 @@ export function TechLogo({ name, size = 24, showGlow = false, className = "" }: 
           alt={`${name} logo`}
           width={size}
           height={size}
-          className="relative z-10 w-full h-full object-contain"
+          className="tech-logo-icon relative z-10 w-full h-full object-contain"
           loading="lazy"
         />
       </div>

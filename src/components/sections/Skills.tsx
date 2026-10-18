@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SKILL_ELEMENTS, SKILL_FAMILIES, SkillElement } from "@/lib/data";
 import { TechLogo, isBrand, getBrandColor } from "@/components/ui/TechLogo";
+import { SplitText } from "@/components/ui/SplitText";
+import { SectionTag } from "@/components/ui/SectionTag";
+import { ScrollScrubParagraph } from "@/components/ui/ScrollScrubParagraph";
 
 export function Skills() {
   const [activeFamily, setActiveFamily] = useState<string>("All");
@@ -60,16 +63,19 @@ export function Skills() {
       <div className="content-container">
         {/* Section Heading Tag */}
         <div className="mb-8 sm:mb-10">
-          <div className="tag-mono mb-2">
-            <span>02 — Stack</span>
-          </div>
+          <SectionTag index="02" label="Stack" className="mb-2" />
           <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
-            <span>The periodic table of my stack</span>
-            <span className="heading-accent ml-2">.</span>
+            <SplitText
+              text="The periodic table of my stack"
+              type="lines"
+              accentText="."
+              accentClassName="heading-accent ml-2"
+            />
           </h2>
-          <p className="text-[#77756f] text-sm mt-3 max-w-xl">
-            Hover or tap on any element to inspect its ecosystem integration, production applications, and architecture credentials.
-          </p>
+          <ScrollScrubParagraph
+            text="Hover or tap on any element to inspect its ecosystem integration, production applications, and architecture credentials."
+            className="text-[#77756f] text-sm mt-3 max-w-xl"
+          />
         </div>
 
         {/* Family Filter Chips: Single horizontally scrollable row on mobile with 44px targets */}
@@ -135,7 +141,7 @@ export function Skills() {
         {/* Main Section Content: Periodic Grid + Sticky Inspector */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8 items-start">
           {/* Periodic Table Grid: 4 cols at <640, 6 at md, 8 at lg */}
-          <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3">
+          <div className="skills-grid grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3">
             {filteredSkills.map((skill, idx) => {
               const row = Math.floor(idx / colCount);
               const col = idx % colCount;
@@ -155,7 +161,7 @@ export function Skills() {
                     }
                   }}
                   onFocus={() => setSelectedSkill(skill)}
-                  className={`group relative aspect-square p-1.5 sm:p-2.5 rounded-xl text-left flex flex-col justify-between transition-all duration-300 focus-visible:outline-none ${
+                  className={`skill-tile group relative aspect-square p-1.5 sm:p-2.5 rounded-xl text-left flex flex-col justify-between transition-all duration-300 focus-visible:outline-none ${
                     isSelected
                       ? "bg-white shadow-[0_12px_28px_-6px_rgba(0,0,0,0.12)] border-2 border-[#0d0d0d] scale-105 z-20"
                       : "bg-white/80 hover:bg-white border border-[#0d0d0d]/10 hover:border-[#0d0d0d]/30 hover:scale-102 hover:shadow-md"
@@ -168,13 +174,13 @@ export function Skills() {
                 >
                   {/* Top row: atomic number + family indicator */}
                   <div className="flex items-center justify-between w-full font-mono text-[9px] text-[#77756f]">
-                    <span>{String(skill.number).padStart(2, "0")}</span>
+                    <span className="skill-atomic">{String(skill.number).padStart(2, "0")}</span>
                     <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: skill.brandColor || "#77756f" }} />
                   </div>
 
                   {/* Centre: Large 2-letter Symbol */}
                   <div className="my-auto text-center w-full">
-                    <span className="font-bold text-base sm:text-xl tracking-tight text-[#0d0d0d] group-hover:scale-110 inline-block transition-transform duration-200">
+                    <span className="skill-symbol font-bold text-base sm:text-xl tracking-tight text-[#0d0d0d] group-hover:scale-110 inline-block transition-transform duration-200">
                       {skill.symbol}
                     </span>
                   </div>

@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { PROFILE, EDUCATION, EXPERIENCE } from "@/lib/data";
+import { SplitText } from "@/components/ui/SplitText";
+import { SectionTag } from "@/components/ui/SectionTag";
+import { ScrollScrubParagraph } from "@/components/ui/ScrollScrubParagraph";
 
 export function About() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -123,12 +126,14 @@ export function About() {
       <div className="content-container">
         {/* Section Heading Tag */}
         <div className="mb-8 sm:mb-12">
-          <div className="tag-mono mb-2">
-            <span>01 — About</span>
-          </div>
+          <SectionTag index="01" label="About" className="mb-2" />
           <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
-            <span>Engineering with purpose</span>
-            <span className="heading-accent ml-2">.</span>
+            <SplitText
+              text="Engineering with purpose"
+              type="lines"
+              accentText="."
+              accentClassName="heading-accent ml-2"
+            />
           </h2>
         </div>
 
@@ -143,12 +148,14 @@ export function About() {
               <h3 className="text-2xl font-bold tracking-tight text-[#0d0d0d] mb-4">
                 Hi, I&apos;m {PROFILE.name}.
               </h3>
-              <p className="text-[#3a3a3a] text-base leading-relaxed mb-4">
-                {PROFILE.resumeSummary}
-              </p>
-              <p className="text-[#77756f] text-sm leading-relaxed">
-                {PROFILE.shortLine}
-              </p>
+              <ScrollScrubParagraph
+                text={PROFILE.resumeSummary}
+                className="text-[#3a3a3a] text-base leading-relaxed mb-4"
+              />
+              <ScrollScrubParagraph
+                text={PROFILE.shortLine}
+                className="text-[#77756f] text-sm leading-relaxed"
+              />
             </div>
 
             <div className="pt-6 sm:pt-8 mt-6 border-t border-[#0d0d0d]/10 flex flex-wrap items-center gap-2.5 sm:gap-3">
@@ -157,8 +164,10 @@ export function About() {
                 download="Lokesh_Kagitha_Resume.pdf"
                 className="btn-primary min-h-[44px] text-xs px-4 py-2.5"
               >
-                <span>Download Résumé</span>
-                <span className="text-[10px]">↓</span>
+                <span className="btn-roll">
+                  <span className="btn-roll-inner" data-text="Download Résumé">Download Résumé</span>
+                </span>
+                <span className="arrow-move arrow-down text-[10px]">↓</span>
               </a>
 
               {PROFILE.github && (
@@ -168,8 +177,10 @@ export function About() {
                   rel="noopener noreferrer"
                   className="btn-secondary min-h-[44px] text-xs px-4 py-2.5"
                 >
-                  <span>GitHub</span>
-                  <span className="text-[10px]">↗</span>
+                  <span className="btn-roll">
+                    <span className="btn-roll-inner" data-text="GitHub">GitHub</span>
+                  </span>
+                  <span className="arrow-move arrow-diag text-[10px]">↗</span>
                 </a>
               )}
 
@@ -180,8 +191,10 @@ export function About() {
                   rel="noopener noreferrer"
                   className="btn-secondary min-h-[44px] text-xs px-4 py-2.5"
                 >
-                  <span>LinkedIn</span>
-                  <span className="text-[10px]">↗</span>
+                  <span className="btn-roll">
+                    <span className="btn-roll-inner" data-text="LinkedIn">LinkedIn</span>
+                  </span>
+                  <span className="arrow-move arrow-diag text-[10px]">↗</span>
                 </a>
               )}
             </div>
@@ -411,7 +424,7 @@ export function About() {
                         03
                       </span>
                       <span>
-                        <strong className="text-white">Internship:</strong> Full Stack Intern at Charani Infotech building HRM &amp; e-commerce systems.
+                        <strong className="text-white">Experience:</strong> Associate Software Engineer · Full Stack Developer at Charani Infotech building HRM &amp; e-commerce systems.
                       </span>
                     </p>
                     <p className="flex items-start gap-2">
@@ -487,7 +500,7 @@ export function About() {
                     Current Role
                   </span>
                   <span className="font-medium text-[#0d0d0d] sm:text-right text-xs">
-                    Full Stack Developer Intern
+                    Associate Software Engineer · Full Stack Developer
                   </span>
                 </div>
 
@@ -512,7 +525,7 @@ export function About() {
                 &ldquo;Dedicated to architecting scalable full-stack web applications, from modular React interfaces to resilient backend APIs and automated enterprise workflows.&rdquo;
               </blockquote>
               <div className="font-mono text-[10px] text-[#77756f] mt-2 pl-4">
-                — Drawn from verified internship &amp; project engineering practice
+                — Drawn from verified industry &amp; project engineering practice
               </div>
             </div>
           </div>

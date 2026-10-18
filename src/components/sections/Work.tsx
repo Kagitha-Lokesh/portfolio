@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { PROJECTS, Project } from "@/lib/data";
 import { TechLogo } from "@/components/ui/TechLogo";
 import { useScroll } from "@/lib/scroll";
+import { SplitText } from "@/components/ui/SplitText";
+import { SectionTag } from "@/components/ui/SectionTag";
+import { ScrollScrubParagraph } from "@/components/ui/ScrollScrubParagraph";
 
 export function Work() {
   const [activeProjectId, setActiveProjectId] = useState<string>(PROJECTS[0].id);
@@ -25,16 +28,19 @@ export function Work() {
       <div className="content-container">
         {/* Section Heading Tag */}
         <div className="mb-8 sm:mb-12">
-          <div className="tag-mono mb-2">
-            <span>03 — Selected Work</span>
-          </div>
+          <SectionTag index="03" label="Selected Work" className="mb-2" />
           <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
-            <span>Things I&apos;ve built</span>
-            <span className="heading-accent ml-2">.</span>
+            <SplitText
+              text="Things I've built"
+              type="lines"
+              accentText="."
+              accentClassName="heading-accent ml-2"
+            />
           </h2>
-          <p className="text-[#77756f] text-sm mt-3 max-w-xl">
-            Full-stack platforms and interactive web applications engineered with modular architecture, resilient APIs, and responsive design systems.
-          </p>
+          <ScrollScrubParagraph
+            text="Full-stack platforms and interactive web applications engineered with modular architecture, resilient APIs, and responsive design systems."
+            className="text-[#77756f] text-sm mt-3 max-w-xl"
+          />
         </div>
 
         {/* Desktop: Horizontal Accordion Gallery (≥1024px untouched) */}
@@ -48,7 +54,7 @@ export function Work() {
                 onMouseEnter={() => setActiveProjectId(project.id)}
                 onFocus={() => setActiveProjectId(project.id)}
                 onClick={() => setActiveProjectId(project.id)}
-                className={`relative rounded-[26px] overflow-hidden transition-all duration-700 cursor-pointer ${
+                className={`work-panel relative rounded-[26px] overflow-hidden transition-all duration-700 cursor-pointer ${
                   isOpen
                     ? "flex-[8] bg-white border border-[#0d0d0d]/10 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.08)] cursor-default"
                     : "flex-[1] bg-white/70 hover:bg-white border border-[#0d0d0d]/10 hover:border-[#0d0d0d]/25 shadow-sm"
@@ -69,13 +75,13 @@ export function Work() {
 
                     {/* Vertical Title */}
                     <div className="my-auto [writing-mode:vertical-rl] rotate-180">
-                      <span className="font-bold text-base tracking-tight text-[#0d0d0d] whitespace-nowrap">
+                      <span className="work-spine-title font-bold text-base tracking-tight text-[#0d0d0d] whitespace-nowrap inline-block">
                         {project.title}
                       </span>
                     </div>
 
                     {/* Plus Icon that rotates on hover */}
-                    <div className="w-8 h-8 rounded-full border border-[#0d0d0d]/15 flex items-center justify-center text-sm font-mono text-[#0d0d0d] group-hover:rotate-45 transition-transform duration-300">
+                    <div className="work-spine-plus w-8 h-8 rounded-full border border-[#0d0d0d]/15 flex items-center justify-center text-sm font-mono text-[#0d0d0d]">
                       +
                     </div>
                   </div>
@@ -120,7 +126,7 @@ export function Work() {
                           {project.tech.map((t) => (
                             <span
                               key={t}
-                              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f4f2ee] border border-[#0d0d0d]/10 text-xs font-medium text-[#0d0d0d]"
+                              className="tech-chip inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f4f2ee] border border-[#0d0d0d]/10 text-xs font-medium text-[#0d0d0d]"
                             >
                               <TechLogo name={t} size={14} />
                               <span>{t}</span>
@@ -135,8 +141,10 @@ export function Work() {
                             rel="noopener noreferrer"
                             className="btn-primary text-xs shrink-0"
                           >
-                            <span>View on GitHub</span>
-                            <span className="text-[10px]">↗</span>
+                            <span className="btn-roll">
+                              <span className="btn-roll-inner" data-text="View on GitHub">View on GitHub</span>
+                            </span>
+                            <span className="arrow-move arrow-diag text-[10px]">↗</span>
                           </a>
                         )}
                       </div>
@@ -224,7 +232,7 @@ export function Work() {
                         {project.tech.map((t) => (
                           <span
                             key={t}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#f4f2ee] border border-[#0d0d0d]/10 text-[11px] font-medium text-[#0d0d0d]"
+                            className="tech-chip inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#f4f2ee] border border-[#0d0d0d]/10 text-[11px] font-medium text-[#0d0d0d]"
                           >
                             <TechLogo name={t} size={12} />
                             <span>{t}</span>
@@ -240,8 +248,10 @@ export function Work() {
                             rel="noopener noreferrer"
                             className="btn-primary w-full min-h-[48px] justify-center text-xs"
                           >
-                            <span>View on GitHub</span>
-                            <span className="text-[10px]">↗</span>
+                            <span className="btn-roll">
+                              <span className="btn-roll-inner" data-text="View on GitHub">View on GitHub</span>
+                            </span>
+                            <span className="arrow-move arrow-diag text-[10px]">↗</span>
                           </a>
                         </div>
                       )}
@@ -331,7 +341,7 @@ function IllustrativeUI({ projectId }: { projectId: string }) {
             <span>STATUS</span>
           </div>
           <div className="py-1.5 flex justify-between items-center text-[#3a3a3a]">
-            <span className="truncate pr-2">Lokesh K. (FSD Intern)</span>
+            <span className="truncate pr-2">Lokesh K. (Associate SE)</span>
             <span className="hidden sm:inline text-[9px]">09:02 AM</span>
             <span className="px-1.5 py-0.5 rounded bg-[#0d0d0d] text-white text-[8px] sm:text-[9px] shrink-0">Verified</span>
           </div>

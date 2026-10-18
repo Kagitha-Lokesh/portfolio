@@ -6,7 +6,7 @@ export function RevealObserver() {
   useEffect(() => {
     // If IntersectionObserver is unavailable, reveal everything immediately
     if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
-      document.querySelectorAll(".rv, .rv-mask").forEach((el) => {
+      document.querySelectorAll(".rv, .rv-mask, .tx-relax").forEach((el) => {
         el.classList.add("is-in");
       });
       return;
@@ -41,7 +41,7 @@ export function RevealObserver() {
       }
     );
 
-    const elements = document.querySelectorAll(".rv, .rv-mask");
+    const elements = document.querySelectorAll(".rv, .rv-mask, .tx-relax");
     elements.forEach((el) => {
       if (!el.classList.contains("is-in")) {
         observer.observe(el);
@@ -58,7 +58,7 @@ export function RevealObserver() {
                 observer.observe(node);
               }
             }
-            node.querySelectorAll?.(".rv, .rv-mask").forEach((child) => {
+            node.querySelectorAll?.(".rv, .rv-mask, .tx-relax").forEach((child) => {
               if (!child.classList.contains("is-in")) {
                 observer.observe(child);
               }

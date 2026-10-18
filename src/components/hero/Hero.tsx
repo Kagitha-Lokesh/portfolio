@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PROFILE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
+import { SplitText } from "@/components/ui/SplitText";
+import { SectionTag } from "@/components/ui/SectionTag";
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -10,7 +12,19 @@ export function Hero() {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [soundBlocked, setSoundBlocked] = useState(true);
+  const [isPageReady, setIsPageReady] = useState(false);
   const { scrollToTarget } = useScroll();
+
+  // Track page ready status
+  useEffect(() => {
+    if (typeof document !== "undefined" && document.documentElement.hasAttribute("data-loaded")) {
+      setIsPageReady(true);
+    } else {
+      const onReady = () => setIsPageReady(true);
+      window.addEventListener("intro-loader-complete", onReady, { once: true });
+      return () => window.removeEventListener("intro-loader-complete", onReady);
+    }
+  }, []);
 
   // 1. Audio and video autoplay / interaction unlock (starts when loading animation completes)
   useEffect(() => {
@@ -228,13 +242,21 @@ export function Hero() {
 
         {/* Hero Role and CTAs */}
         <div className="mt-4 sm:mt-6 text-center flex flex-col items-center max-w-xl mx-auto w-full px-2">
-          <div className="tag-mono mb-1.5 sm:mb-2 text-[10px] sm:text-xs">
-            <span>00 — Introduction</span>
-          </div>
+          <SectionTag
+            index="00"
+            label="Introduction"
+            className="mb-1.5 sm:mb-2 text-[10px] sm:text-xs"
+          />
 
           <h1 className="heading-display text-3xl sm:text-5xl md:text-6xl tracking-tight mb-3.5 sm:mb-5 leading-[1.1]">
-            <span>{PROFILE.role}</span>
-            <span className="heading-accent ml-2.5">.</span>
+            <SplitText
+              text={PROFILE.role}
+              type="chars"
+              accentText="."
+              accentClassName="heading-accent ml-2.5"
+              triggerOnView={isPageReady}
+              delay={100}
+            />
           </h1>
 
           {/* CTAs: Side-by-side for primary/secondary, full-width below for Resume */}
@@ -243,15 +265,19 @@ export function Hero() {
               onClick={() => scrollToTarget("#work")}
               className="btn-primary min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
-              <span>Explore work</span>
-              <span className="text-xs">→</span>
+              <span className="btn-roll">
+                <span className="btn-roll-inner" data-text="Explore work">Explore work</span>
+              </span>
+              <span className="arrow-move arrow-right text-xs">→</span>
             </button>
 
             <button
               onClick={() => scrollToTarget("#contact")}
               className="btn-secondary min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
-              <span>Let&apos;s talk</span>
+              <span className="btn-roll">
+                <span className="btn-roll-inner" data-text="Let's talk">Let&apos;s talk</span>
+              </span>
             </button>
 
             <a
@@ -259,8 +285,10 @@ export function Hero() {
               download="Lokesh_Kagitha_Resume.pdf"
               className="btn-secondary col-span-2 sm:col-span-1 min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
-              <span>Résumé</span>
-              <span className="text-xs">↓</span>
+              <span className="btn-roll">
+                <span className="btn-roll-inner" data-text="Résumé">Résumé</span>
+              </span>
+              <span className="arrow-move arrow-down text-xs">↓</span>
             </a>
           </div>
         </div>
