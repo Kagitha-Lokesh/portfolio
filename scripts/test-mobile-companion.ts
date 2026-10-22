@@ -115,7 +115,17 @@ function runMobileTests() {
           assert('Clicking "View ..." button automatically closes widget on mobile', !panel.classList.contains('open'));
         }
 
-        // Test Desktop behavior remains open
+        // Test startContact hides suggestions on mobile and removes generic greeting
+        LokiWidget.startContact();
+        const chipsEl = shadowRoot.querySelector('#chips') as HTMLElement;
+        assert('When user enters via contact/let\'s talk on mobile, suggestions chips are removed/hidden', chipsEl.hidden === true);
+        const mobLogMsgs = shadowRoot.querySelectorAll('.msg.bot');
+        assert(
+          'When user enters via contact/let\'s talk on mobile, generic greeting is removed',
+          !Array.from(mobLogMsgs).some((m) => (m.textContent || '').includes("Hi, I'm Loki, Lokesh's portfolio assistant"))
+        );
+
+        // Test Desktop behavior
         LokiWidget.destroy();
 
         const domDesktop = new JSDOM(
@@ -134,10 +144,18 @@ function runMobileTests() {
 
         const dkW = (domDesktop.window as any).LokiWidget;
         dkW.init({ owner: 'Lokesh', title: 'Loki' });
-        dkW.open();
 
+        // Test desktop startContact removes generic greeting
+        dkW.startContact();
         const dkShadow = domDesktop.window.document.querySelector('[data-loki-widget]')?.shadowRoot;
         const dkPanel = dkShadow?.querySelector('#panel') as HTMLElement;
+        const dkLogMsgs = dkShadow?.querySelectorAll('.msg.bot') || [];
+        assert(
+          'When user enters via contact/let\'s talk on Desktop, generic greeting is removed',
+          !Array.from(dkLogMsgs).some((m) => (m.textContent || '').includes("Hi, I'm Loki, Lokesh's portfolio assistant"))
+        );
+
+        // Test desktop nav button retains open state
         const dkInput = dkShadow?.querySelector('#q') as HTMLInputElement;
         const dkForm = dkShadow?.querySelector('#form') as HTMLFormElement;
 

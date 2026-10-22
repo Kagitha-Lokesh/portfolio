@@ -276,7 +276,7 @@
     /* Panel: clean white surface, thin subtle border, rounded-2xl, soft diffused shadow */
     '.panel{position:fixed;z-index:2;right:calc(var(--off) + env(safe-area-inset-right,0px));bottom:calc(var(--off) + 64px + env(safe-area-inset-bottom,0px));',
     'width:min(420px,calc(100vw - 2 * var(--off)));height:min(580px,calc(100vh - 120px));height:min(580px,calc(var(--vvh,100dvh) - 120px));',
-    'display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-panel);overflow:hidden;',
+    'display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-panel);overflow:hidden;touch-action:pan-y;',
     'opacity:0;visibility:hidden;transform:translateY(12px) scale(.97);transform-origin:bottom right;transition:opacity .25s var(--ease),transform .25s var(--ease),visibility 0s .25s}',
     '.panel.open{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--ease),transform .25s var(--ease)}',
     '.wrap[data-pos="left"] .panel{right:auto;left:calc(var(--off) + env(safe-area-inset-left,0px));transform-origin:bottom left}',
@@ -292,13 +292,13 @@
     '.x svg{width:16px;height:16px;stroke-width:2}',
 
     /* Conversation log: light, clean background with custom smooth scroll */
-    '.log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--line-hover) transparent;display:flex;flex-direction:column;gap:10px;padding:14px 14px 8px;background:var(--card)}',
+    '.log{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--line-hover) transparent;display:flex;flex-direction:column;gap:10px;padding:14px 14px 8px;background:var(--card)}',
     '.log:focus{outline:none}',
     '.log::-webkit-scrollbar{width:6px}',
     '.log::-webkit-scrollbar-track{background:transparent}',
     '.log::-webkit-scrollbar-thumb{background:var(--line-hover);border-radius:9999px}',
     '.log::-webkit-scrollbar-thumb:hover{background:var(--mute)}',
-    '.msg{max-width:86%;padding:10px 14px;border-radius:16px;line-height:1.55;font-size:13.5px;overflow-wrap:break-word;word-break:normal}',
+    '.msg{max-width:86%;padding:10px 14px;border-radius:16px;line-height:1.55;font-size:13.5px;overflow-wrap:break-word;word-break:normal;touch-action:pan-y}',
     '.msg strong{color:inherit;font-weight:600}',
     '.msg em{font-style:italic}',
     '.msg a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-weight:500;transition:opacity .15s ease}',
@@ -320,7 +320,7 @@
     '.msg.bot code{font-family:var(--font-mono);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--ink)}',
     '.msg.bot pre{margin:6px 0;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow-x:auto;max-width:100%}',
     '.msg.bot pre code{background:transparent;border:0;padding:0;font-size:12px;line-height:1.45;color:var(--ink);white-space:pre}',
-    '.lk-table-wrap{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:10px;border:1px solid var(--line);background:var(--card);box-shadow:0 1px 3px rgba(13,13,13,0.03)}',
+    '.lk-table-wrap{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior-x:contain;margin:10px 0;border-radius:10px;border:1px solid var(--line);background:var(--card);box-shadow:0 1px 3px rgba(13,13,13,0.03)}',
     '.lk-table-wrap::-webkit-scrollbar{height:5px}',
     '.lk-table-wrap::-webkit-scrollbar-track{background:var(--paper);border-radius:9999px}',
     '.lk-table-wrap::-webkit-scrollbar-thumb{background:var(--line-hover);border-radius:9999px}',
@@ -377,7 +377,8 @@
 
     /* Responsive mobile bottom sheet */
     '@media (max-width:480px){',
-    '.panel{left:0;right:0;width:100%;bottom:var(--kb,0px);height:min(84dvh,calc(var(--vvh,100dvh) * .88));border-radius:22px 22px 0 0;border-left:0;border-right:0;border-bottom:0;transform-origin:bottom center}',
+    '.panel{left:0;right:0;width:100%;bottom:var(--kb,0px);height:min(84dvh,calc(var(--vvh,100dvh) * .88));border-radius:22px 22px 0 0;border-left:0;border-right:0;border-bottom:0;transform-origin:bottom center;touch-action:pan-y}',
+    '.log{overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y}',
     '.wrap[data-pos="left"] .panel{left:0}',
     '.wrap.open .launcher{visibility:hidden}',
     '.launcher small{display:none}',
@@ -1103,7 +1104,7 @@
     }
 
     var greeting = cfg.greeting || ("Hi, I'm " + cfg.title + ", " + cfg.owner + "'s assistant. Ask about his work, his skills, or how to reach him.");
-    addMsg(greeting, 'bot');
+    var initialGreetingMsg = addMsg(greeting, 'bot');
     (cfg.chips || []).forEach(function (c) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = c;
       b.addEventListener('click', function () { ask(c); });
@@ -1129,6 +1130,13 @@
       launchAv.visible = !(mq && mq.matches); // hidden behind the sheet on phones
       fitViewport();
       setCompanionState('idle');
+
+      // Lock body scroll on mobile so touches remain dedicated to the chat log
+      var isMobile = (mq && mq.matches) || isTouchDevice() || (typeof window !== 'undefined' && window.innerWidth <= 640);
+      if (isMobile && typeof document !== 'undefined' && document.body) {
+        document.body.style.overflow = 'hidden';
+      }
+
       wake(900);
       later(function () { log.scrollTop = log.scrollHeight; input.focus({ preventScroll: true }); }, 30);
     }
@@ -1140,12 +1148,34 @@
       launcher.setAttribute('aria-expanded', 'false');
       headAv.visible = false; launchAv.visible = true;
       lastActive = performance.now();
+
+      // Restore body scroll
+      if (typeof document !== 'undefined' && document.body) {
+        document.body.style.overflow = '';
+      }
+
       if (!busy) setCompanionState('goodbye', 700);
       launcher.focus({ preventScroll: true });
     }
 
     function startContact(customPrompt) {
       if (!isOpen) open();
+
+      // Remove the generic initial greeting if user specifically came via Contact / Let's Talk
+      if (initialGreetingMsg && initialGreetingMsg.parentNode) {
+        initialGreetingMsg.parentNode.removeChild(initialGreetingMsg);
+        initialGreetingMsg = null;
+      } else {
+        var firstBot = log.querySelector('.msg.bot:first-child');
+        if (firstBot && firstBot.textContent && firstBot.textContent.indexOf("Hi, I'm " + cfg.title) !== -1) {
+          firstBot.parentNode.removeChild(firstBot);
+        }
+      }
+
+      var isMobile = (mq && mq.matches) || isTouchDevice() || (typeof window !== 'undefined' && window.innerWidth <= 640);
+      if (isMobile && chips) {
+        chips.hidden = true;
+      }
 
       // Check if there is already an active contact card
       var hasCard = log.querySelector('.lk-contact-card');
@@ -1259,9 +1289,8 @@
     });
     on(launchAv.svg, 'click', function () { launchAv.sp.v = -90; });
 
-    // Isolate scrolling so smooth-scroll libraries (Lenis, etc.) never hijack or block widget scrolling
+    // Isolate mouse wheel on desktop so background Lenis doesn't hijack wheel scrolling
     on(panel, 'wheel', function (e) { e.stopPropagation(); }, { passive: true });
-    on(panel, 'touchmove', function (e) { e.stopPropagation(); }, { passive: true });
 
     // Listen for custom triggers from Contact & Start Conversation buttons
     on(window, 'open-loki-contact', function (e) {
@@ -1395,6 +1424,9 @@
       setMood: setMood,
       setCompanionState: setCompanionState,
       destroy: function () {
+        if (typeof document !== 'undefined' && document.body) {
+          document.body.style.overflow = '';
+        }
         clearInterval(idleTimer);
         if (companionStateTimer) clearTimeout(companionStateTimer);
         if (bubbleHideTimer) clearTimeout(bubbleHideTimer);
