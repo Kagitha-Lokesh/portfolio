@@ -204,13 +204,31 @@
     /* Desktop launcher: warm white pill, subtle border, near-black typography, natural shadow */
     '.launcher{position:fixed;z-index:1;bottom:calc(var(--off) + env(safe-area-inset-bottom,0px));right:calc(var(--off) + env(safe-area-inset-right,0px));',
     'display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:9999px;background:var(--card);color:var(--ink);padding:5px 18px 5px 7px;',
-    'box-shadow:var(--shadow-launcher);transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease);-webkit-tap-highlight-color:transparent;cursor:pointer}',
-    '.launcher:hover{transform:translateY(-2px);border-color:var(--line-hover);box-shadow:var(--shadow-launcher-hover)}',
-    '.launcher:active{transform:translateY(0)}',
+    'box-shadow:var(--shadow-launcher);transition:box-shadow .25s var(--ease),border-color .25s var(--ease);-webkit-tap-highlight-color:transparent;cursor:pointer}',
+    '.launcher:hover,.launcher:focus-visible{border-color:var(--line-hover);box-shadow:var(--shadow-launcher-hover)}',
+    '.launcher:active{transform:none}',
     '.launcher .lbl{display:flex;flex-direction:column;text-align:left;line-height:1.25}',
     '.launcher strong{font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-.01em}',
     '.launcher small{font-size:11px;font-weight:400;color:var(--mute);letter-spacing:0;margin-top:1px}',
     '.wrap[data-pos="left"] .launcher{right:auto;left:calc(var(--off) + env(safe-area-inset-left,0px))}',
+
+    /* Invitation speech bubble: clean minimal card matching portfolio design */
+    '.lk-bubble{position:fixed;z-index:2;bottom:calc(var(--off) + 54px + env(safe-area-inset-bottom,0px));right:calc(var(--off) + env(safe-area-inset-right,0px));',
+    'max-width:min(270px,calc(100vw - 2 * var(--off)));display:flex;align-items:center;gap:8px;padding:8px 10px 8px 14px;',
+    'background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px -4px rgba(13,13,13,0.1),0 2px 6px -1px rgba(13,13,13,0.04);',
+    'font-size:12.5px;font-weight:500;line-height:1.35;letter-spacing:-.01em;opacity:0;visibility:hidden;transform:translateY(8px) scale(0.96);transform-origin:bottom right;',
+    'transition:opacity .25s var(--ease),transform .25s var(--ease),visibility 0s .25s;pointer-events:none;cursor:pointer;-webkit-tap-highlight-color:transparent}',
+    '.wrap[data-pos="left"] .lk-bubble{right:auto;left:calc(var(--off) + env(safe-area-inset-left,0px));transform-origin:bottom left}',
+    '.lk-bubble.show{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .25s var(--ease),transform .25s var(--ease)}',
+    '.lk-bubble:hover{transform:translateY(-2px);border-color:var(--line-hover);box-shadow:0 12px 30px -4px rgba(13,13,13,0.14),0 4px 10px -1px rgba(13,13,13,0.06)}',
+    '.wrap.open .lk-bubble{opacity:0!important;visibility:hidden!important;pointer-events:none!important}',
+    '.lk-bubble-text{flex:1;min-width:0;user-select:none;word-break:break-word}',
+    '.lk-bubble-x{display:grid;place-items:center;width:20px;height:20px;padding:0;margin:0;border:0;border-radius:50%;background:transparent;color:var(--mute);cursor:pointer;flex-shrink:0;transition:color .15s ease,background .15s ease}',
+    '.lk-bubble-x:hover{color:var(--ink);background:var(--paper)}',
+    '.lk-bubble-x svg{width:11px;height:11px}',
+    '.lk-bubble-arrow{position:absolute;bottom:-5px;right:105px;width:9px;height:9px;background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}',
+    '@media (max-width:480px){.lk-bubble-arrow{right:68px}}',
+    '.wrap[data-pos="left"] .lk-bubble-arrow{right:auto;left:26px}',
 
     /* Panel: clean white surface, thin subtle border, rounded-2xl, soft diffused shadow */
     '.panel{position:fixed;z-index:2;right:calc(var(--off) + env(safe-area-inset-right,0px));bottom:calc(var(--off) + 64px + env(safe-area-inset-bottom,0px));',
@@ -323,9 +341,21 @@
     '}',
 
     '.lk-intro{transform-box:fill-box;transform-origin:50% 75%;animation:lkpop .9s cubic-bezier(.2,.9,.25,1.12) both}',
+    '.mini.lk-greeting{animation:lkgreet 850ms cubic-bezier(.2,.8,.25,1) both;transform-origin:50% 85%}',
+    '.mini.lk-attention{animation:lkperk 700ms cubic-bezier(.2,.8,.25,1) both;transform-origin:50% 85%}',
+    '.launcher:hover .mini,.launcher:focus-visible .mini{animation:lkhover 680ms cubic-bezier(.2,.8,.25,1) both;transform-origin:50% 85%}',
+    '.launcher:hover .mini [data-r="eyes"],.launcher:focus-visible .mini [data-r="eyes"]{animation:lkeyehover 680ms ease-out both}',
+    '.launcher:hover .mini [data-r="hornL"],.launcher:focus-visible .mini [data-r="hornL"]{animation:lkhornl 680ms ease-out both;transform-origin:140px 205px}',
+    '.launcher:hover .mini [data-r="hornR"],.launcher:focus-visible .mini [data-r="hornR"]{animation:lkhornr 680ms ease-out both;transform-origin:260px 205px}',
     '@keyframes lkpop{from{opacity:0;transform:scale(.75) translateY(18px)}}',
+    '@keyframes lkgreet{0%{transform:translateY(0) rotate(0deg) scale(1)}18%{transform:translateY(-8px) rotate(-8deg) scale(1.08)}40%{transform:translateY(-3px) rotate(7deg) scale(1.04)}65%{transform:translateY(-1px) rotate(-4deg) scale(1.02)}82%{transform:translateY(0) rotate(1.5deg) scale(1)}100%{transform:translateY(0) rotate(0deg) scale(1)}}',
+    '@keyframes lkperk{0%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-5px) rotate(-5deg) scale(1.05)}55%{transform:translateY(-2px) rotate(4deg) scale(1.02)}80%{transform:translateY(0) rotate(-1deg) scale(1)}100%{transform:translateY(0) rotate(0deg) scale(1)}}',
+    '@keyframes lkhover{0%{transform:translateY(0) rotate(0deg) scale(1)}20%{transform:translateY(-3px) rotate(-7deg) scale(1.05)}45%{transform:translateY(-2px) rotate(6deg) scale(1.03)}70%{transform:translateY(-0.5px) rotate(-2deg) scale(1.01)}88%{transform:translateY(0) rotate(0.5deg) scale(1)}100%{transform:translateY(0) rotate(0deg) scale(1)}}',
+    '@keyframes lkeyehover{0%,100%{filter:none}25%,60%{filter:brightness(1.3) drop-shadow(0 0 2px #ffeec8)}}',
+    '@keyframes lkhornl{0%,100%{transform:rotate(0deg)}22%{transform:rotate(-6deg)}50%{transform:rotate(4deg)}78%{transform:rotate(-1.5deg)}}',
+    '@keyframes lkhornr{0%,100%{transform:rotate(0deg)}22%{transform:rotate(6deg)}50%{transform:rotate(-4deg)}78%{transform:rotate(1.5deg)}}',
     '@keyframes lkdot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:.9;transform:translateY(-3px)}}',
-    '@media (prefers-reduced-motion:reduce){.lk-intro,.msg.dots i{animation:none!important}.panel,.panel.open,.launcher{transition:none!important}}'
+    '@media (prefers-reduced-motion:reduce){.lk-intro,.msg.dots i{animation:none!important}.panel,.panel.open,.launcher,.lk-bubble,.mini.lk-greeting,.mini.lk-attention,.launcher:hover .mini,.launcher:focus-visible .mini,.launcher:hover .mini [data-r="eyes"],.launcher:focus-visible .mini [data-r="eyes"],.launcher:hover .mini [data-r="hornL"],.launcher:focus-visible .mini [data-r="hornL"],.launcher:hover .mini [data-r="hornR"],.launcher:focus-visible .mini [data-r="hornR"]{animation:none!important;transition:none!important}}'
   ].join('');
 
   /* ---------------- defaults ---------------- */
@@ -463,13 +493,21 @@
         '<div class="chips" id="chips"></div>' +
         '<form class="form" id="form"><input type="text" id="q" autocomplete="off" enterkeyhint="send" aria-label="Message"><button class="send" type="submit">Send</button></form>' +
       '</section>' +
+      '<div class="lk-bubble" id="bubble" role="status" aria-live="polite">' +
+        '<span class="lk-bubble-text" id="bubbleText"></span>' +
+        '<button type="button" class="lk-bubble-x" id="bubbleClose" aria-label="Dismiss greeting">' +
+          '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4L4 12"/></svg>' +
+        '</button>' +
+        '<div class="lk-bubble-arrow" aria-hidden="true"></div>' +
+      '</div>' +
       '<button class="launcher" id="launcher" type="button" aria-expanded="false" aria-controls="panel"><span class="mini" id="lHost"></span><span class="lbl"><strong id="lTitle"></strong><small id="lSub"></small></span></button>' +
       '<div class="sr" id="live" role="status" aria-live="polite"></div>' +
       '</div>';
 
     var $ = function (id) { return root.getElementById ? root.getElementById(id) : root.querySelector('#' + id); };
     var wrap = root.querySelector('.wrap'), panel = $('panel'), launcher = $('launcher'), log = $('log'),
-        input = $('q'), chips = $('chips'), live = $('live');
+        input = $('q'), chips = $('chips'), live = $('live'),
+        bubble = $('bubble'), bubbleText = $('bubbleText'), bubbleClose = $('bubbleClose');
 
     wrap.style.setProperty('--off', cfg.offset + 'px');
     if (cfg.accent) wrap.style.setProperty('--accent', cfg.accent);
@@ -762,6 +800,10 @@
 
     function ask(text) {
       text = (text || '').trim(); if (!text || busy) return;
+      engaged = true;
+      hideBubble();
+      if (greetingTimer) { clearTimeout(greetingTimer); greetingTimer = null; }
+      if (invitationTimer) { clearTimeout(invitationTimer); invitationTimer = null; }
       busy = true; addMsg(text, 'me'); input.value = ''; chips.hidden = true;
       setMood('thinking');
       var dots = addMsg('', 'bot dots'); dots.setAttribute('aria-hidden', 'true'); dots.innerHTML = '<i></i><i></i><i></i>';
@@ -810,7 +852,10 @@
     /* open / close */
     function open() {
       if (isOpen) return;
-      isOpen = true; autoSlept = false;
+      isOpen = true; autoSlept = false; engaged = true;
+      hideBubble();
+      if (greetingTimer) { clearTimeout(greetingTimer); greetingTimer = null; }
+      if (invitationTimer) { clearTimeout(invitationTimer); invitationTimer = null; }
       panel.classList.add('open'); wrap.classList.add('open');
       launcher.setAttribute('aria-expanded', 'true');
       headAv.visible = true;
@@ -880,7 +925,7 @@
     on(launcher, 'click', function () { isOpen ? close() : open(); });
     on($('close'), 'click', close);
     on(root, 'keydown', function (e) { if (e.key === 'Escape' && isOpen) { e.stopPropagation(); close(); } });
-    on(launcher, 'pointerenter', function () { launchAv.sp.v = -60; if (current === 'sleepy') setMood('happy'); });
+    on(launcher, 'pointerenter', function () { if (current === 'sleepy') setMood('happy'); wake(900); });
     on(launchAv.svg, 'click', function () { launchAv.sp.v = -90; });
 
     // Isolate scrolling so smooth-scroll libraries (Lenis, etc.) never hijack or block widget scrolling
@@ -902,6 +947,126 @@
       }
     });
 
+    /* ---------------- Greeting & Attention Invitation System ---------------- */
+    var bubbleHideTimer = null, invitationTimer = null, greetingTimer = null;
+    var hasGreeted = false, sessionDismissed = false, engaged = false;
+    var invitationCount = 0;
+    var maxInvitations = 3;
+    var invitationIndex = 0;
+    var INVITATIONS = [
+      'Want to talk?',
+      'Any questions about my work?',
+      'Curious about a project? Ask me!',
+      "I'm here if you need anything."
+    ];
+
+    function perkGreeting() {
+      if (reduce) return;
+      var hostEl = $('lHost');
+      if (hostEl) {
+        hostEl.classList.remove('lk-greeting', 'lk-attention');
+        void hostEl.offsetWidth; // force reflow so animation runs fresh
+        hostEl.classList.add('lk-greeting');
+        later(function () {
+          if (hostEl) hostEl.classList.remove('lk-greeting');
+        }, 900);
+      }
+      setMood('mischief'); // playful wink & gold horn glow
+      later(function () {
+        if (!busy && current === 'mischief') setMood('happy');
+      }, 550);
+      wake(1600);
+    }
+
+    function perkInvitation() {
+      if (reduce) return;
+      var hostEl = $('lHost');
+      if (hostEl) {
+        hostEl.classList.remove('lk-greeting', 'lk-attention');
+        void hostEl.offsetWidth;
+        hostEl.classList.add('lk-attention');
+        later(function () {
+          if (hostEl) hostEl.classList.remove('lk-attention');
+        }, 750);
+      }
+      setMood('happy');
+      wake(1200);
+    }
+
+    function showBubble(text, durationMs) {
+      if (!bubble || isOpen || sessionDismissed || engaged || document.hidden) return;
+      if (bubbleText) bubbleText.textContent = text;
+      bubble.classList.add('show');
+      if (bubbleHideTimer) { clearTimeout(bubbleHideTimer); bubbleHideTimer = null; }
+      bubbleHideTimer = later(function () {
+        hideBubble();
+      }, durationMs || 5000);
+    }
+
+    function hideBubble() {
+      if (bubbleHideTimer) { clearTimeout(bubbleHideTimer); bubbleHideTimer = null; }
+      if (bubble) bubble.classList.remove('show');
+    }
+
+    // Dismissal button on the speech bubble
+    if (bubbleClose) {
+      on(bubbleClose, 'click', function (e) {
+        e.stopPropagation();
+        sessionDismissed = true;
+        hideBubble();
+        if (invitationTimer) { clearTimeout(invitationTimer); invitationTimer = null; }
+      });
+    }
+
+    // Clicking the bubble opens the chat
+    if (bubble) {
+      on(bubble, 'click', function (e) {
+        if (e.target === bubbleClose || (bubbleClose && bubbleClose.contains(e.target))) return;
+        hideBubble();
+        open();
+      });
+    }
+
+    function scheduleNextInvitation(delayMs) {
+      if (invitationTimer) { clearTimeout(invitationTimer); invitationTimer = null; }
+      if (sessionDismissed || engaged || invitationCount >= maxInvitations) return;
+
+      invitationTimer = later(function () {
+        if (sessionDismissed || engaged || isOpen || document.hidden || root.activeElement === input) {
+          // If busy or tab is hidden, retry in 45s
+          scheduleNextInvitation(45000);
+          return;
+        }
+
+        var msg = INVITATIONS[invitationIndex % INVITATIONS.length];
+        invitationIndex++;
+        invitationCount++;
+        perkInvitation();
+        showBubble(msg, 6000);
+
+        if (invitationCount < maxInvitations) {
+          scheduleNextInvitation(140000 + Math.floor(Math.random() * 40000));
+        }
+      }, delayMs);
+    }
+
+    function triggerInitialGreeting() {
+      if (hasGreeted || sessionDismissed || engaged || isOpen) return;
+      hasGreeted = true;
+      perkGreeting();
+      showBubble("Hi there! Need a hand?", 5500);
+      scheduleNextInvitation(26000);
+    }
+
+    // Coordinate initial greeting with loader
+    if (!isLoaded) {
+      on(window, 'intro-loader-complete', function () {
+        greetingTimer = later(triggerInitialGreeting, 1200);
+      });
+    } else {
+      greetingTimer = later(triggerInitialGreeting, 1800);
+    }
+
     wake(1200);
 
     return {
@@ -912,6 +1077,9 @@
       setMood: setMood,
       destroy: function () {
         clearInterval(idleTimer);
+        if (bubbleHideTimer) clearTimeout(bubbleHideTimer);
+        if (invitationTimer) clearTimeout(invitationTimer);
+        if (greetingTimer) clearTimeout(greetingTimer);
         timers.forEach(clearTimeout); timers = [];
         if (rafId) cancelAnimationFrame(rafId);
         listeners.forEach(function (l) {
