@@ -147,7 +147,7 @@ export function Achievements() {
       <section id="achievements" className="section-padding bg-[#f4f2ee]">
         <div className="content-container">
           <div className="mb-10">
-            <SectionTag index="06" label="Benchmarks" className="mb-2" />
+            <SectionTag index="07" label="Benchmarks" className="mb-2" />
             <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
               <SplitText
                 text="Milestones & verified honors"
@@ -210,7 +210,7 @@ export function Achievements() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-4 mb-2 sm:mb-4">
             <div>
               <SectionTag
-                index="06"
+                index="07"
                 label="Benchmarks"
                 className="mb-1 sm:mb-2 text-[10px] sm:text-xs"
               />

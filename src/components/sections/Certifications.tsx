@@ -16,7 +16,7 @@ export function Certifications() {
         <div className="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-8 lg:gap-16 items-start">
           {/* Left Column: Normal block on mobile, Sticky on >=1024px */}
           <div className="lg:sticky lg:top-28 rv mb-4 lg:mb-0">
-            <SectionTag index="04" label="Credentials" className="mb-2" />
+            <SectionTag index="05" label="Credentials" className="mb-2" />
             <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl mb-3 sm:mb-4">
               <SplitText
                 text="Always learning"
@@ -48,6 +48,7 @@ export function Certifications() {
                 <div
                   className="cert-flood"
                   aria-hidden="true"
+                  
                 />
 
                 {/* Content Container */}

@@ -11,7 +11,8 @@ Automated Playwright tests verifying:
 7. Certifications ink-flood
 8. Experience timeline stops
 9. Achievements horizontal track and counter
-10. Full screenshot captures
+10. Freelance section (#freelance) presence and Visit Live Site link
+11. Full screenshot captures
 """
 
 import sys
@@ -19,6 +20,8 @@ import time
 from playwright.sync_api import sync_playwright
 
 sys.stdout.reconfigure(encoding="utf-8")
+
+LIVE_URL = "https://purnima-kalamkari.purnimakalamkari03.workers.dev/"
 
 def run_tests():
     print("=== STARTING PORTFOLIO AUTOMATED PLAYWRIGHT QUALITY CHECKS ===")
@@ -88,6 +91,54 @@ def run_tests():
             time.sleep(0.5)
             print("✔ Work accordion gallery panel expansion tested successfully")
 
+        # Check Freelance section exists
+        freelance_section = page.locator("#freelance")
+        if freelance_section.count() > 0:
+            print("✔ #freelance section exists on the page")
+        else:
+            errors.append("MISSING: #freelance section not found on the page")
+
+        # Check Visit Live Site link in Freelance section
+        visit_links = page.locator("#freelance a[href]")
+        if visit_links.count() > 0:
+            for i in range(visit_links.count()):
+                link = visit_links.nth(i)
+                href = link.get_attribute("href")
+                target = link.get_attribute("target")
+                rel = link.get_attribute("rel") or ""
+                if href == LIVE_URL:
+                    print(f"✔ Freelance 'Visit Live Site' link found with correct href: {href}")
+                    if target == "_blank":
+                        print("✔ Link opens in new tab (target='_blank')")
+                    else:
+                        errors.append(f"Freelance live link missing target='_blank', got: {target}")
+                    if "noopener" in rel and "noreferrer" in rel:
+                        print("✔ Link has correct rel='noopener noreferrer'")
+                    else:
+                        errors.append(f"Freelance live link missing noopener noreferrer in rel, got: '{rel}'")
+                    break
+            else:
+                errors.append(f"Freelance section has links but none point to {LIVE_URL}")
+        else:
+            errors.append("No links found in #freelance section")
+
+        # Check Visit Live Site link in Experience section (freelance card)
+        exp_links = page.locator("#experience a[href]")
+        if exp_links.count() > 0:
+            for i in range(exp_links.count()):
+                link = exp_links.nth(i)
+                href = link.get_attribute("href")
+                if href == LIVE_URL:
+                    print("✔ Experience timeline freelance card has correct 'Visit Live Site' link")
+                    break
+        
+        # Check Work panel Visit Live Site link
+        page.evaluate("() => document.querySelector('#work [role=\"region\"]')?.dispatchEvent(new MouseEvent('mouseenter', {bubbles: true}))")
+        time.sleep(0.5)
+        work_links = page.locator("#work a[href*='purnima-kalamkari']")
+        if work_links.count() > 0:
+            print("✔ Work section has Purnima Kalamkari live site link")
+
         # Check Achievements Scroll & Counter
         page.evaluate("() => window.scrollTo(0, document.body.scrollHeight * 0.75)")
         time.sleep(1.5)
@@ -119,6 +170,45 @@ def run_tests():
         page_mobile.screenshot(path="screenshot_mobile_390.png", full_page=True)
         print("✔ Captured screenshot_mobile_390.png")
 
+        # Check #freelance on mobile
+        freelance_mobile = page_mobile.locator("#freelance")
+        if freelance_mobile.count() > 0:
+            print("✔ #freelance section exists on mobile")
+            # Check no horizontal overflow inside #freelance on mobile
+            overflow_inside = page_mobile.evaluate("""() => {
+                const section = document.getElementById('freelance');
+                if (!section) return 'section not found';
+                const docWidth = window.innerWidth;
+                const offenders = [];
+                section.querySelectorAll('*').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.right > docWidth + 1) {
+                        offenders.push(el.tagName + '.' + (el.className || '').toString().slice(0, 40));
+                    }
+                });
+                return offenders.length === 0 ? null : offenders.slice(0, 3);
+            }""")
+            if overflow_inside is None:
+                print("✔ No elements inside #freelance overflow viewport on mobile")
+            else:
+                errors.append(f"Elements inside #freelance overflow viewport: {overflow_inside}")
+
+            # Check Visit Live Site link tap target (min 44px)
+            live_link_height = page_mobile.evaluate("""() => {
+                const section = document.getElementById('freelance');
+                if (!section) return 0;
+                const link = section.querySelector('a[href]');
+                if (!link) return 0;
+                return link.getBoundingClientRect().height;
+            }""")
+            if live_link_height >= 44:
+                print(f"✔ Freelance 'Visit Live Site' button height {live_link_height}px >= 44px")
+            else:
+                errors.append(f"Freelance 'Visit Live Site' button height {live_link_height}px < 44px (touch target too small)")
+
+        else:
+            errors.append("MISSING: #freelance section not found on mobile")
+
         # Test Mobile Menu
         menu_btn = page_mobile.locator("button[aria-label='Open navigation menu']")
         if menu_btn.count() > 0:
@@ -145,6 +235,8 @@ def run_tests():
         print("  - Zero horizontal overflow at 390x844 (scrollWidth === innerWidth)")
         print("  - Console: Clean, 0 unhandled runtime errors")
         print("  - Hero video, audio controls, ID card, accordion, and horizontal gallery fully verified")
+        print("  - #freelance section exists, Visit Live Site link is correct, opens in new tab with noopener noreferrer")
 
 if __name__ == "__main__":
     run_tests()
+

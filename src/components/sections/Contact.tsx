@@ -54,7 +54,7 @@ export function Contact() {
     >
       <div className="content-container">
         {/* Section Heading Tag */}
-        <SectionTag index="07" label="Contact" className="mb-3 sm:mb-4" />
+        <SectionTag index="08" label="Contact" className="mb-3 sm:mb-4" />
 
         {/* Interactive Letters Heading with clamp sizing & hover/touch hop */}
         <div ref={headingRef} className="mb-10 sm:mb-14 select-none">

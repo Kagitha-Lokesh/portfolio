@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { TIMELINE } from "@/lib/data";
+import { TIMELINE, FREELANCE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
 import { SplitText } from "@/components/ui/SplitText";
 import { SectionTag } from "@/components/ui/SectionTag";
@@ -47,7 +47,7 @@ export function Experience() {
       <div className="content-container">
         {/* Section Heading Tag */}
         <div className="mb-10 sm:mb-16">
-          <SectionTag index="05" label="Trajectory" className="mb-2" />
+          <SectionTag index="06" label="Trajectory" className="mb-2" />
           <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">
             <SplitText
               text="Education & experience as one path"
@@ -109,7 +109,11 @@ export function Experience() {
                         {item.year}
                       </span>
                       <span className="font-mono text-[11px] uppercase tracking-wider text-[#77756f]">
-                        {item.type === "experience" ? "Industry Experience" : "Academic Education"}
+                        {item.type === "experience"
+                          ? "Industry Experience"
+                          : item.type === "freelance"
+                          ? "Freelance Project"
+                          : "Academic Education"}
                       </span>
                     </div>
 
@@ -124,6 +128,18 @@ export function Experience() {
                     <p className="text-sm text-[#3a3a3a] leading-relaxed">
                       {item.detail}
                     </p>
+
+                    {item.type === "freelance" && (
+                      <a
+                        href={FREELANCE.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 mt-3 px-3 py-2.5 min-h-[44px] font-mono text-xs text-[#0d0d0d] hover:text-[#3a3a3a] underline underline-offset-4 transition-colors"
+                        aria-label="Visit Purnima Kalamkari live site (opens in new tab)"
+                      >
+                        Visit Live Site ↗
+                      </a>
+                    )}
                   </div>
                 </div>
               );

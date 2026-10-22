@@ -1,6 +1,9 @@
 // Configuration to enable or disable the intro loading animation
 export const SHOW_LOADER = true;
 
+// Single source of truth for the freelance project period
+export const FREELANCE_PERIOD = "2026";
+
 export interface Profile {
   name: string;
   firstName: string;
@@ -88,7 +91,7 @@ export interface TimelineItem {
   title: string;
   place: string;
   detail: string;
-  type: "education" | "experience";
+  type: "education" | "experience" | "freelance";
 }
 
 export interface AchievementItem {
@@ -101,6 +104,35 @@ export interface AchievementItem {
   value: number;
   suffix?: string;
   brandColor: string;
+}
+
+export interface FreelancePaletteItem {
+  name: string;
+  hex: string;
+}
+
+export interface FreelanceBuiltGroup {
+  group: string;
+  points: string[];
+}
+
+export interface FreelanceFactItem {
+  label: string;
+  value: string;
+}
+
+export interface FreelanceCaseStudy {
+  client: string;
+  role: string;
+  period: string;
+  liveUrl: string;
+  tagline: string;
+  overview: string;
+  challenge: string;
+  built: FreelanceBuiltGroup[];
+  facts: FreelanceFactItem[];
+  stack: string[];
+  palette: FreelancePaletteItem[];
 }
 
 export const PROFILE: Profile = {
@@ -129,6 +161,7 @@ export const NAV: NavItem[] = [
   { id: "about", label: "About", href: "#about" },
   { id: "skills", label: "Skills", href: "#skills" },
   { id: "work", label: "Work", href: "#work" },
+  { id: "freelance", label: "Freelance", href: "#freelance" },
   { id: "certifications", label: "Certifications", href: "#certifications" },
   { id: "experience", label: "Experience", href: "#experience" },
   { id: "achievements", label: "Achievements", href: "#achievements" },
@@ -208,25 +241,33 @@ export const TIMELINE: TimelineItem[] = [
     detail: "Engineered enterprise HRM modules, attendance systems, payroll workflows, and REST APIs with React.js, Node.js, Express, and Firebase.",
     type: "experience",
   },
+  {
+    id: "tl-5",
+    year: "2026",
+    title: "Freelance Full Stack Developer",
+    place: "Purnima Kalamkari",
+    detail: "Designed and built a mobile-first Kalamkari ecommerce storefront with a secure admin dashboard and WhatsApp-based ordering.",
+    type: "freelance",
+  },
 ];
 
 export const SKILL_ELEMENTS: SkillElement[] = [
-  { number: 1, symbol: "Js", name: "JavaScript", family: "Languages", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#f7df1e" },
+  { number: 1, symbol: "Js", name: "JavaScript", family: "Languages", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio", "Purnima Kalamkari"], isBrand: true, brandColor: "#f7df1e" },
   { number: 2, symbol: "Ht", name: "HTML5", family: "Languages", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#e34f26" },
   { number: 3, symbol: "Cs", name: "CSS3", family: "Languages", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#1572b6" },
   { number: 4, symbol: "Sq", name: "SQL", family: "Languages", projects: ["Attendance System"], isBrand: true, brandColor: "#00758f" },
   { number: 5, symbol: "Jv", name: "Java (Basic)", family: "Languages", projects: ["JavaMentor"], isBrand: true, brandColor: "#5382a1" },
-  { number: 6, symbol: "Re", name: "React.js", family: "Frontend", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#61dafb" },
-  { number: 7, symbol: "Ui", name: "Responsive UI", family: "Frontend", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: false },
+  { number: 6, symbol: "Re", name: "React.js", family: "Frontend", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio", "Purnima Kalamkari"], isBrand: true, brandColor: "#61dafb" },
+  { number: 7, symbol: "Ui", name: "Responsive UI", family: "Frontend", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio", "Purnima Kalamkari"], isBrand: false },
   { number: 8, symbol: "Gs", name: "GSAP", family: "Frontend", projects: ["3D Cinematic Portfolio"], isBrand: true, brandColor: "#88ce02" },
   { number: 9, symbol: "Cv", name: "Canvas", family: "Frontend", projects: ["3D Cinematic Portfolio"], isBrand: false },
-  { number: 10, symbol: "Nd", name: "Node.js", family: "Backend", projects: ["JavaMentor", "Attendance System"], isBrand: true, brandColor: "#339933" },
-  { number: 11, symbol: "Ex", name: "Express.js", family: "Backend", projects: ["Attendance System"], isBrand: true, brandColor: "#000000" },
-  { number: 12, symbol: "Ap", name: "REST APIs", family: "Backend", projects: ["Attendance System", "Charani HRM"], isBrand: false },
-  { number: 13, symbol: "My", name: "MySQL", family: "Databases", projects: ["Attendance System"], isBrand: true, brandColor: "#4479a1" },
+  { number: 10, symbol: "Nd", name: "Node.js", family: "Backend", projects: ["JavaMentor", "Attendance System", "Purnima Kalamkari"], isBrand: true, brandColor: "#339933" },
+  { number: 11, symbol: "Ex", name: "Express.js", family: "Backend", projects: ["Attendance System", "Purnima Kalamkari"], isBrand: true, brandColor: "#000000" },
+  { number: 12, symbol: "Ap", name: "REST APIs", family: "Backend", projects: ["Attendance System", "Charani HRM", "Purnima Kalamkari"], isBrand: false },
+  { number: 13, symbol: "My", name: "MySQL", family: "Databases", projects: ["Attendance System", "Purnima Kalamkari"], isBrand: true, brandColor: "#4479a1" },
   { number: 14, symbol: "Fb", name: "Firebase", family: "Databases", projects: ["JavaMentor", "Attendance System"], isBrand: true, brandColor: "#ffca28" },
-  { number: 15, symbol: "Gt", name: "Git", family: "Tools", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#f05032" },
-  { number: 16, symbol: "Gh", name: "GitHub", family: "Tools", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#181717" },
+  { number: 15, symbol: "Gt", name: "Git", family: "Tools", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio", "Purnima Kalamkari"], isBrand: true, brandColor: "#f05032" },
+  { number: 16, symbol: "Gh", name: "GitHub", family: "Tools", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio", "Purnima Kalamkari"], isBrand: true, brandColor: "#181717" },
   { number: 17, symbol: "Vc", name: "VS Code", family: "Tools", projects: ["JavaMentor", "Attendance System", "3D Cinematic Portfolio"], isBrand: true, brandColor: "#007acc" },
   { number: 18, symbol: "Pm", name: "Postman", family: "Tools", projects: ["Attendance System"], isBrand: true, brandColor: "#ff6c37" },
   { number: 19, symbol: "Gp", name: "ChatGPT", family: "AI & Concepts", projects: ["Prompt Engineering & Dev workflows"], isBrand: true, brandColor: "#10a37f" },
@@ -238,8 +279,24 @@ export const SKILL_FAMILIES = ["All", "Languages", "Frontend", "Backend", "Datab
 
 export const PROJECTS: Project[] = [
   {
-    id: "javamentor",
+    id: "purnima-kalamkari",
     index: "01",
+    title: "Purnima Kalamkari",
+    kicker: "Freelance · Ecommerce Storefront + Admin",
+    year: "2026",
+    tech: ["React.js", "Node.js", "Express.js", "MySQL"],
+    description: "Designed and built a mobile-first ecommerce storefront for a handcrafted Kalamkari brand, paired with a JWT-secured admin dashboard for catalog management and WhatsApp-based ordering.",
+    features: [
+      "Mobile-first product catalog for sarees & kurtis with size variants",
+      "WhatsApp ordering flow — no login or online payment required",
+      "JWT-secured admin dashboard to manage products, variants & images",
+      "Product videos via YouTube Shorts & image hosting on Cloudinary",
+    ],
+    demo: "https://purnima-kalamkari.purnimakalamkari03.workers.dev/",
+  },
+  {
+    id: "javamentor",
+    index: "02",
     title: "JavaMentor",
     kicker: "Learning Platform · Full Stack",
     year: "2026",
@@ -255,7 +312,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "attendance-mgmt",
-    index: "02",
+    index: "03",
     title: "Employee Attendance Management",
     kicker: "Enterprise HRM · REST API",
     year: "2026",
@@ -271,7 +328,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "3d-cinematic-portfolio",
-    index: "03",
+    index: "04",
     title: "3D Cinematic Portfolio",
     kicker: "Interactive Canvas · Motion Engine",
     year: "2026",
@@ -322,8 +379,8 @@ export const ACHIEVEMENTS: AchievementItem[] = [
     platform: "Full Stack Projects",
     metricLabel: "Production Grade Apps",
     caption: "COMPLETED ARCHITECTURES",
-    detail: "JavaMentor, Attendance Management System & 3D Cinematic Portfolio",
-    value: 3,
+    detail: "JavaMentor, Attendance Management System, 3D Cinematic Portfolio & Purnima Kalamkari (Freelance)",
+    value: 4,
     suffix: " Built",
     brandColor: "#61dafb",
   },
@@ -361,3 +418,65 @@ export const ACHIEVEMENTS: AchievementItem[] = [
     brandColor: "#0d0d0d",
   },
 ];
+
+// Freelance case study data — Purnima Kalamkari
+export const FREELANCE: FreelanceCaseStudy = {
+  client: "Purnima Kalamkari",
+  role: "Freelance Full Stack Developer",
+  period: FREELANCE_PERIOD,
+  liveUrl: "https://purnima-kalamkari.purnimakalamkari03.workers.dev/",
+  tagline: "Handcrafted \u2022 Heritage \u2022 Heartfelt",
+  overview:
+    "Purnima Kalamkari is an Indian brand of handcrafted sarees, kurtis, dupattas and textiles rooted in the Kalamkari folk art tradition. I designed and shipped a complete digital presence \u2014 a premium mobile-first ecommerce storefront and a secure admin dashboard \u2014 to bring the brand\u2019s catalog online.",
+  challenge:
+    "The brand\u2019s customers already discover and order products over WhatsApp, so the storefront needed to meet them there rather than introduce friction with an unfamiliar checkout flow. Separately, the owner needed full control over the catalog \u2014 adding products, managing variants and updating images \u2014 without depending on a developer for every change.",
+  built: [
+    {
+      group: "Storefront",
+      points: [
+        "Product catalog for sarees (Free Size) and kurtis (S\u2013XXL) with variant selection",
+        "Product videos served via YouTube Shorts, embedded inline in product pages",
+        "\u201cOur Story\u201d page presenting the brand\u2019s Kalamkari heritage and craft",
+        "WhatsApp ordering button on every product \u2014 no login, no online payment",
+      ],
+    },
+    {
+      group: "Admin Dashboard",
+      points: [
+        "JWT-secured owner login with bcrypt password hashing",
+        "Full product CRUD \u2014 create, update and delete products with variants",
+        "Image uploads managed through Cloudinary; MySQL is the source of truth",
+        "Role-gated routes ensure only the authenticated owner can access the dashboard",
+      ],
+    },
+  ],
+  facts: [
+    { label: "Ordering", value: "WhatsApp" },
+    { label: "Payments", value: "None, by design" },
+    { label: "Admin", value: "JWT-secured" },
+    { label: "Media", value: "Cloudinary + YouTube Shorts" },
+  ],
+  stack: [
+    "React",
+    "Vite",
+    "Tailwind CSS",
+    "React Router",
+    "TanStack Query",
+    "Zustand",
+    "Node.js",
+    "Express",
+    "Prisma",
+    "MySQL",
+    "JWT",
+    "bcrypt",
+    "Cloudinary",
+    "Cloudflare",
+  ],
+  palette: [
+    { name: "Ink", hex: "#17110E" },
+    { name: "Maroon", hex: "#7B2028" },
+    { name: "Antique Gold", hex: "#C9973E" },
+    { name: "Cream", hex: "#F5EBDD" },
+  ],
+};
+

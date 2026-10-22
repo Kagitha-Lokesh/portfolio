@@ -222,7 +222,7 @@ export function Navigation() {
                     navRefs.current[item.id] = el;
                   }}
                   onClick={() => handleNavClick(item.id)}
-                  className={`nav-item relative z-10 px-4 py-2 text-xs font-medium tracking-tight rounded-full transition-all duration-300 focus-visible:outline-none min-h-[44px] flex items-center ${
+                  className={`nav-item relative z-10 px-3 lg:px-4 py-2 text-xs font-medium tracking-tight rounded-full transition-all duration-300 focus-visible:outline-none min-h-[44px] flex items-center ${
                     isActive
                       ? "text-white"
                       : "text-[#3a3a3a] hover:text-[#0d0d0d]"
