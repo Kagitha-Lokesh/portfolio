@@ -120,6 +120,19 @@ export function Contact() {
                   {copied ? "Copied ✓" : "Copy email ⎘"}
                 </span>
               </button>
+
+              <button
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(new CustomEvent("open-agent-widget"));
+                  }
+                }}
+                className="self-start sm:self-auto min-h-[44px] px-4 py-2.5 rounded-full border border-[#0d0d0d]/20 hover:border-[#0d0d0d] bg-[#f4f2ee] hover:bg-[#0d0d0d] hover:text-white text-xs font-mono transition-all duration-200 focus-visible:outline-none flex items-center justify-center gap-1.5 shrink-0"
+                aria-label="Ask LOKI AI assistant"
+              >
+                <span>Ask LOKI</span>
+                <span className="font-sans text-xs">→</span>
+              </button>
             </div>
 
             {/* Phone, GitHub, LinkedIn Links with min 48px tap height */}

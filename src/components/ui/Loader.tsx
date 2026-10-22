@@ -30,6 +30,9 @@ export function Loader() {
 
     if (!SHOW_LOADER) {
       document.documentElement.setAttribute("data-loaded", "true");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("intro-loader-complete"));
+      }
       setShouldRender(false);
     } else {
       setShouldRender(true);
