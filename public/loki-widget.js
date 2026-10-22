@@ -20,9 +20,13 @@
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   var lerp = function (a, b, t) { return a + (b - a) * t; };
 
-  /* ---------------- reduced motion (live, not a one-time read) ---------------- */
+  /* ---------------- device capabilities ---------------- */
   var rmq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   var reduce = !!(rmq && rmq.matches);
+  var touchMq = window.matchMedia ? window.matchMedia('(hover: none) and (pointer: coarse)') : null;
+  function isTouchDevice() {
+    return !!(touchMq && touchMq.matches) || (typeof navigator !== 'undefined' && (navigator.maxTouchPoints > 0 || (navigator.msMaxTouchPoints && navigator.msMaxTouchPoints > 0)));
+  }
 
   /* ---------------- geometry ---------------- */
   var HORN = 'M130 208 C104 192 98 156 108 130 C118 104 140 84 164 70 C150 92 142 108 142 128 C142 152 152 176 164 196 C154 202 142 206 130 208Z';
@@ -495,6 +499,35 @@
     '@keyframes lkpop{from{opacity:0;transform:scale(.75) translateY(18px)}}',
     '@keyframes lkdot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:.9;transform:translateY(-3px)}}',
 
+    /* Mobile and Touch-Optimized Restrained Gestures */
+    '@media (max-width:640px), (hover:none) and (pointer:coarse){' +
+      '.launcher{padding:5px 14px 5px 6px;gap:8px}' +
+      '.launcher small{display:none}' +
+      '.launcher:active{transform:scale(0.97)}' +
+      '.lk-bubble{max-width:min(250px,calc(100vw - 28px));padding:8px 10px 8px 12px;font-size:12px}' +
+      '.lk-bubble-x{width:26px;height:26px}' +
+      '.lk-bubble-arrow{right:68px}' +
+      '.mini.lk-st-greeting [data-r="armR"],.mini.lk-st-waving [data-r="armR"],.mini.lk-greeting [data-r="armR"]{animation:lkwavearm-mob 1.2s cubic-bezier(.25,1,.3,1) both}' +
+      '.mini.lk-st-greeting [data-r="head"],.mini.lk-st-waving [data-r="head"],.mini.lk-greeting [data-r="head"]{animation:lkgreethead-mob 1.2s cubic-bezier(.25,1,.3,1) both}' +
+      '.mini.lk-st-curious [data-r="head"]{animation:lkcurioushead-mob 900ms cubic-bezier(.2,.8,.25,1) both}' +
+      '.mini.lk-st-curious [data-r="armR"]{animation:lkcuriousarm-mob 900ms ease-out both}' +
+      '.mini.lk-st-beckoning [data-r="armR"],.mini.lk-st-beckon [data-r="armR"]{animation:lkbeckonarm-mob 1.1s cubic-bezier(.25,1,.3,1) both}' +
+      '.mini.lk-st-pointing [data-r="armR"]{animation:lkpointarm-mob 1.1s cubic-bezier(.2,1,.3,1) both}' +
+      '.mini.lk-st-celebrating [data-r="armL"]{animation:lkcelebarmL-mob 1s cubic-bezier(.18,.9,.3,1.15) both}' +
+      '.mini.lk-st-celebrating [data-r="armR"]{animation:lkcelebarmR-mob 1s cubic-bezier(.18,.9,.3,1.15) both}' +
+      '.mini.lk-st-celebrating [data-r="head"]{animation:lkcelebhead-mob 1s cubic-bezier(.18,.9,.3,1.15) both}' +
+      '.mini.lk-st-celebrating [data-r="legs"]{animation:lkceleblegs-mob 1s cubic-bezier(.18,.9,.3,1.15) both}' +
+      '@keyframes lkwavearm-mob{0%{transform:rotate(0deg)}20%{transform:rotate(-65deg)}35%{transform:rotate(-48deg)}50%{transform:rotate(-65deg)}65%{transform:rotate(-48deg)}80%{transform:rotate(-60deg)}100%{transform:rotate(0deg)}}' +
+      '@keyframes lkgreethead-mob{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(-1px,-2px) rotate(-4deg)}60%{transform:translate(1px,-1px) rotate(3deg)}}' +
+      '@keyframes lkcurioushead-mob{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(5deg) translateY(-1px)}}' +
+      '@keyframes lkcuriousarm-mob{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(-32deg)}}' +
+      '@keyframes lkbeckonarm-mob{0%,100%{transform:rotate(0deg)}20%,80%{transform:rotate(-38deg)}}' +
+      '@keyframes lkpointarm-mob{0%,100%{transform:rotate(0deg)}25%,75%{transform:rotate(-50deg)}}' +
+      '@keyframes lkcelebarmL-mob{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(70deg)}}' +
+      '@keyframes lkcelebarmR-mob{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(-70deg)}}' +
+      '@keyframes lkcelebhead-mob{0%,100%{transform:translateY(0)}25%{transform:translateY(-3px)}45%{transform:translateY(0)}65%{transform:translateY(-2px)}}' +
+      '@keyframes lkceleblegs-mob{0%,100%{transform:translateY(0)}25%{transform:translateY(-2px)}45%{transform:translateY(0)}65%{transform:translateY(-1px)}}' +
+    '},' +
     /* Complete Reduced Motion compliance */
     '@media (prefers-reduced-motion:reduce){' +
       '.lk-intro,.msg.dots i,.mini,[data-r="body"],[data-r="shadow"],[data-r="armL"],[data-r="armR"],[data-r="head"],[data-r="hornL"],[data-r="hornR"],[data-r="eyes"],[data-r="legs"],[data-r="core"]{animation:none!important;transition:none!important}' +
@@ -519,7 +552,7 @@
   var DEFAULT_ANSWERS = [
     { k: ['resume\\b', 'r\u00e9sum\u00e9', 'cv\\b'], r: "You can download Lokesh's r\u00e9sum\u00e9 directly using the button in the top navigation bar." },
     { k: ['contact\\b', 'hire\\b', 'email\\b', 'reach\\b', 'touch\\b', 'message\\b'], r: "You can get in touch with Lokesh through the Contact section below, or simply tell me your name, email, and message and I'll help you send it!" },
-    { k: ['work\\b', 'project', 'portfolio\\b', 'freelance\\b'], r: "Lokesh's projects are featured in the Work section, and his client case studies are under Freelance. You can ask me about Purnima Kalamkari, JavaMentor, or Attendance Management!" },
+    { k: ['work\\b', 'project', 'portfolio\\b', 'freelance\\b'], r: "Lokesh's projects are featured in the Work section, and his client case studies are under Freelance. You can ask me about Purnima Kalamkari, JavaMentor, or Attendance Management!\n\n[[NAV_ACTION]]{\"section\":\"freelance\",\"label\":\"View Freelance Case Study\"}" },
     { k: ['education\\b', 'college\\b', 'degree\\b', 'btech\\b', 'b\\.tech', 'university\\b', 'study\\b', 'graduat'], r: "Lokesh has completed his B.Tech in Computer Science & Engineering (Artificial Intelligence & Machine Learning) from Sri Vasavi Institute of Engineering & Technology with a CGPA of 8.0. He is currently working as an Associate Software Engineer at Charani Infotech Pvt Ltd." },
     { k: ['who\\b', 'about\\b', 'lokesh\\b'], r: "Lokesh Kagitha is a Full Stack Developer based in Andhra Pradesh, India, specializing in production-grade web systems and interactive interfaces." }
   ];
@@ -814,6 +847,10 @@
     }
     if (window.visualViewport) { on(window.visualViewport, 'resize', fitViewport); on(window.visualViewport, 'scroll', fitViewport); }
     on(window, 'resize', fitViewport);
+    on(window, 'orientationchange', function () {
+      later(fitViewport, 100);
+      later(fitViewport, 300);
+    });
     fitViewport();
 
     /* reduced motion */
@@ -982,9 +1019,19 @@
         navBtn.setAttribute('aria-label', 'Navigate to ' + navAction.label);
         navBtn.innerHTML = '<span>' + escapeHtml(navAction.label) + '</span> <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12L12 4M5 4h7v7"/></svg>';
         navBtn.addEventListener('click', function () {
+          var isMobile = (mq && mq.matches) || isTouchDevice() || (typeof window !== 'undefined' && window.innerWidth <= 640);
+          if (isMobile) {
+            close();
+          }
           var target = document.getElementById(navAction.section);
           if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
+            if (isMobile) {
+              later(function () {
+                target.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
+            } else {
+              target.scrollIntoView({ behavior: 'smooth' });
+            }
           }
         });
         el.appendChild(navBtn);
@@ -1006,10 +1053,14 @@
 
       // Scroll so the top of the new response is visible in the chat viewport
       var targetScroll = el.offsetTop - 12;
-      log.scrollTo({
-        top: Math.max(0, targetScroll),
-        behavior: reduce ? 'auto' : 'smooth'
-      });
+      if (typeof log.scrollTo === 'function') {
+        log.scrollTo({
+          top: Math.max(0, targetScroll),
+          behavior: reduce ? 'auto' : 'smooth'
+        });
+      } else {
+        log.scrollTop = Math.max(0, targetScroll);
+      }
 
       finishSpeaking();
     }
@@ -1138,12 +1189,33 @@
       }, 150);
     }
 
-    on(launcher, 'click', function () { isOpen ? close() : open(); });
+    var tapLock = false;
+    on(launcher, 'click', function () {
+      if (tapLock) return;
+      tapLock = true;
+      later(function () { tapLock = false; }, 320);
+
+      // Tactile visual feedback: subtle avatar spring nod
+      if (launchAv && launchAv.sp) {
+        launchAv.sp.v = -45;
+      }
+      setCompanionState('attention', 350);
+
+      if (isOpen) {
+        close();
+      } else {
+        open();
+      }
+    });
     on($('close'), 'click', close);
     on(root, 'keydown', function (e) { if (e.key === 'Escape' && isOpen) { e.stopPropagation(); close(); } });
     var hasHovered = false;
 
-    on(launcher, 'pointerenter', function () {
+    on(launcher, 'pointerenter', function (e) {
+      // Do not trigger synthetic hover reactions on mobile touch devices
+      if (e && e.pointerType === 'touch') return;
+      if (isTouchDevice() && window.innerWidth <= 640) return;
+
       var now = performance.now();
       var wasSleeping = autoSlept || current === 'sleepy' || companionState === 'sleeping';
       autoSlept = false;
@@ -1294,8 +1366,13 @@
     function triggerInitialGreeting() {
       if (hasGreeted || sessionDismissed || engaged || isOpen) return;
       hasGreeted = true;
+      var isMobile = isTouchDevice() || (typeof window !== 'undefined' && window.innerWidth <= 640);
+      var greetMsg = isMobile ? "Hey! Want to explore my portfolio?" : "Hi there! Need a hand?";
+      if (launchAv && launchAv.sp) {
+        launchAv.sp.v = -40; // Friendly bounce
+      }
       perkGreeting();
-      showBubble("Hi there! Need a hand?", 5500);
+      showBubble(greetMsg, 5000);
       scheduleNextInvitation(20000);
     }
 
