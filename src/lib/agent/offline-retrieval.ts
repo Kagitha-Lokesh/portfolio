@@ -212,7 +212,7 @@ function buildSearchableIndex(): SearchableRecord[] {
       "profile", "about", "bio", "background",
       "summary", "developer", "full stack developer", "who is", "who is lokesh"
     ],
-    searchableText: `${PROFILE.name} ${PROFILE.firstName} ${PROFILE.lastName} ${PROFILE.role} ${PROFILE.location} ${PROFILE.resumeSummary} ${PROFILE.shortLine} ${PROFILE.department} ${PROFILE.cgpa} ${PROFILE.validTill} ${PROFILE.github} ${PROFILE.linkedin}`,
+    searchableText: `${PROFILE.name} ${PROFILE.firstName} ${PROFILE.lastName} ${PROFILE.role} ${PROFILE.location} ${PROFILE.resumeSummary} ${PROFILE.shortLine} ${PROFILE.department} ${PROFILE.cgpa} ${PROFILE.validTill} ${PROFILE.github} ${PROFILE.linkedin} ${PROFILE.instagram} ${PROFILE.instagramUsername}`,
     summary: `${PROFILE.name} is a ${PROFILE.role} based in ${PROFILE.location}. ${PROFILE.resumeSummary} (${PROFILE.department}, CGPA: ${PROFILE.cgpa}).`,
     data: PROFILE as unknown as Record<string, unknown>,
   });
@@ -760,7 +760,7 @@ export function classifyIntent(
 
   // 2. Direct Contact Request
   const isContact =
-    /\b(contact|reach|hire|email|phone|call|message|touch|collaborate|connect with lokesh|talk to lokesh|discuss (a |an )?(role|job|opportunity)|opportunity with lokesh|schedule an interview|interview lokesh)\b/i.test(
+    /\b(contact|reach|hire|email|phone|call|message|touch|collaborate|connect with lokesh|talk to lokesh|instagram|insta|social|socials|discuss (a |an )?(role|job|opportunity)|opportunity with lokesh|schedule an interview|interview lokesh)\b/i.test(
       normalizedQuery
     ) ||
     (/\b(i am|im|my name is)\s+.*\b(discuss|opportunity|role|hire|work with|interview)\b/i.test(normalizedQuery));

@@ -203,7 +203,7 @@
     escaped = escaped.replace(/^### (.*$)/gim, '<strong style="display:block;margin:6px 0 2px;font-size:14px;color:var(--ink);">$1</strong>');
     
     // Bold **text**
-    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong class="lk-bold" style="font-weight:700;">$1</strong>');
     
     // Italic *text*
     escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -251,7 +251,7 @@
     '.launcher:hover,.launcher:focus-visible{border-color:var(--line-hover);box-shadow:var(--shadow-launcher-hover)}',
     '.launcher:active{transform:none}',
     '.launcher .lbl{display:flex;flex-direction:column;text-align:left;line-height:1.25}',
-    '.launcher strong{font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-.01em}',
+    '.launcher strong{font-size:13.5px;font-weight:700;color:var(--ink);letter-spacing:-.01em;font-variation-settings:"wght" 700}',
     '.launcher small{font-size:11px;font-weight:400;color:var(--mute);letter-spacing:0;margin-top:1px}',
     '.wrap[data-pos="left"] .launcher{right:auto;left:calc(var(--off) + env(safe-area-inset-left,0px))}',
 
@@ -285,7 +285,7 @@
     '.head{display:flex;align-items:center;gap:11px;padding:12px 14px 12px 16px;background:var(--card);border-bottom:1px solid var(--line-light)}',
     '.head .mini{width:36px;height:45px}',
     '.who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}',
-    '.who strong{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}',
+    '.who strong{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.01em;font-variation-settings:"wght" 700}',
     '.who span{font-size:11.5px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}',
     '.x{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:var(--mute);transition:background .15s ease,color .15s ease}',
     '.x:hover{background:var(--paper);color:var(--ink)}',
@@ -299,7 +299,7 @@
     '.log::-webkit-scrollbar-thumb{background:var(--line-hover);border-radius:9999px}',
     '.log::-webkit-scrollbar-thumb:hover{background:var(--mute)}',
     '.msg{max-width:86%;padding:10px 14px;border-radius:16px;line-height:1.55;font-size:13.5px;overflow-wrap:break-word;word-break:normal;touch-action:pan-y}',
-    '.msg strong{color:inherit;font-weight:600}',
+    '.msg strong,.msg b,.lk-bold,strong,b{color:var(--ink);font-weight:700!important;font-variation-settings:"wght" 700}',
     '.msg em{font-style:italic}',
     '.msg a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-weight:500;transition:opacity .15s ease}',
     '.msg a:hover{opacity:.7}',
@@ -502,6 +502,7 @@
 
     /* Mobile and Touch-Optimized Restrained Gestures */
     '@media (max-width:640px), (hover:none) and (pointer:coarse){' +
+      '.msg strong,.msg b,.lk-bold{color:#000000;font-weight:700!important;font-variation-settings:"wght" 700}' +
       '.launcher{padding:5px 14px 5px 6px;gap:8px}' +
       '.launcher small{display:none}' +
       '.launcher:active{transform:scale(0.97)}' +
@@ -552,6 +553,8 @@
 
   var DEFAULT_ANSWERS = [
     { k: ['resume\\b', 'r\u00e9sum\u00e9', 'cv\\b'], r: "You can download Lokesh's r\u00e9sum\u00e9 directly using the button in the top navigation bar." },
+    { k: ['insta\\b', 'instagram\\b'], r: "You can find Lokesh on Instagram at https://www.instagram.com/lokesh__kagitha/ (@lokesh__kagitha)." },
+    { k: ['social\\b', 'socials\\b', 'github\\b', 'linkedin\\b'], r: "You can connect with Lokesh on LinkedIn (https://www.linkedin.com/in/lokesh-kagitha/), GitHub (https://github.com/Kagitha-Lokesh), and Instagram (https://www.instagram.com/lokesh__kagitha/)." },
     { k: ['contact\\b', 'hire\\b', 'email\\b', 'reach\\b', 'touch\\b', 'message\\b'], r: "You can get in touch with Lokesh through the Contact section below, or simply tell me your name, email, and message and I'll help you send it!" },
     { k: ['work\\b', 'project', 'portfolio\\b', 'freelance\\b'], r: "Lokesh's projects are featured in the Work section, and his client case studies are under Freelance. You can ask me about Purnima Kalamkari, JavaMentor, or Attendance Management!\n\n[[NAV_ACTION]]{\"section\":\"freelance\",\"label\":\"View Freelance Case Study\"}" },
     { k: ['education\\b', 'college\\b', 'degree\\b', 'btech\\b', 'b\\.tech', 'university\\b', 'study\\b', 'graduat'], r: "Lokesh has completed his B.Tech in Computer Science & Engineering (Artificial Intelligence & Machine Learning) from Sri Vasavi Institute of Engineering & Technology with a CGPA of 8.0. He is currently working as an Associate Software Engineer at Charani Infotech Pvt Ltd." },

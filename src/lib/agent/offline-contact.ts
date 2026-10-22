@@ -60,7 +60,7 @@ const INVALID_NAME_WORDS = new Set([
 ]);
 
 const NON_ORG_WORDS = new Set([
-  "portfolio", "website", "linkedin", "github", "scratch", "online",
+  "portfolio", "website", "linkedin", "github", "instagram", "insta", "scratch", "online",
   "india", "hyderabad", "andhra", "bangalore", "delhi", "mumbai", "us",
   "usa", "remote", "abroad", "here", "there", "today", "yesterday"
 ]);

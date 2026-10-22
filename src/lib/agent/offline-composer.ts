@@ -97,6 +97,7 @@ function composeContact(): { text: string; navAction: NavAction; contactInstruct
     `- **Location**: ${PROFILE.location}`,
     `- **LinkedIn**: ${PROFILE.linkedin}`,
     `- **GitHub**: ${PROFILE.github}`,
+    `- **Instagram**: ${PROFILE.instagram}`,
     "",
     "If you'd like to leave a message right here, tell me your email and what you'd like to discuss, and I can help you send it to him.",
   ].join("\n");
@@ -654,6 +655,7 @@ function composeProfile(query: string = ""): { text: string; navAction: NavActio
     `- **Focus**: ${PROFILE.shortLine}`,
     `- **GitHub**: ${PROFILE.github}`,
     `- **LinkedIn**: ${PROFILE.linkedin}`,
+    `- **Instagram**: ${PROFILE.instagram}`,
   ].join("\n");
 
   return {

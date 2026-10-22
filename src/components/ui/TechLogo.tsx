@@ -27,6 +27,8 @@ export const BRAND_MAP: Record<string, { logo: string; color: string }> = {
   "antigravity ai": { logo: "/logos/antigravity.svg", color: "#4285F4" },
   gsap: { logo: "/logos/gsap.svg", color: "#88CE02" },
   linkedin: { logo: "/logos/linkedin.svg", color: "#0A66C2" },
+  instagram: { logo: "/logos/instagram.svg", color: "#E4405F" },
+  insta: { logo: "/logos/instagram.svg", color: "#E4405F" },
   leetcode: { logo: "/logos/leetcode.svg", color: "#FFA116" },
 };
 

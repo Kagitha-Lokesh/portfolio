@@ -17,6 +17,8 @@ export interface Profile {
   shortLine: string;
   github: string;
   linkedin: string;
+  instagram: string;
+  instagramUsername: string;
   portfolio: string;
   resumePath: string;
   idNo: string;
@@ -148,6 +150,8 @@ export const PROFILE: Profile = {
   shortLine: "Building enterprise HRM modules and production-grade applications with modern software engineering practices.",
   github: "https://github.com/Kagitha-Lokesh",
   linkedin: "https://www.linkedin.com/in/lokesh-kagitha/",
+  instagram: "https://www.instagram.com/lokesh__kagitha/",
+  instagramUsername: "lokesh__kagitha",
   portfolio: "https://lokesh-kagitha-portfolio.vercel.app/",
   resumePath: "/resume.pdf",
   idNo: "LK-2026-FSD",

@@ -197,6 +197,20 @@ export function About() {
                   <span className="arrow-move arrow-diag text-[10px]">↗</span>
                 </a>
               )}
+
+              {PROFILE.instagram && (
+                <a
+                  href={PROFILE.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary min-h-[44px] text-xs px-4 py-2.5"
+                >
+                  <span className="btn-roll">
+                    <span className="btn-roll-inner" data-text="Instagram">Instagram</span>
+                  </span>
+                  <span className="arrow-move arrow-diag text-[10px]">↗</span>
+                </a>
+              )}
             </div>
           </div>
 

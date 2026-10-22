@@ -146,6 +146,19 @@ export function Contact() {
                   <span className="arrow-move arrow-diag text-xs">↗</span>
                 </a>
               )}
+
+              {PROFILE.instagram && (
+                <a
+                  href={PROFILE.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-draw min-h-[48px] flex items-center gap-2 text-[#0d0d0d] hover:text-[#77756f] transition-colors py-1"
+                >
+                  <span className="font-mono text-xs text-[#a9a6a0]">IG:</span>
+                  <span className="truncate">instagram.com/lokesh__kagitha</span>
+                  <span className="arrow-move arrow-diag text-xs">↗</span>
+                </a>
+              )}
             </div>
           </div>
 

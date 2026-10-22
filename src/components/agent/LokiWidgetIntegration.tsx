@@ -39,6 +39,10 @@ markdownRenderer.link = function ({
   return `<a href="${cleanHref}" target="_blank" rel="noopener noreferrer"${titleAttr}>${text}</a>`;
 };
 
+markdownRenderer.strong = function ({ text }: { text: string }) {
+  return `<strong class="lk-bold" style="font-weight: 700;">${text}</strong>`;
+};
+
 marked.use({
   gfm: true,
   breaks: true,
@@ -106,7 +110,7 @@ export function renderAssistantMarkdown(rawMarkdown: string): string {
       "table", "thead", "tbody", "tr", "th", "td",
       "a",
     ],
-    ALLOWED_ATTR: ["href", "target", "rel", "title", "class"],
+    ALLOWED_ATTR: ["href", "target", "rel", "title", "class", "style"],
     ADD_ATTR: ["target", "rel"],
     ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):)/i,
   });

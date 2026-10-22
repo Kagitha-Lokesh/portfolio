@@ -21,6 +21,7 @@ function formatKnowledge(): string {
     `Focus: ${PROFILE.shortLine}`,
     `GitHub: ${PROFILE.github}`,
     `LinkedIn: ${PROFILE.linkedin}`,
+    `Instagram: ${PROFILE.instagram} (@${PROFILE.instagramUsername})`,
     `Portfolio: ${PROFILE.portfolio}`,
   ].join("\n");
 
