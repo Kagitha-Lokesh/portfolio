@@ -122,8 +122,27 @@ interface LokiWidgetAPI {
   open: () => void;
   close: () => void;
   toggle: () => void;
+  startContact?: (customPrompt?: string) => void;
   setMood: (mood: string) => void;
   destroy: () => void;
+}
+
+/**
+ * Global helper to open Loki assistant and initiate a contact conversation
+ */
+export function openLokiContact(prompt?: string) {
+  if (typeof window === "undefined") return;
+  if (window.LokiWidget && typeof window.LokiWidget.startContact === "function") {
+    window.LokiWidget.startContact(prompt);
+  } else {
+    const handler = () => {
+      if (window.LokiWidget && typeof window.LokiWidget.startContact === "function") {
+        window.LokiWidget.startContact(prompt);
+      }
+    };
+    window.addEventListener("loki-ready", handler, { once: true });
+    window.dispatchEvent(new CustomEvent("open-loki-contact", { detail: { prompt } }));
+  }
 }
 
 interface LokiWidgetOptions {
@@ -191,6 +210,20 @@ export function LokiWidgetIntegration() {
 
   useEffect(() => {
     let isDestroyed = false;
+
+    const handleAssistantSpoke = (e: Event) => {
+      const customEvent = e as CustomEvent<{ text?: string }>;
+      if (customEvent.detail && customEvent.detail.text) {
+        const text = customEvent.detail.text.trim();
+        if (text) {
+          historyRef.current = [
+            ...historyRef.current,
+            { role: "assistant" as const, content: text },
+          ].slice(-20);
+        }
+      }
+    };
+    window.addEventListener("loki-assistant-spoke", handleAssistantSpoke);
 
     const handleMessage = async (userText: string): Promise<string> => {
       const trimmed = userText.trim();
@@ -304,6 +337,7 @@ export function LokiWidgetIntegration() {
 
     return () => {
       isDestroyed = true;
+      window.removeEventListener("loki-assistant-spoke", handleAssistantSpoke);
       if (window.LokiWidget) {
         window.LokiWidget.destroy();
       }

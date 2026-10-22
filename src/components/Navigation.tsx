@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { NAV, PROFILE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
 import { useScrollProgress } from "@/lib/hooks";
+import { openLokiContact } from "@/components/agent/LokiWidgetIntegration";
 
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
@@ -135,6 +136,9 @@ export function Navigation() {
     }
     if (id === "hero") {
       scrollToTarget("#hero");
+    } else if (id === "contact") {
+      scrollToTarget("#contact");
+      openLokiContact();
     } else {
       scrollToTarget(`#${id}`);
     }

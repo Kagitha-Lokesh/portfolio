@@ -379,10 +379,10 @@ async function runScenario5() {
   let history: ChatMessage[] = [];
 
   // Turn 1: Project
-  let res = await runTurn("Tell me about the 3D Cinematic Portfolio", history);
+  let res = await runTurn("Tell me about the Employee Attendance Management project", history);
   history = res.updatedHistory;
   assertStep(
-    res.intent === "projects" && (res.text.includes("GSAP") || res.text.includes("Canvas")),
+    res.intent === "projects" && (res.text.includes("Firebase") || res.text.includes("attendance")),
     "Turn 1: Projects topic active",
     `Failed: ${res.text.slice(0, 80)}`
   );
@@ -415,11 +415,11 @@ async function runScenario5() {
   );
 
   // Turn 5: Switch back to Project with pronoun resolution
-  res = await runTurn("Going back to that 3D portfolio project: what library handled animations?", history);
+  res = await runTurn("Going back to that attendance project: what database did he use?", history);
   history = res.updatedHistory;
   assertStep(
-    res.text.includes("GSAP"),
-    "Turn 5: Successfully returns to 3D portfolio and resolves animation question",
+    res.text.includes("Firebase"),
+    "Turn 5: Successfully returns to attendance project and resolves database question",
     `Failed: ${res.text.slice(0, 80)}`
   );
 }

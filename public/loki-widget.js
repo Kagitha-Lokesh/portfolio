@@ -230,8 +230,13 @@
     '.x:hover{background:var(--paper);color:var(--ink)}',
     '.x svg{width:16px;height:16px;stroke-width:2}',
 
-    /* Conversation log: light, clean background */
-    '.log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px;padding:14px 14px 8px;background:var(--card)}',
+    /* Conversation log: light, clean background with custom smooth scroll */
+    '.log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--line-hover) transparent;display:flex;flex-direction:column;gap:10px;padding:14px 14px 8px;background:var(--card)}',
+    '.log:focus{outline:none}',
+    '.log::-webkit-scrollbar{width:6px}',
+    '.log::-webkit-scrollbar-track{background:transparent}',
+    '.log::-webkit-scrollbar-thumb{background:var(--line-hover);border-radius:9999px}',
+    '.log::-webkit-scrollbar-thumb:hover{background:var(--mute)}',
     '.msg{max-width:86%;padding:10px 14px;border-radius:16px;line-height:1.55;font-size:13.5px;overflow-wrap:break-word;word-break:normal}',
     '.msg strong{color:inherit;font-weight:600}',
     '.msg em{font-style:italic}',
@@ -340,7 +345,7 @@
   var DEFAULT_ANSWERS = [
     { k: ['resume\\b', 'r\u00e9sum\u00e9', 'cv\\b'], r: "You can download Lokesh's r\u00e9sum\u00e9 directly using the button in the top navigation bar." },
     { k: ['contact\\b', 'hire\\b', 'email\\b', 'reach\\b', 'touch\\b', 'message\\b'], r: "You can get in touch with Lokesh through the Contact section below, or simply tell me your name, email, and message and I'll help you send it!" },
-    { k: ['work\\b', 'project', 'portfolio\\b', 'freelance\\b'], r: "Lokesh's projects are featured in the Work section, and his client case studies are under Freelance. You can ask me about Purnima Kalamkari, JavaMentor, Attendance Management, or his 3D Portfolio!" },
+    { k: ['work\\b', 'project', 'portfolio\\b', 'freelance\\b'], r: "Lokesh's projects are featured in the Work section, and his client case studies are under Freelance. You can ask me about Purnima Kalamkari, JavaMentor, or Attendance Management!" },
     { k: ['skill', 'stack\\b', 'build\\b', 'tech\\b', 'code\\b', 'database\\b'], r: "The Skills section details his verified stack across JavaScript, React.js, Node.js, Express.js, MySQL, Firebase, and development tools." },
     { k: ['who\\b', 'about\\b', 'lokesh\\b'], r: "Lokesh Kagitha is a Full Stack Developer based in Andhra Pradesh, India, specializing in production-grade web systems and interactive interfaces." }
   ];
@@ -445,15 +450,16 @@
     /* DOM */
     var host = document.createElement('div');
     host.setAttribute('data-loki-widget', '');
+    host.setAttribute('data-lenis-prevent', 'true');
     host.style.cssText = 'all:initial;position:fixed;z-index:' + cfg.zIndex + ';';
     var root = host.attachShadow({ mode: 'open' });
     root.innerHTML =
       '<style>' + CSS + '</style>' +
-      '<div class="wrap" data-pos="' + (cfg.position === 'left' ? 'left' : 'right') + '" data-theme="' + (cfg.theme === 'dark' || cfg.theme === 'light' ? cfg.theme : 'auto') + '">' +
-      '<section class="panel" id="panel" role="dialog" aria-labelledby="ttl">' +
+      '<div class="wrap" data-lenis-prevent="true" data-pos="' + (cfg.position === 'left' ? 'left' : 'right') + '" data-theme="' + (cfg.theme === 'dark' || cfg.theme === 'light' ? cfg.theme : 'auto') + '">' +
+      '<section class="panel" id="panel" data-lenis-prevent="true" role="dialog" aria-labelledby="ttl">' +
         '<header class="head"><span class="mini" id="hHost"></span><div class="who"><strong id="ttl"></strong><span id="sub"></span></div>' +
         '<button class="x" id="close" type="button" aria-label="Close chat"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16"/></svg></button></header>' +
-        '<div class="log" id="log" role="log" aria-live="off" aria-label="Conversation" tabindex="0"></div>' +
+        '<div class="log" id="log" data-lenis-prevent="true" role="log" aria-live="off" aria-label="Conversation" tabindex="0"></div>' +
         '<div class="chips" id="chips"></div>' +
         '<form class="form" id="form"><input type="text" id="q" autocomplete="off" enterkeyhint="send" aria-label="Message"><button class="send" type="submit">Send</button></form>' +
       '</section>' +
@@ -826,14 +832,75 @@
       launcher.focus({ preventScroll: true });
     }
 
+    function startContact(customPrompt) {
+      if (!isOpen) open();
+
+      // Check if there is already an active contact card
+      var hasCard = log.querySelector('.lk-contact-card');
+      if (hasCard) {
+        hasCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        var firstInput = hasCard.querySelector('input');
+        if (firstInput) firstInput.focus();
+        return;
+      }
+
+      // Check if the last bot message already asks for contact details
+      var lastMsg = log.querySelector('.msg.bot:last-of-type');
+      if (lastMsg && lastMsg.textContent && (
+        lastMsg.textContent.indexOf('email address') !== -1 ||
+        lastMsg.textContent.indexOf('help you get in touch') !== -1 ||
+        lastMsg.textContent.indexOf('connect with Lokesh') !== -1
+      )) {
+        later(function () {
+          input.focus({ preventScroll: true });
+        }, 100);
+        return;
+      }
+
+      var promptText = customPrompt || (
+        "Hi there! I'd be glad to help you get in touch with Lokesh Kagitha.\n\n" +
+        "Could you please share your **name**, **email address**, and a brief note about what you'd like to discuss? " +
+        "I will set up an editable draft for you to review and send directly to him."
+      );
+
+      speak(promptText);
+      if (typeof window !== 'undefined') {
+        try {
+          window.dispatchEvent(new CustomEvent('loki-assistant-spoke', {
+            detail: { text: promptText }
+          }));
+        } catch (e) {}
+      }
+      input.placeholder = "Your name, email, and message...";
+      later(function () {
+        input.focus({ preventScroll: true });
+      }, 150);
+    }
+
     on(launcher, 'click', function () { isOpen ? close() : open(); });
     on($('close'), 'click', close);
     on(root, 'keydown', function (e) { if (e.key === 'Escape' && isOpen) { e.stopPropagation(); close(); } });
     on(launcher, 'pointerenter', function () { launchAv.sp.v = -60; if (current === 'sleepy') setMood('happy'); });
     on(launchAv.svg, 'click', function () { launchAv.sp.v = -90; });
 
-    // Listen for custom trigger from Contact section ("Ask my AI")
-    on(window, 'open-agent-widget', function () { open(); });
+    // Isolate scrolling so smooth-scroll libraries (Lenis, etc.) never hijack or block widget scrolling
+    on(panel, 'wheel', function (e) { e.stopPropagation(); }, { passive: true });
+    on(panel, 'touchmove', function (e) { e.stopPropagation(); }, { passive: true });
+
+    // Listen for custom triggers from Contact & Start Conversation buttons
+    on(window, 'open-loki-contact', function (e) {
+      var p = e && e.detail && e.detail.prompt ? e.detail.prompt : null;
+      startContact(p);
+    });
+
+    on(window, 'open-agent-widget', function (e) {
+      var isContact = e && e.detail && e.detail.contact;
+      if (isContact) {
+        startContact(e.detail && e.detail.prompt ? e.detail.prompt : null);
+      } else {
+        open();
+      }
+    });
 
     wake(1200);
 
@@ -841,6 +908,7 @@
       open: open,
       close: close,
       toggle: function () { isOpen ? close() : open(); },
+      startContact: startContact,
       setMood: setMood,
       destroy: function () {
         clearInterval(idleTimer);
@@ -866,7 +934,16 @@
     var cfg = {};
     for (var k in DEFAULTS) cfg[k] = DEFAULTS[k];
     if (opts) for (var j in opts) if (opts[j] !== undefined) cfg[j] = opts[j];
-    var go = function () { if (!W) W = buildWidget(cfg); };
+    var go = function () {
+      if (!W) {
+        W = buildWidget(cfg);
+        if (typeof window !== 'undefined') {
+          try {
+            window.dispatchEvent(new CustomEvent('loki-ready'));
+          } catch (e) {}
+        }
+      }
+    };
     if (document.body) go(); else document.addEventListener('DOMContentLoaded', go, { once: true });
     return api;
   }
@@ -878,6 +955,15 @@
     open: function () { W && W.open(); },
     close: function () { W && W.close(); },
     toggle: function () { W && W.toggle(); },
+    startContact: function (p) {
+      if (W) {
+        W.startContact(p);
+      } else {
+        window.addEventListener('loki-ready', function () {
+          if (W) W.startContact(p);
+        }, { once: true });
+      }
+    },
     setMood: function (m) { W && W.setMood(m); },
     destroy: function () { if (W) { W.destroy(); W = null; } }
   };

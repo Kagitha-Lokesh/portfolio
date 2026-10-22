@@ -57,10 +57,10 @@ async function runTestSuite() {
   );
 
   // Scenario 4: Project by Tech Query
-  const res4 = await retrievePortfolioFacts("Which project uses Canvas and GSAP?");
+  const res4 = await retrievePortfolioFacts("Which project uses Cloudinary and WhatsApp?");
   assert(
-    res4.facts.some((f) => f.id === "project:3d-cinematic-portfolio"),
-    "Query for Canvas and GSAP resolves 3D Cinematic Portfolio",
+    res4.facts.some((f) => f.id === "project:purnima-kalamkari"),
+    "Query for Cloudinary and WhatsApp resolves Purnima Kalamkari",
     `Top fact: ${res4.facts[0]?.title}`
   );
 
@@ -457,8 +457,8 @@ async function runTestSuite() {
   // Scenario 45: Ordinal reference 'the last project'
   const res45 = await retrievePortfolioFacts("Tell me about the last project");
   assert(
-    res45.resolvedSubject?.id === "project:3d-cinematic-portfolio",
-    "Ordinal 'the last project' maps to project:3d-cinematic-portfolio",
+    res45.resolvedSubject?.id === "project:attendance-mgmt",
+    "Ordinal 'the last project' maps to project:attendance-mgmt",
     `Resolved: ${res45.resolvedSubject?.title}`
   );
 

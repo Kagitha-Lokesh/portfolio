@@ -38,9 +38,8 @@ async function runTestSuite() {
   assert(
     comp1.text.includes("Purnima Kalamkari") &&
       comp1.text.includes("JavaMentor") &&
-      comp1.text.includes("Employee Attendance Management") &&
-      comp1.text.includes("3D Cinematic Portfolio"),
-    "Project list response outlines all 4 verified portfolio projects",
+      comp1.text.includes("Employee Attendance Management"),
+    "Project list response outlines all 3 verified portfolio projects",
     comp1.text
   );
 
@@ -137,7 +136,7 @@ async function runTestSuite() {
   const comp8 = composeOfflineResponse(q8, ret8);
   assert(
     comp8.text.includes("8.0 CGPA") &&
-      comp8.text.includes("4 Built") &&
+      comp8.text.includes("3 Built") &&
       comp8.text.includes("CLASS OF 2026"),
     "Achievements response accurately renders key verified metric items",
     comp8.text
@@ -304,7 +303,6 @@ async function runTestSuite() {
     comp20.text.includes("Purnima Kalamkari") &&
       comp20.text.includes("JavaMentor") &&
       comp20.text.includes("Employee Attendance Management") &&
-      comp20.text.includes("3D Cinematic Portfolio") &&
       comp20.text.includes("criteria rather than an arbitrary universal ranking"),
     "Best projects response explains evidence-based architectural criteria",
     comp20.text

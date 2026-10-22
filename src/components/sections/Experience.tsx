@@ -6,6 +6,7 @@ import { useScroll } from "@/lib/scroll";
 import { SplitText } from "@/components/ui/SplitText";
 import { SectionTag } from "@/components/ui/SectionTag";
 import { ScrollScrubParagraph } from "@/components/ui/ScrollScrubParagraph";
+import { openLokiContact } from "@/components/agent/LokiWidgetIntegration";
 
 export function Experience() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -167,7 +168,7 @@ export function Experience() {
                   Seeking an energetic, production-minded Full Stack Developer who communicates clearly and ships clean, high-performance software? Let&apos;s build together.
                 </p>
                 <button
-                  onClick={() => scrollToTarget("#contact")}
+                  onClick={() => openLokiContact()}
                   className="btn-primary w-full sm:w-auto min-h-[44px] justify-center text-xs"
                 >
                   <span>Start a conversation</span>

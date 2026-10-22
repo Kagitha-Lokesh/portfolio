@@ -5,6 +5,7 @@ import { PROFILE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
 import { SplitText } from "@/components/ui/SplitText";
 import { SectionTag } from "@/components/ui/SectionTag";
+import { openLokiContact } from "@/components/agent/LokiWidgetIntegration";
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -272,7 +273,10 @@ export function Hero() {
             </button>
 
             <button
-              onClick={() => scrollToTarget("#contact")}
+              onClick={() => {
+                scrollToTarget("#contact");
+                openLokiContact();
+              }}
               className="btn-secondary min-h-[44px] justify-center text-xs sm:text-sm px-4 py-2.5"
             >
               <span className="btn-roll">

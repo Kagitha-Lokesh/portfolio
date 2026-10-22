@@ -78,7 +78,7 @@ The assistant never hallucinates or requires separate hard-coded database files.
 - `PROFILE`: Bio, role, location, contact, CGPA, graduation, GitHub, LinkedIn.
 - `EDUCATION`: Sri Vasavi Institute of Engineering & Technology, Intermediate, High School.
 - `EXPERIENCE`: Charani Infotech Pvt Ltd (Associate Software Engineer, HRM modules, attendance, payroll, APIs).
-- `PROJECTS`: Purnima Kalamkari, JavaMentor, Attendance Management System, 3D Cinematic Portfolio.
+- `PROJECTS`: Purnima Kalamkari, JavaMentor, Attendance Management System.
 - `SKILL_ELEMENTS`: Categorized across Languages, Frontend, Backend, Databases, Tools, and AI concepts.
 - `CERTIFICATIONS`: Java Full Stack (BISTS), Developer Internship (Charani Infotech).
 - `FREELANCE`: Detailed case study on Purnima Kalamkari (architecture, WhatsApp ordering, JWT admin).

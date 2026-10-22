@@ -167,7 +167,6 @@ function composeClarification(
           "- Purnima Kalamkari (Ecommerce Storefront & Admin)",
           "- JavaMentor (Full Stack Platform)",
           "- Employee Attendance Management (Enterprise HRM)",
-          "- 3D Cinematic Portfolio (Canvas & GSAP)",
           "- Charani Infotech (Work Experience)",
         ].join("\n");
 
@@ -294,7 +293,6 @@ function composeProjects(
       "- **Purnima Kalamkari** (Client Freelance): Commercial e-commerce deployment featuring a mobile-first storefront, JWT-secured admin dashboard, and WhatsApp ordering flow.",
       "- **JavaMentor** (Full-Stack Platform): Educational application with secure authentication, interactive coding practice arena, curated interview preparation, and offline support.",
       "- **Employee Attendance Management** (Enterprise HRM): Scalable role-based access control, secure RESTful APIs, and real-time attendance logging with Firebase.",
-      "- **3D Cinematic Portfolio** (Interactive Web Graphics): Advanced front-end motion engine leveraging GSAP and HTML5 Canvas for responsive scroll-driven animations.",
     ].join("\n");
 
     return {
@@ -392,7 +390,7 @@ function composeProjects(
 
   // 8. Project overview list
   const lines = [
-    "Lokesh has designed and built 4 production-grade full-stack projects:",
+    `Lokesh has designed and built ${PROJECTS.length} production-grade full-stack projects:`,
     "",
     ...PROJECTS.map(
       (p) =>

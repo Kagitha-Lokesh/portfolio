@@ -433,54 +433,6 @@ function IllustrativeUI({ projectId }: { projectId: string }) {
     );
   }
 
-  // 3D Cinematic Portfolio (explicit id check)
-  if (projectId === "3d-cinematic-portfolio") {
-    return (
-      <div className="w-full h-full flex flex-col justify-between text-[#0d0d0d] font-mono text-xs select-none">
-        {/* Viewfinder Bar */}
-        <div className="flex items-center justify-between pb-2.5 border-b border-[#0d0d0d]/15 text-[11px]">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#0d0d0d]" />
-            <span className="font-semibold text-[10px] sm:text-[11px]">Canvas2D Viewport</span>
-          </div>
-          <span className="text-[#77756f] text-[9px] sm:text-[10px]">60 FPS · Smooth</span>
-        </div>
-
-        {/* Grid Canvas Overlay Viewfinder */}
-        <div className="my-2.5 relative flex-1 min-h-[100px] sm:min-h-[120px] bg-white/70 rounded-lg border border-[#0d0d0d]/10 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden">
-          <div className="flex justify-between text-[8px] sm:text-[9px] text-[#77756f]">
-            <span>[POS: X:0.0 Y:0.0]</span>
-            <span>[CAMERA: CINEMATIC]</span>
-          </div>
-
-          <div className="flex items-center justify-center gap-2.5 py-2 sm:py-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-dashed border-[#0d0d0d] flex items-center justify-center animate-spin">
-              <span className="w-1.5 h-1.5 bg-[#0d0d0d] rounded-full" />
-            </div>
-            <div className="text-[9px] sm:text-[10px] space-y-0.5">
-              <div className="font-semibold text-[#0d0d0d]">Scroll-Driven Motion</div>
-              <div className="text-[#77756f]">Interpolated Frame Engine</div>
-            </div>
-          </div>
-
-          <div className="flex justify-between text-[8px] sm:text-[9px] text-[#77756f]">
-            <span>TIMELINE: ACTIVE</span>
-            <span>BUFFER: CACHED</span>
-          </div>
-        </div>
-
-        {/* Bottom Scrubber */}
-        <div className="p-2 sm:p-2.5 bg-white rounded-lg border border-[#0d0d0d]/10 flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px]">
-          <span className="font-semibold text-[#0d0d0d]">00:09.50</span>
-          <div className="flex-1 h-1.5 bg-[#f4f2ee] rounded-full overflow-hidden">
-            <div className="w-3/4 h-full bg-[#0d0d0d]" />
-          </div>
-          <span className="text-[#77756f] text-[8px] sm:text-[9px]">Seamless Loop</span>
-        </div>
-      </div>
-    );
-  }
-
   // Fallback for any unknown project id
   return (
     <div className="w-full h-full flex items-center justify-center text-[#77756f] font-mono text-xs select-none">

@@ -4,22 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { PROFILE } from "@/lib/data";
 import { useScroll } from "@/lib/scroll";
 import { SectionTag } from "@/components/ui/SectionTag";
+import { openLokiContact } from "@/components/agent/LokiWidgetIntegration";
 
 export function Contact() {
-  const [copied, setCopied] = useState(false);
   const [touchHopActive, setTouchHopActive] = useState(false);
   const headingRef = useRef<HTMLDivElement | null>(null);
   const { scrollToTarget } = useScroll();
-
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(PROFILE.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
-    } catch {
-      // fallback
-    }
-  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -101,8 +91,8 @@ export function Contact() {
         {/* Main Contact Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-8 lg:gap-12 items-end mb-16 sm:mb-20">
           <div className="space-y-6 sm:space-y-8">
-            {/* Large Underlined Email + Copy Chip */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            {/* Large Underlined Email + Clean Highlighted Ask LOKI CTA */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 flex-wrap">
               <a
                 href={`mailto:${PROFILE.email}`}
                 className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#0d0d0d] underline underline-offset-8 decoration-[#0d0d0d]/30 hover:decoration-[#0d0d0d] transition-colors break-all min-h-[44px] flex items-center py-2"
@@ -112,26 +102,12 @@ export function Contact() {
               </a>
 
               <button
-                onClick={handleCopyEmail}
-                className="self-start sm:self-auto min-h-[44px] px-4 py-2.5 rounded-full border border-[#0d0d0d]/20 hover:border-[#0d0d0d] bg-[#f4f2ee] hover:bg-[#0d0d0d] hover:text-white text-xs font-mono transition-all duration-200 focus-visible:outline-none flex items-center justify-center shrink-0"
-                aria-label="Copy email address"
+                onClick={() => openLokiContact()}
+                className="group self-start sm:self-auto min-h-[42px] px-5 py-2.5 rounded-full bg-[#0d0d0d] text-white hover:bg-[#262626] text-xs font-mono font-medium tracking-tight transition-all duration-200 hover:scale-[1.03] active:scale-95 focus-visible:outline-none flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-sm"
+                aria-label="Ask LOKI to send message or contact"
               >
-                <span aria-live="polite">
-                  {copied ? "Copied ✓" : "Copy email ⎘"}
-                </span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (typeof window !== "undefined") {
-                    window.dispatchEvent(new CustomEvent("open-agent-widget"));
-                  }
-                }}
-                className="self-start sm:self-auto min-h-[44px] px-4 py-2.5 rounded-full border border-[#0d0d0d]/20 hover:border-[#0d0d0d] bg-[#f4f2ee] hover:bg-[#0d0d0d] hover:text-white text-xs font-mono transition-all duration-200 focus-visible:outline-none flex items-center justify-center gap-1.5 shrink-0"
-                aria-label="Ask LOKI AI assistant"
-              >
-                <span>Ask LOKI</span>
-                <span className="font-sans text-xs">→</span>
+                <span>Ask LOKI to connect</span>
+                <span className="font-sans text-xs transition-transform duration-200 group-hover:translate-x-0.5">→</span>
               </button>
             </div>
 

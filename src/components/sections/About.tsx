@@ -432,7 +432,7 @@ export function About() {
                         04
                       </span>
                       <span>
-                        <strong className="text-white">Key Works:</strong> JavaMentor platform, Attendance System &amp; 3D Cinematic Portfolio.
+                        <strong className="text-white">Key Works:</strong> JavaMentor platform, Attendance System &amp; Purnima Kalamkari.
                       </span>
                     </p>
                   </div>

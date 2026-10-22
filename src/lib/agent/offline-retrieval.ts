@@ -236,8 +236,6 @@ function buildSearchableIndex(): SearchableRecord[] {
       aliases.push("java mentor", "learning platform", "coding arena", "interview prep", "coding practice", "interactive coding");
     } else if (p.id === "attendance-mgmt") {
       aliases.push("attendance", "attendance system", "attendance management", "attendance project", "hrm project", "leave management", "attendance management project");
-    } else if (p.id === "3d-cinematic-portfolio") {
-      aliases.push("3d portfolio", "cinematic portfolio", "canvas portfolio", "gsap portfolio", "motion portfolio");
     }
 
     records.push({
@@ -467,10 +465,8 @@ const PROJECT_ORDINAL_MAP: Record<string, string> = {
   "2nd": "project:javamentor",
   "third": "project:attendance-mgmt",
   "3rd": "project:attendance-mgmt",
-  "fourth": "project:3d-cinematic-portfolio",
-  "4th": "project:3d-cinematic-portfolio",
-  "last": "project:3d-cinematic-portfolio",
-  "final": "project:3d-cinematic-portfolio",
+  "last": "project:attendance-mgmt",
+  "final": "project:attendance-mgmt",
 };
 
 /**
@@ -535,10 +531,6 @@ export function resolveConversationSubject(
         normQuery.includes(titleLower) ||
         normQuery.includes(idLower) ||
         (p.id === "purnima-kalamkari" && (normQuery.includes("purnima") || normQuery.includes("kalamkari"))) ||
-        (p.id === "3d-cinematic-portfolio" &&
-          (normQuery.includes("3d portfolio") ||
-            normQuery.includes("cinematic") ||
-            normQuery.includes("3d cinematic"))) ||
         (p.id === "attendance-mgmt" && (normQuery.includes("attendance") || normQuery.includes("hrm"))) ||
         (p.id === "javamentor" && normQuery.includes("javamentor"))
       );
@@ -567,8 +559,6 @@ export function resolveConversationSubject(
           turnNorm.includes(p.title.toLowerCase()) ||
           turnNorm.includes(p.id.toLowerCase()) ||
           (p.id === "purnima-kalamkari" && (turnNorm.includes("purnima") || turnNorm.includes("kalamkari"))) ||
-          (p.id === "3d-cinematic-portfolio" &&
-            (turnNorm.includes("3d portfolio") || turnNorm.includes("cinematic"))) ||
           (p.id === "attendance-mgmt" && (turnNorm.includes("attendance") || turnNorm.includes("hrm"))) ||
           (p.id === "javamentor" && turnNorm.includes("javamentor"))
       );
@@ -586,8 +576,6 @@ export function resolveConversationSubject(
           (turnNorm.includes(p.title.toLowerCase()) ||
             turnNorm.includes(p.id.toLowerCase()) ||
             (p.id === "purnima-kalamkari" && (turnNorm.includes("purnima") || turnNorm.includes("kalamkari"))) ||
-            (p.id === "3d-cinematic-portfolio" &&
-              (turnNorm.includes("3d portfolio") || turnNorm.includes("cinematic"))) ||
             (p.id === "attendance-mgmt" && (turnNorm.includes("attendance") || turnNorm.includes("hrm"))) ||
             (p.id === "javamentor" && turnNorm.includes("javamentor")))
       );
@@ -809,7 +797,6 @@ export function classifyIntent(
     normalizedQuery.includes("created") ||
     normalizedQuery.includes("javamentor") ||
     normalizedQuery.includes("attendance") ||
-    normalizedQuery.includes("cinematic") ||
     normalizedQuery.includes("purnima") ||
     normalizedQuery.includes("kalamkari") ||
     normalizedQuery.includes("ecommerce") ||
@@ -1023,7 +1010,6 @@ export async function retrievePortfolioFacts(
         "Purnima Kalamkari (Ecommerce Storefront)",
         "JavaMentor (Full Stack Platform)",
         "Employee Attendance Management (Enterprise HRM)",
-        "3D Cinematic Portfolio (Canvas & GSAP)",
         "Charani Infotech (Work Experience)",
       ],
       normalizedQuery,
