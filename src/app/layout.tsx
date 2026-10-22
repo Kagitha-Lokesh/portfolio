@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/lib/scroll";
 import { PROFILE } from "@/lib/data";
+import { LokiWidgetIntegration } from "@/components/agent/LokiWidgetIntegration";
 
 const interTight = localFont({
   src: "../fonts/InterTight-Variable.woff2",
@@ -95,6 +96,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <LokiWidgetIntegration />
       </body>
     </html>
   );

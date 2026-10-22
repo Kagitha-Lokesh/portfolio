@@ -13,12 +13,7 @@ import { Achievements } from "./sections/Achievements";
 import { Contact } from "./sections/Contact";
 import { Loader } from "./ui/Loader";
 import { RevealObserver } from "./ui/RevealObserver";
-import dynamic from "next/dynamic";
 
-const AgentWidget = dynamic(
-  () => import("./agent/AgentWidget").then((mod) => mod.AgentWidget),
-  { ssr: false }
-);
 
 export function App() {
   return (
@@ -40,7 +35,6 @@ export function App() {
         <Achievements />
       </main>
       <Contact />
-      <AgentWidget />
     </div>
   );
 }

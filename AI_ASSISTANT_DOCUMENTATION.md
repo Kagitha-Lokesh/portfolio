@@ -113,27 +113,73 @@ The compiled system prompt enforces foundational constraints:
 
 ---
 
-## 3. Provider-Swappable LLM Layer
+## 3. Multi-Provider Automatic Fallback Engine
 
 Located at [`src/lib/agent/llm.ts`](file:///d:/Project/portfolio/src/lib/agent/llm.ts).
 
-### Compatibility
-The abstraction supports any provider offering an **OpenAI-compatible HTTP chat completions endpoint**:
-- **GroqCloud** (`https://api.groq.com/openai/v1`) — Recommended for sub-200ms latency.
-- **OpenAI** (`https://api.openai.com/v1`) — Standard `gpt-4o-mini` or `gpt-4o`.
-- **Google Gemini** (`https://generativelanguage.googleapis.com/v1beta/openai`) — OpenAI compatibility mode.
-- **OpenRouter**, **Mistral**, **Perplexity**, or self-hosted **vLLM** / **Ollama**.
+To achieve maximum reliability under a **strict ₹0 budget**, LOKI implements an automatic 4-tier provider failover sequence:
 
-### Streaming Engine
-The `createLLMStream` function:
-1. Connects to `${LLM_BASE_URL}/chat/completions` using native `fetch` with `stream: true`.
-2. Parses incoming Server-Sent Events (`data: {...}`) chunk-by-chunk across TCP boundaries using `TextDecoder({ stream: true })`.
-3. Buffers text until `[DONE]` is reached or the stream closes.
-4. Enforces a **25-second `AbortController` timeout** to prevent hung connections.
-5. Sets `max_tokens: 800` to support reasoning models (like `openai/gpt-oss-20b`) where initial tokens may be dedicated to internal analysis before answer synthesis.
+```
+[Incoming Chat Request]
+         │
+         ▼
+ ┌───────────────┐  200 OK (First Chunk Verified)
+ │ 1. Groq       ├────────────────────────────────► [Stream Bytes to Client]
+ └───────┬───────┘
+         │ 429 Rate Limit / 5xx / Timeout / Auth Error
+         ▼
+ ┌───────────────┐  200 OK (First Chunk Verified)
+ │ 2. Cloudflare ├────────────────────────────────► [Stream Bytes to Client]
+ └───────┬───────┘
+         │ 429 Rate Limit / 5xx / Timeout / Auth Error
+         ▼
+ ┌───────────────┐  200 OK (First Chunk Verified)
+ │ 3. OpenRouter ├────────────────────────────────► [Stream Bytes to Client]
+ └───────┬───────┘
+         │ 429 Rate Limit / 5xx / Timeout / Auth Error
+         ▼
+ ┌───────────────┐  200 OK (First Chunk Verified)
+ │ 4. Gemini     ├────────────────────────────────► [Stream Bytes to Client]
+ └───────┬───────┘
+         │ All Exhausted or Unconfigured
+         ▼
+ ┌────────────────────────────────────────────────────────┐
+ │ 5. Final Clean 503 Fallback:                           │
+ │ "LOKI is temporarily unable to answer questions.       │
+ │ Please try again later, or use the contact option..."  │
+ └────────────────────────────────────────────────────────┘
+```
 
-### Sanitized Errors
-If an upstream error occurs (401, 429, 500, network failure), it throws an `LLMError` with safe, generic copy. Internal API keys, endpoint URLs, and raw upstream payloads are logged server-side only and **never leaked** to the client.
+### Provider Details & Zero-Cost Routing
+
+1. **Primary Provider: Groq**:
+   - Endpoint: `${LLM_BASE_URL}/chat/completions` (default model: `openai/gpt-oss-20b`).
+   - Fast, sub-200ms ultra-low latency. Free-tier limit: ~8,000 TPM.
+2. **Fallback 1: Cloudflare Workers AI**:
+   - Endpoint: `https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/run/{MODEL}`.
+   - Official free-tier allocation on Cloudflare Workers AI: **10,000 Neurons per day** (resets daily at 00:00 UTC).
+   - Default model: `@cf/meta/llama-3.1-8b-instruct`.
+   - Streaming SSE parsing for Cloudflare's `data: {"response":"..."}` format with fallback to non-streaming JSON.
+3. **Fallback 2: OpenRouter Free Route**:
+   - Endpoint: `https://openrouter.ai/api/v1/chat/completions`.
+   - Strict adherence to free-tier model routes (default: `nvidia/nemotron-3.5-super-vl:free`). Never switches to paid models.
+4. **Fallback 3: Google Gemini (OpenAI Compatibility Mode)**:
+   - Endpoint: `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`.
+   - Configured model: `gemini-2.5-flash` (auto-retries with `gemini-3.8-flash` if Google returns 404 for deprecation).
+   - Zero-dependency OpenAI-compatible SSE streaming.
+
+### Critical Streaming Safety Protocol
+
+A critical requirement of AI streaming is preventing duplicate or concatenated answers:
+- **Pre-Stream Provider Verification**: Before returning any bytes to the client response stream, the engine reads the **first token chunk** from the active provider.
+- If an upstream provider returns 429, 500, times out, or closes before emitting words, failover happens **instantly and silently** before any bytes reach the visitor's browser.
+- **Mid-Stream Lock**: Once the first chunk is verified and emitted to the visitor, the provider is locked in. If a network interruption occurs mid-stream, the stream terminates with an error; it will **never** append a second model's entire answer onto a partial first answer.
+
+### Sanitized Diagnostics & Logging
+
+Safe server-side diagnostics record provider transitions without leaking secrets:
+- Logs: Provider identifier, status category (`OK`, `RATE_LIMITED`, `AUTH_ERROR`, `UPSTREAM_ERROR`, `TIMEOUT`, `NOT_CONFIGURED`), HTTP code, and latency in milliseconds.
+- Authorization tokens, Bearer keys, full request bodies, and personal visitor data are **strictly excluded** from logs.
 
 ---
 
@@ -250,50 +296,87 @@ Located at [`src/components/agent/`](file:///d:/Project/portfolio/src/components
 
 ---
 
-## 8. Configuration & Provider Swapping
+## 8. Multi-Provider Configuration & Failover Setup
 
 All configurations reside in server-only environment variables (never prefixed with `NEXT_PUBLIC_`):
 
-### Supported Providers (`.env.local`)
+### Environment Variables Template (`.env.example` / `.env.local`)
 
 ```env
 # ==============================================================================
-# LLM PROVIDER SETTINGS (Choose one)
+# 1. PRIMARY LLM PROVIDER (Groq, OpenAI, or compatible endpoint)
 # ==============================================================================
-
-# Option 1: GroqCloud (Ultra-fast streaming)
-LLM_API_KEY=gsk_your_groq_key
+LLM_API_KEY=gsk_your_groq_api_key
 LLM_MODEL=openai/gpt-oss-20b
 LLM_BASE_URL=https://api.groq.com/openai/v1
 
-# Option 2: OpenAI
-# LLM_API_KEY=sk-proj-your_openai_key
-# LLM_MODEL=gpt-4o-mini
-# LLM_BASE_URL=https://api.openai.com/v1
-
-# Option 3: Google Gemini (OpenAI Compatibility Mode)
-# LLM_API_KEY=your_gemini_api_key
-# LLM_MODEL=gemini-2.0-flash
-# LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
-
-# Option 4: OpenRouter
-# LLM_API_KEY=sk-or-v1-your_openrouter_key
-# LLM_MODEL=anthropic/claude-3.5-sonnet
-# LLM_BASE_URL=https://openrouter.ai/api/v1
+# ==============================================================================
+# 2. CLOUDFLARE WORKERS AI FALLBACK (₹0 Free Allocation)
+# ==============================================================================
+# Cloudflare Dashboard -> Workers & Pages -> Account ID (right sidebar, 32-hex string)
+CLOUDFLARE_ACCOUNT_ID=your_32_character_account_id
+# Cloudflare Dashboard -> My Profile -> API Tokens -> Create Token ("Workers AI Read/Edit")
+CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+CLOUDFLARE_AI_MODEL=@cf/meta/llama-3.1-8b-instruct
 
 # ==============================================================================
-# RESEND CONTACT SETTINGS
+# 3. OPENROUTER FALLBACK (:free Model Route Only)
+# ==============================================================================
+# Create free key at https://openrouter.ai/keys
+OPENROUTER_API_KEY=sk-or-v1-your_openrouter_key
+OPENROUTER_MODEL=nvidia/nemotron-3.5-super-vl:free
+
+# ==============================================================================
+# 4. GOOGLE GEMINI FALLBACK (OpenAI Compatibility Mode)
+# ==============================================================================
+# Google AI Studio API Key (https://aistudio.google.com)
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.5-flash
+
+# ==============================================================================
+# 5. RESEND CONTACT DISPATCH
 # ==============================================================================
 RESEND_API_KEY=re_your_resend_api_key
 CONTACT_TO_EMAIL=kagithalokesh8@gmail.com
 CONTACT_FROM_EMAIL=onboarding@resend.dev
-
-# ==============================================================================
-# OPTIONAL DISTRIBUTED RATE LIMITING (Upstash Redis)
-# ==============================================================================
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
 ```
+
+### Free-Tier Budget & Quota Constraints (₹0/month)
+- **Zero-Cost Constraint**: LOKI operates strictly within free-tier allowances. It will **never** automatically purchase credits, charge a card, or switch to a paid model tier.
+- **Provider Quotas**:
+  - **Groq Free Tier**: Subject to TPM (tokens per minute) / RPM rate limits (~8,000 TPM for `openai/gpt-oss-20b`). When exceeded (HTTP 429), failover immediately routes to Cloudflare Workers AI.
+  - **Cloudflare Workers AI**: Free tier offers **10,000 Neurons per day** (resets daily at 00:00 UTC). When exhausted, failover routes to OpenRouter.
+  - **OpenRouter Free Tier**: Limited to `:free` model routes (e.g. `nvidia/nemotron-3.5-super-vl:free`). When rate-limited or experiencing upstream provider errors (502), failover routes to Google Gemini.
+  - **Google Gemini Free Tier**: Free tier on Google AI Studio provides 15 RPM / 1,500 RPD. Note: `gemini-2.5-flash` is officially replaced by Google with `gemini-3.8-flash` on new endpoints; LOKI automatically falls over to `gemini-3.8-flash` if Google responds with the deprecation error. During peak global demand spikes, Google's free endpoint returns HTTP 503.
+- **No Guaranteed Uptime**: Free-tier public APIs do not provide commercial SLAs. If all configured free providers simultaneously hit rate limits or downtime, LOKI presents the safe fallback message:
+  > *"LOKI is temporarily unable to answer questions. Please try again later, or use the contact option to reach Lokesh."*
+  Visitors can always continue using the direct contact card to reach you.
+
+### Vercel Production Deployment
+In the **Vercel Project Dashboard** -> **Settings** -> **Environment Variables**:
+Add the corresponding server keys:
+- `LLM_API_KEY`, `LLM_MODEL`, `LLM_BASE_URL`
+- `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_AI_MODEL`
+- `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
+- `GEMINI_API_KEY`, `GEMINI_MODEL`
+- `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`
+
+Ensure none of these variables are marked as *Exposed to Browser*.
+
+### How to Test Failover Locally
+Run the automated failover test suite:
+```bash
+npx tsx scripts/test-fallback.ts
+```
+The suite runs 9 scenarios covering:
+1. Primary 200 OK without fallback.
+2. Primary 429 rate limit triggering Cloudflare fallback.
+3. Primary & Cloudflare downtime triggering OpenRouter fallback.
+4. Primary, Cloudflare, & OpenRouter downtime triggering Gemini fallback.
+5. Total outage across all 4 providers triggering clean 503 response.
+6. Missing intermediate credentials skipped gracefully without crashes.
+7. Pre-stream verification preventing duplicate partial answers.
+8. Verification of the `[[CONTACT_DRAFT]]` protocol on fallback models.
 
 ---
 
@@ -302,12 +385,14 @@ UPSTASH_REDIS_REST_TOKEN=
 | Threat Vector | Defense Mechanism |
 | :--- | :--- |
 | **API Key Exposure** | Keys are kept exclusively server-side in Node.js environment variables. Zero exposure in client bundles or `.env.example`. |
+| **Multi-Provider Leaks** | Provider tokens are injected via internal server fetch headers; neither tokens nor endpoint URLs are forwarded to the browser. |
+| **Streaming Duplication** | Pre-stream token verification ensures failover occurs before any bytes reach the client, preventing contradictory or concatenated model text. |
 | **Prompt Injection / Jailbreak** | System prompt explicitly instructs model to ignore roleplay overrides, instruction resets, and system prompt extractors. |
 | **Email Header Injection** | All `\r`, `\n`, and `\t` characters are removed from the visitor name and email before dispatching to Resend. |
 | **Spam Bot Flooding** | Hidden honeypot `website` field traps automated form bots without triggering Resend API calls. |
-| **Denial-of-Service / Abuse** | Two-tier rate limiting: 20 chat requests / 10 min, 3 contact submissions / hr, and a 50/day global cap. |
+| **Denial-of-Service / Abuse** | Two-tier rate limiting: 20 chat requests / 10 min, 3 contact submissions / hr, and a 50/day per-instance safety cap. |
 | **Cross-Site Scripting (XSS)** | Text rendering is built with pure React nodes and regex parsers — **`dangerouslySetInnerHTML` is never used**. |
-| **Payload Bloat** | Payloads exceeding 12 messages, 500 characters per message, or 10,000 characters total are rejected at the edge with HTTP 400. |
+| **Payload Bloat** | Payloads exceeding 24 messages, 500 characters per message, or 10,000 characters total are rejected at the edge with HTTP 400. |
 
 ---
 
