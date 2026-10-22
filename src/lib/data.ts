@@ -173,7 +173,7 @@ export const EDUCATION: EducationItem[] = [
     id: "edu-1",
     institution: "SRI VASAVI INSTITUTE OF ENGINEERING & TECHNOLOGY",
     degree: "B.Tech in CSE (Artificial Intelligence & Machine Learning)",
-    period: "2022 – 2026",
+    period: "2022 – 2026 (Completed)",
     location: "Pedana, Andhra Pradesh",
     cgpa: "8.0",
   },
@@ -228,9 +228,9 @@ export const TIMELINE: TimelineItem[] = [
   {
     id: "tl-3",
     year: "2022 – 2026",
-    title: "B.Tech in CSE (AI & ML) — CGPA: 8.0",
+    title: "B.Tech in CSE (AI & ML) — CGPA: 8.0 (Completed)",
     place: "Sri Vasavi Institute of Engineering & Technology · Pedana, Andhra Pradesh",
-    detail: "Specialized in Computer Science with Artificial Intelligence & Machine Learning coursework and applied engineering.",
+    detail: "Graduated with B.Tech in Computer Science with Artificial Intelligence & Machine Learning coursework and applied engineering.",
     type: "education",
   },
   {

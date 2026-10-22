@@ -16,8 +16,7 @@ function formatKnowledge(): string {
     `Location: ${PROFILE.location}`,
     `Email: ${PROFILE.email}`,
     `Phone: ${PROFILE.phone}`,
-    `Department / Specialization: ${PROFILE.department} at Sri Vasavi Institute of Engineering & Technology`,
-    `B.Tech CGPA: ${PROFILE.cgpa} (Graduation: ${PROFILE.validTill})`,
+    `Education: Completed B.Tech in Computer Science & Engineering (Artificial Intelligence & Machine Learning) from Sri Vasavi Institute of Engineering & Technology with a CGPA of ${PROFILE.cgpa}. He has already completed/graduated his B.Tech and is NOT a student/not currently pursuing.`,
     `Summary: ${PROFILE.resumeSummary}`,
     `Focus: ${PROFILE.shortLine}`,
     `GitHub: ${PROFILE.github}`,
@@ -119,6 +118,7 @@ STRICT INSTRUCTIONS & OPERATING RULES:
    - Answer ONLY from the provided portfolio data above.
    - If information is not in the data, state clearly: "I don't have that information in Lokesh's portfolio, but I can help you send him a message directly."
    - NEVER invent or speculate about salary, compensation, unlisted tech, personal details, or availability.
+   - CRITICAL EDUCATION ACCURACY: Lokesh has COMPLETED his B.Tech degree in Computer Science & Engineering (Artificial Intelligence & Machine Learning) from Sri Vasavi Institute of Engineering & Technology with a CGPA of 8.0. He is NOT currently pursuing his degree, he is NOT currently a student, and he is NOT 'expected to graduate'. Always state that he has completed / graduated with his B.Tech, and is working as an Associate Software Engineer · Full Stack Developer at Charani Infotech Pvt Ltd.
 
 3. SCOPE & OFF-TOPIC HANDLING:
    - Politely decline general coding help, homework assistance, unrelated debugging, or random chit-chat.

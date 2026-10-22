@@ -544,7 +544,7 @@ function composeEducation(query: string): { text: string; navAction: NavAction }
 
   if (norm.includes("cgpa") || norm.includes("gpa") || norm.includes("grade")) {
     const btech = EDUCATION[0];
-    const text = `Lokesh holds a cumulative **CGPA of ${btech.cgpa} / 10** in his ${btech.degree} from ${btech.institution} (${btech.period}).`;
+    const text = `Lokesh completed his **${btech.degree}** from ${btech.institution} with a cumulative **CGPA of ${btech.cgpa} / 10**.`;
     return {
       text,
       navAction: { section: "about", label: "View Education Details" },
@@ -552,7 +552,7 @@ function composeEducation(query: string): { text: string; navAction: NavAction }
   }
 
   const lines = [
-    "Here is Lokesh Kagitha's educational background:",
+    "Here is Lokesh Kagitha's educational background (he has completed his B.Tech):",
     "",
     ...EDUCATION.map(
       (e) =>
@@ -650,7 +650,7 @@ function composeProfile(query: string = ""): { text: string; navAction: NavActio
     `${PROFILE.resumeSummary}`,
     "",
     `- **Current Role**: Associate Software Engineer at Charani Infotech Pvt Ltd (Hyderabad)`,
-    `- **Education**: B.Tech in CSE (AI & ML) at Sri Vasavi Institute of Engineering & Technology (CGPA: ${PROFILE.cgpa})`,
+    `- **Education**: Completed B.Tech in CSE (AI & ML) from Sri Vasavi Institute of Engineering & Technology (CGPA: ${PROFILE.cgpa})`,
     `- **Focus**: ${PROFILE.shortLine}`,
     `- **GitHub**: ${PROFILE.github}`,
     `- **LinkedIn**: ${PROFILE.linkedin}`,

@@ -38,9 +38,9 @@
       '<ellipse data-r="ear" cx="110.5" cy="231" rx="5.2" ry="19" fill="url(#' + p + 'earg)"/>' +
       '<ellipse cx="118.5" cy="231" rx="5.6" ry="21" fill="#0d0c0b"/>';
     var eye = function (n, x) {
-      return '<g data-r="' + n + '" transform="translate(' + x + ' 233)"><path d="M-16 6 Q0 -22 16 6" fill="none" stroke="#ffeec8" stroke-width="5.5" stroke-linecap="round"/><circle r="0.01" fill="#ffeec8" opacity="0"/></g>';
+      return '<g class="loki-eye" data-r="' + n + '" transform="translate(' + x + ' 233)"><path d="M-16 6 Q0 -22 16 6" fill="none" stroke="#ffeec8" stroke-width="5.5" stroke-linecap="round"/><circle r="0.01" fill="#ffeec8" opacity="0"/></g>';
     };
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="88 58 224 244" aria-hidden="true" focusable="false">' +
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="76 54 248 312" aria-hidden="true" focusable="false">' +
       '<defs>' +
       '<radialGradient id="' + p + 'helm" cx=".34" cy=".26" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#f7f3ea"/><stop offset=".8" stop-color="#e4ddcb"/><stop offset="1" stop-color="#c9c0aa"/></radialGradient>' +
       '<linearGradient id="' + p + 'rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf6"/><stop offset="1" stop-color="#d6cdb7"/></linearGradient>' +
@@ -48,24 +48,63 @@
       '<linearGradient id="' + p + 'visor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f1d1a"/><stop offset="1" stop-color="#040404"/></linearGradient>' +
       '<linearGradient id="' + p + 'gloss" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
       '<radialGradient id="' + p + 'earg" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#fff3d2"/><stop offset="1" stop-color="#e6cd92"/></radialGradient>' +
-      /* one blur only (the original used two per frame); cheaper to re-rasterise */
+      '<radialGradient id="' + p + 'core" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="#ffeec8"/><stop offset=".5" stop-color="#e4c98a"/><stop offset="1" stop-color="#8c6a28"/></radialGradient>' +
       '<filter id="' + p + 'glow" x="-60%" y="-80%" width="220%" height="260%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
       '<filter id="' + p + 'blur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>' +
       '<clipPath id="' + p + 'clip"><rect x="134" y="190" width="132" height="82" rx="41"/></clipPath>' +
       '</defs>' +
-      '<g class="lk-intro"><g data-r="float"><g data-r="head">' +
-      '<ellipse cx="200" cy="217" rx="80" ry="72" fill="url(#' + p + 'helm)" stroke="rgba(13,13,13,0.12)" stroke-width="1.5"/>' +
-      '<path d="M124 206 Q200 160 276 206" fill="none" stroke="#d3cab4" stroke-width="1.2" opacity=".8"/>' +
-      '<g data-r="hornL">' + hornGlow + hornBody + '</g>' +
-      '<g data-r="hornR"><g transform="translate(400 0) scale(-1 1)">' + hornGlow + hornBody + '</g></g>' +
-      '<g>' + ear + '</g><g transform="translate(400 0) scale(-1 1)">' + ear + '</g>' +
-      '<rect x="127" y="184" width="146" height="94" rx="47" fill="url(#' + p + 'rim)"/>' +
-      '<rect x="134" y="190" width="132" height="82" rx="41" fill="url(#' + p + 'visor)"/>' +
-      '<g clip-path="url(#' + p + 'clip)"><g data-r="gloss"><path d="M138 200 Q178 188 222 192 Q172 208 142 240Z" fill="url(#' + p + 'gloss)"/><ellipse cx="156" cy="206" rx="9" ry="3.4" transform="rotate(-18 156 206)" fill="#fff" opacity=".28"/></g></g>' +
-      '<g data-r="eyes" filter="url(#' + p + 'glow)">' + eye('eyeL', 167) + eye('eyeR', 233) + '</g>' +
-      '<path d="M200 150 C203 168 214 180 219 187 C210 190 204 196 200 204 C196 196 190 190 181 187 C186 180 197 168 200 150Z" fill="url(#' + p + 'gold)"/>' +
-      '<path d="M200 172 L205 184 L200 197 L195 184Z" fill="#0f0e0c"/>' +
-      '</g></g></g></svg>';
+      '<g class="lk-char-root loki-root">' +
+      '<ellipse class="loki-shadow" data-r="shadow" cx="200" cy="354" rx="42" ry="5.5" fill="#0d0d0d" opacity=".14"/>' +
+      '<g class="lk-intro" data-r="float">' +
+      '<g class="loki-legs" data-r="legs">' +
+        '<g class="loki-left-leg" data-r="legL">' +
+          '<rect x="178" y="318" width="13" height="23" rx="5.5" fill="url(#' + p + 'rim)" stroke="rgba(13,13,13,0.14)" stroke-width="1"/>' +
+          '<path d="M172 341 C172 337 180 337 190 337 C193 337 194 340 194 343 C194 346 191 348 174 348 C172 348 172 344 172 341 Z" fill="url(#' + p + 'gold)" stroke="rgba(13,13,13,0.12)" stroke-width="1"/>' +
+        '</g>' +
+        '<g class="loki-right-leg" data-r="legR">' +
+          '<rect x="209" y="318" width="13" height="23" rx="5.5" fill="url(#' + p + 'rim)" stroke="rgba(13,13,13,0.14)" stroke-width="1"/>' +
+          '<path d="M206 343 C206 340 207 337 210 337 C220 337 228 337 228 341 C228 344 228 348 226 348 C209 348 206 346 206 343 Z" fill="url(#' + p + 'gold)" stroke="rgba(13,13,13,0.12)" stroke-width="1"/>' +
+        '</g>' +
+      '</g>' +
+      '<g class="loki-body" data-r="body">' +
+        '<path d="M164 266 C164 261 170 259 200 259 C230 259 236 261 236 266 L233 312 C233 317 227 320 200 320 C173 320 167 317 167 312 Z" fill="url(#' + p + 'helm)" stroke="rgba(13,13,13,0.14)" stroke-width="1.4"/>' +
+        '<rect x="175" y="271" width="50" height="34" rx="8" fill="url(#' + p + 'visor)" stroke="url(#' + p + 'rim)" stroke-width="1"/>' +
+        '<circle data-r="core" cx="200" cy="288" r="8" fill="url(#' + p + 'core)" stroke="#0f0e0c" stroke-width="1.2"/>' +
+        '<circle cx="200" cy="288" r="3.2" fill="#ffeec8" opacity=".9"/>' +
+        '<rect x="178" y="313" width="44" height="6" rx="3" fill="url(#' + p + 'gold)" stroke="rgba(13,13,13,0.12)" stroke-width=".8"/>' +
+      '</g>' +
+      '<g class="loki-left-arm" data-r="armL">' +
+        '<circle cx="160" cy="272" r="5.5" fill="url(#' + p + 'rim)" stroke="rgba(13,13,13,0.12)" stroke-width="1"/>' +
+        '<path d="M160 272 L148 297" stroke="url(#' + p + 'helm)" stroke-width="8" stroke-linecap="round"/>' +
+        '<circle cx="148" cy="297" r="4.2" fill="url(#' + p + 'gold)"/>' +
+        '<g class="loki-left-hand" data-r="handL">' +
+          '<ellipse cx="145" cy="311" rx="5.8" ry="6.2" fill="url(#' + p + 'gold)" stroke="rgba(13,13,13,0.15)" stroke-width="1"/>' +
+          '<path d="M142 310 Q145 314 148 310" fill="none" stroke="#0f0e0c" stroke-width="1.2" stroke-linecap="round"/>' +
+        '</g>' +
+      '</g>' +
+      '<g class="loki-right-arm" data-r="armR">' +
+        '<circle cx="240" cy="272" r="5.5" fill="url(#' + p + 'rim)" stroke="rgba(13,13,13,0.12)" stroke-width="1"/>' +
+        '<path d="M240 272 L252 297" stroke="url(#' + p + 'helm)" stroke-width="8" stroke-linecap="round"/>' +
+        '<circle cx="252" cy="297" r="4.2" fill="url(#' + p + 'gold)"/>' +
+        '<g class="loki-right-hand" data-r="handR">' +
+          '<ellipse cx="255" cy="311" rx="5.8" ry="6.2" fill="url(#' + p + 'gold)" stroke="rgba(13,13,13,0.15)" stroke-width="1"/>' +
+          '<path d="M252 310 Q255 314 258 310" fill="none" stroke="#0f0e0c" stroke-width="1.2" stroke-linecap="round"/>' +
+        '</g>' +
+      '</g>' +
+      '<g class="loki-head" data-r="head">' +
+        '<ellipse cx="200" cy="217" rx="80" ry="72" fill="url(#' + p + 'helm)" stroke="rgba(13,13,13,0.12)" stroke-width="1.5"/>' +
+        '<path d="M124 206 Q200 160 276 206" fill="none" stroke="#d3cab4" stroke-width="1.2" opacity=".8"/>' +
+        '<g class="loki-antenna" data-r="hornL">' + hornGlow + hornBody + '</g>' +
+        '<g class="loki-antenna" data-r="hornR"><g transform="translate(400 0) scale(-1 1)">' + hornGlow + hornBody + '</g></g>' +
+        '<g>' + ear + '</g><g transform="translate(400 0) scale(-1 1)">' + ear + '</g>' +
+        '<rect x="127" y="184" width="146" height="94" rx="47" fill="url(#' + p + 'rim)"/>' +
+        '<rect x="134" y="190" width="132" height="82" rx="41" fill="url(#' + p + 'visor)"/>' +
+        '<g clip-path="url(#' + p + 'clip)"><g data-r="gloss"><path d="M138 200 Q178 188 222 192 Q172 208 142 240Z" fill="url(#' + p + 'gloss)"/><ellipse cx="156" cy="206" rx="9" ry="3.4" transform="rotate(-18 156 206)" fill="#fff" opacity=".28"/></g></g>' +
+        '<g class="loki-face-details" data-r="eyes" filter="url(#' + p + 'glow)">' + eye('eyeL', 167) + eye('eyeR', 233) + '</g>' +
+        '<path d="M200 150 C203 168 214 180 219 187 C210 190 204 196 200 204 C196 196 190 190 181 187 C186 180 197 168 200 150Z" fill="url(#' + p + 'gold)"/>' +
+        '<path d="M200 172 L205 184 L200 197 L195 184Z" fill="#0f0e0c"/>' +
+      '</g>' +
+      '</g></g></svg>';
   }
 
   /* ---------------- moods ---------------- */
@@ -198,7 +237,7 @@
     'font:14.5px/1.55 var(--font);color:var(--ink);-webkit-text-size-adjust:100%}',
     'button{font:inherit;color:inherit;cursor:pointer}',
     ':focus-visible{outline:2px solid var(--ink);outline-offset:2px}',
-    '.mini{display:block;flex:none;width:38px;height:42px}',
+    '.mini{display:block;flex:none;width:38px;height:48px}',
     '.mini svg{display:block;width:100%;height:100%;overflow:visible}',
 
     /* Desktop launcher: warm white pill, subtle border, near-black typography, natural shadow */
@@ -240,7 +279,7 @@
 
     /* Clean light header: white background, subtle bottom divider, near-black title, muted subtitle */
     '.head{display:flex;align-items:center;gap:11px;padding:12px 14px 12px 16px;background:var(--card);border-bottom:1px solid var(--line-light)}',
-    '.head .mini{width:38px;height:42px}',
+    '.head .mini{width:36px;height:45px}',
     '.who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}',
     '.who strong{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}',
     '.who span{font-size:11.5px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}',
@@ -340,22 +379,127 @@
     '.launcher small{display:none}',
     '}',
 
+    /* Character Articulation and Transform Origins */
+    '[data-r="head"],.loki-head{transform-origin:200px 255px}',
+    '[data-r="armL"],.loki-left-arm{transform-origin:160px 272px}',
+    '[data-r="armR"],.loki-right-arm{transform-origin:240px 272px}',
+    '[data-r="handL"],.loki-left-hand{transform-origin:145px 311px}',
+    '[data-r="handR"],.loki-right-hand{transform-origin:255px 311px}',
+    '[data-r="hornL"]{transform-origin:140px 205px}',
+    '[data-r="hornR"]{transform-origin:260px 205px}',
+    '[data-r="shadow"],.loki-shadow{transform-origin:200px 354px}',
+    '[data-r="legs"],.loki-legs{transform-origin:200px 320px}',
+    '[data-r="body"],.loki-body{transform-origin:200px 290px}',
+    '[data-r="core"]{transform-origin:200px 288px}',
+
+    /* Intro pop */
     '.lk-intro{transform-box:fill-box;transform-origin:50% 75%;animation:lkpop .9s cubic-bezier(.2,.9,.25,1.12) both}',
-    '.mini.lk-greeting{animation:lkgreet 850ms cubic-bezier(.2,.8,.25,1) both;transform-origin:50% 85%}',
-    '.mini.lk-attention{animation:lkperk 700ms cubic-bezier(.2,.8,.25,1) both;transform-origin:50% 85%}',
-    '.launcher:hover .mini,.launcher:focus-visible .mini{animation:lkhover 680ms cubic-bezier(.2,.8,.25,1) both;transform-origin:50% 85%}',
-    '.launcher:hover .mini [data-r="eyes"],.launcher:focus-visible .mini [data-r="eyes"]{animation:lkeyehover 680ms ease-out both}',
-    '.launcher:hover .mini [data-r="hornL"],.launcher:focus-visible .mini [data-r="hornL"]{animation:lkhornl 680ms ease-out both;transform-origin:140px 205px}',
-    '.launcher:hover .mini [data-r="hornR"],.launcher:focus-visible .mini [data-r="hornR"]{animation:lkhornr 680ms ease-out both;transform-origin:260px 205px}',
+
+    /* Idle subtle body & shadow breathing (JS also moves float smoothly) */
+    '.mini:not(.lk-st-sleeping) [data-r="body"]{animation:lkidlebody 3.6s ease-in-out infinite}',
+    '.mini:not(.lk-st-sleeping) [data-r="shadow"]{animation:lkidleshadow 3.6s ease-in-out infinite}',
+    '@keyframes lkidlebody{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}',
+    '@keyframes lkidleshadow{0%,100%{transform:scale(1);opacity:.14}50%{transform:scale(.92);opacity:.09}}',
+
+    /* State B & C: Friendly Arrival Greeting and Interactive Hand Wave */
+    '.mini.lk-st-greeting [data-r="armR"],.mini.lk-st-waving [data-r="armR"],.mini.lk-greeting [data-r="armR"]{animation:lkwavearm 1.25s cubic-bezier(.25,1,.3,1) both}',
+    '.mini.lk-st-greeting [data-r="head"],.mini.lk-st-waving [data-r="head"],.mini.lk-greeting [data-r="head"]{animation:lkgreethead 1.25s cubic-bezier(.25,1,.3,1) both}',
+    '@keyframes lkwavearm{0%{transform:rotate(0deg)}20%{transform:rotate(-105deg)}35%{transform:rotate(-78deg)}50%{transform:rotate(-105deg)}65%{transform:rotate(-78deg)}80%{transform:rotate(-100deg)}100%{transform:rotate(0deg)}}',
+    '@keyframes lkgreethead{0%,100%{transform:translate(0,0) rotate(0deg)}20%{transform:translate(-2px,-4px) rotate(-6deg)}55%{transform:translate(1px,-2px) rotate(4deg)}80%{transform:translate(0,-1px) rotate(-1deg)}}',
+
+    /* State A: Curious (tilt head, shift eyes, raise hand near face) */
+    '.mini.lk-st-curious [data-r="head"]{animation:lkcurioushead 900ms cubic-bezier(.2,.8,.25,1) both}',
+    '.mini.lk-st-curious [data-r="armR"]{animation:lkcuriousarm 900ms ease-out both}',
+    '.mini.lk-st-curious [data-r="hornL"]{animation:lkcurioushornl 900ms ease-out both}',
+    '@keyframes lkcurioushead{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(8deg) translateY(-2px)}}',
+    '@keyframes lkcuriousarm{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(-45deg) translate(-2px,-3px)}}',
+    '@keyframes lkcurioushornl{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(-6deg)}}',
+
+    /* State C: Beckon ("Come talk / explore" inviting gesture) */
+    '.mini.lk-st-beckoning [data-r="armR"],.mini.lk-st-beckon [data-r="armR"]{animation:lkbeckonarm 1.15s cubic-bezier(.25,1,.3,1) both}',
+    '.mini.lk-st-beckoning [data-r="handR"],.mini.lk-st-beckon [data-r="handR"]{animation:lkbeckonhand 1.15s cubic-bezier(.25,1,.3,1) both}',
+    '.mini.lk-st-beckoning [data-r="head"],.mini.lk-st-beckon [data-r="head"]{animation:lkbeckonhead 1.15s cubic-bezier(.25,1,.3,1) both}',
+    '@keyframes lkbeckonarm{0%,100%{transform:rotate(0deg)}20%,80%{transform:rotate(-52deg)}}',
+    '@keyframes lkbeckonhand{0%,100%{transform:rotate(0deg)}30%{transform:rotate(-30deg)}50%{transform:rotate(-10deg)}70%{transform:rotate(-30deg)}}',
+    '@keyframes lkbeckonhead{0%,100%{transform:translateY(0) rotate(0deg)}25%,75%{transform:translateY(-2px) rotate(4deg)}}',
+
+    /* State D: Point Toward Launcher / Chat */
+    '.mini.lk-st-pointing [data-r="armR"]{animation:lkpointarm 1.2s cubic-bezier(.2,1,.3,1) both}',
+    '.mini.lk-st-pointing [data-r="head"]{animation:lkpointhead 1.2s cubic-bezier(.2,1,.3,1) both}',
+    '@keyframes lkpointarm{0%,100%{transform:rotate(0deg)}25%,75%{transform:rotate(-72deg)}}',
+    '@keyframes lkpointhead{0%,100%{transform:rotate(0deg)}25%,75%{transform:translateY(-1px) rotate(-3deg)}}',
+
+    /* State E: Attention Invitation */
+    '.mini.lk-st-attention [data-r="head"],.mini.lk-attention [data-r="head"]{animation:lkperkhead 750ms cubic-bezier(.2,.8,.25,1) both}',
+    '.mini.lk-st-attention [data-r="armR"],.mini.lk-attention [data-r="armR"]{animation:lkperkarm 750ms ease-out both}',
+    '@keyframes lkperkhead{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-4px) rotate(-5deg)}55%{transform:translateY(-2px) rotate(4deg)}80%{transform:translateY(0) rotate(-1deg)}}',
+    '@keyframes lkperkarm{0%,100%{transform:rotate(0deg)}25%,65%{transform:rotate(-45deg)}}',
+
+    /* State F: Sustained Hover Resting Attention & Smooth Exit */
+    '.launcher:hover .mini:not([class*="lk-st-"]) [data-r="head"],.launcher:focus-visible .mini:not([class*="lk-st-"]) [data-r="head"]{transform:translateY(-1.5px) rotate(4deg);transition:transform .3s ease}',
+    '.launcher:hover .mini:not([class*="lk-st-"]) [data-r="eyes"],.launcher:focus-visible .mini:not([class*="lk-st-"]) [data-r="eyes"]{filter:brightness(1.25) drop-shadow(0 0 2px #ffeec8);transition:filter .3s ease}',
+    '.launcher .mini [data-r="head"],.launcher .mini [data-r="armR"],.launcher .mini [data-r="handR"],.launcher .mini [data-r="eyes"]{transition:transform .35s ease,filter .35s ease}',
+
+    /* Hover Micro-Animation Keyframes (Triggered via JS context controller) */
+    '.launcher:hover .mini [data-r="hornL"],.launcher:focus-visible .mini [data-r="hornL"]{animation:lkhornl 700ms ease-out both}',
+    '.launcher:hover .mini [data-r="hornR"],.launcher:focus-visible .mini [data-r="hornR"]{animation:lkhornr 700ms ease-out both}',
+    '@keyframes lkhoverhead{0%,100%{transform:translateY(0) rotate(0deg)}22%{transform:translateY(-3px) rotate(-6deg)}50%{transform:translateY(-1.5px) rotate(4deg)}75%{transform:translateY(0) rotate(-1deg)}}',
+    '@keyframes lkhoverarm{0%,100%{transform:rotate(0deg)}25%,60%{transform:rotate(-35deg)}}',
+    '@keyframes lkeyehover{0%,100%{filter:none}30%,70%{filter:brightness(1.25) drop-shadow(0 0 2px #ffeec8)}}',
+    '@keyframes lkhornl{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-6deg)}60%{transform:rotate(3deg)}}',
+    /* State H: Thinking (Active backend AI query) */
+    '.mini.lk-st-thinking [data-r="armL"]{animation:lkthinkarm 1.8s ease-in-out infinite alternate}',
+    '.mini.lk-st-thinking [data-r="head"]{animation:lkthinkhead 2.4s ease-in-out infinite alternate}',
+    '.mini.lk-st-thinking [data-r="eyes"]{animation:lkthinkeyes 1.6s ease-in-out infinite}',
+    '.mini.lk-st-thinking [data-r="core"]{animation:lkthinkcore 1.2s ease-in-out infinite alternate}',
+    '@keyframes lkthinkarm{0%{transform:rotate(50deg)}100%{transform:rotate(62deg)}}',
+    '@keyframes lkthinkhead{0%{transform:rotate(-4deg) translateY(-1px)}100%{transform:rotate(-8deg) translateY(-2px)}}',
+    '@keyframes lkthinkeyes{0%,100%{opacity:.75}50%{opacity:1;filter:drop-shadow(0 0 3px #ffeec8)}}',
+    '@keyframes lkthinkcore{0%{filter:brightness(1)}100%{filter:brightness(1.4) drop-shadow(0 0 3px #e4c98a)}}',
+
+    /* State I: Explaining (Response received) */
+    '.mini.lk-st-explaining [data-r="armR"]{animation:lkexplainarm 1.3s cubic-bezier(.2,1,.3,1) both}',
+    '.mini.lk-st-explaining [data-r="head"]{animation:lkexplainhead 1.3s cubic-bezier(.2,1,.3,1) both}',
+    '@keyframes lkexplainarm{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-55deg)}65%{transform:rotate(-32deg)}}',
+    '@keyframes lkexplainhead{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-3px) rotate(3deg)}65%{transform:translateY(-1px) rotate(-1deg)}}',
+
+    /* State J: Celebrating (Successful contact message sent) */
+    '.mini.lk-st-celebrating [data-r="armL"]{animation:lkcelebarmL 1.1s cubic-bezier(.18,.9,.3,1.15) both}',
+    '.mini.lk-st-celebrating [data-r="armR"]{animation:lkcelebarmR 1.1s cubic-bezier(.18,.9,.3,1.15) both}',
+    '.mini.lk-st-celebrating [data-r="head"]{animation:lkcelebhead 1.1s cubic-bezier(.18,.9,.3,1.15) both}',
+    '.mini.lk-st-celebrating [data-r="legs"]{animation:lkceleblegs 1.1s cubic-bezier(.18,.9,.3,1.15) both}',
+    '@keyframes lkcelebarmL{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(115deg)}}',
+    '@keyframes lkcelebarmR{0%,100%{transform:rotate(0deg)}30%,75%{transform:rotate(-115deg)}}',
+    '@keyframes lkcelebhead{0%,100%{transform:translateY(0)}25%{transform:translateY(-6px)}45%{transform:translateY(0)}65%{transform:translateY(-4px)}}',
+    '@keyframes lkceleblegs{0%,100%{transform:translateY(0)}25%{transform:translateY(-4px)}45%{transform:translateY(0)}65%{transform:translateY(-2px)}}',
+
+    /* State L: Surprised */
+    '.mini.lk-st-surprised [data-r="head"]{animation:lksurprisedhead 800ms cubic-bezier(.2,.9,.2,1.1) both}',
+    '.mini.lk-st-surprised [data-r="hornL"]{animation:lksurprisedhornl 800ms ease-out both}',
+    '.mini.lk-st-surprised [data-r="hornR"]{animation:lksurprisedhornr 800ms ease-out both}',
+    '@keyframes lksurprisedhead{0%,100%{transform:translateY(0) scale(1)}25%,65%{transform:translateY(-5px) scale(1.04)}}',
+    '@keyframes lksurprisedhornl{0%,100%{transform:rotate(0deg)}25%,65%{transform:rotate(-8deg)}}',
+    '@keyframes lksurprisedhornr{0%,100%{transform:rotate(0deg)}25%,65%{transform:rotate(8deg)}}',
+
+    /* State M: Sleeping */
+    '.mini.lk-st-sleeping [data-r="head"]{transform:translateY(2px) rotate(6deg);transition:transform .8s ease}',
+    '.mini.lk-st-sleeping [data-r="hornL"]{transform:rotate(4deg);transition:transform .8s ease}',
+    '.mini.lk-st-sleeping [data-r="hornR"]{transform:rotate(-4deg);transition:transform .8s ease}',
+
+    /* State N: Goodbye */
+    '.mini.lk-st-goodbye [data-r="head"]{animation:lkgoodbyehead 700ms ease-out both}',
+    '.mini.lk-st-goodbye [data-r="armR"]{animation:lkgoodbyearm 700ms ease-out both}',
+    '@keyframes lkgoodbyehead{0%,100%{transform:translateY(0)}40%{transform:translateY(3px) rotate(2deg)}}',
+    '@keyframes lkgoodbyearm{0%,100%{transform:rotate(0deg)}35%,70%{transform:rotate(-60deg)}}',
+
     '@keyframes lkpop{from{opacity:0;transform:scale(.75) translateY(18px)}}',
-    '@keyframes lkgreet{0%{transform:translateY(0) rotate(0deg) scale(1)}18%{transform:translateY(-8px) rotate(-8deg) scale(1.08)}40%{transform:translateY(-3px) rotate(7deg) scale(1.04)}65%{transform:translateY(-1px) rotate(-4deg) scale(1.02)}82%{transform:translateY(0) rotate(1.5deg) scale(1)}100%{transform:translateY(0) rotate(0deg) scale(1)}}',
-    '@keyframes lkperk{0%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-5px) rotate(-5deg) scale(1.05)}55%{transform:translateY(-2px) rotate(4deg) scale(1.02)}80%{transform:translateY(0) rotate(-1deg) scale(1)}100%{transform:translateY(0) rotate(0deg) scale(1)}}',
-    '@keyframes lkhover{0%{transform:translateY(0) rotate(0deg) scale(1)}20%{transform:translateY(-3px) rotate(-7deg) scale(1.05)}45%{transform:translateY(-2px) rotate(6deg) scale(1.03)}70%{transform:translateY(-0.5px) rotate(-2deg) scale(1.01)}88%{transform:translateY(0) rotate(0.5deg) scale(1)}100%{transform:translateY(0) rotate(0deg) scale(1)}}',
-    '@keyframes lkeyehover{0%,100%{filter:none}25%,60%{filter:brightness(1.3) drop-shadow(0 0 2px #ffeec8)}}',
-    '@keyframes lkhornl{0%,100%{transform:rotate(0deg)}22%{transform:rotate(-6deg)}50%{transform:rotate(4deg)}78%{transform:rotate(-1.5deg)}}',
-    '@keyframes lkhornr{0%,100%{transform:rotate(0deg)}22%{transform:rotate(6deg)}50%{transform:rotate(-4deg)}78%{transform:rotate(1.5deg)}}',
     '@keyframes lkdot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:.9;transform:translateY(-3px)}}',
-    '@media (prefers-reduced-motion:reduce){.lk-intro,.msg.dots i{animation:none!important}.panel,.panel.open,.launcher,.lk-bubble,.mini.lk-greeting,.mini.lk-attention,.launcher:hover .mini,.launcher:focus-visible .mini,.launcher:hover .mini [data-r="eyes"],.launcher:focus-visible .mini [data-r="eyes"],.launcher:hover .mini [data-r="hornL"],.launcher:focus-visible .mini [data-r="hornL"],.launcher:hover .mini [data-r="hornR"],.launcher:focus-visible .mini [data-r="hornR"]{animation:none!important;transition:none!important}}'
+
+    /* Complete Reduced Motion compliance */
+    '@media (prefers-reduced-motion:reduce){' +
+      '.lk-intro,.msg.dots i,.mini,[data-r="body"],[data-r="shadow"],[data-r="armL"],[data-r="armR"],[data-r="head"],[data-r="hornL"],[data-r="hornR"],[data-r="eyes"],[data-r="legs"],[data-r="core"]{animation:none!important;transition:none!important}' +
+      '.panel,.panel.open,.launcher,.lk-bubble{animation:none!important;transition:none!important}' +
+    '}'
   ].join('');
 
   /* ---------------- defaults ---------------- */
@@ -376,7 +520,7 @@
     { k: ['resume\\b', 'r\u00e9sum\u00e9', 'cv\\b'], r: "You can download Lokesh's r\u00e9sum\u00e9 directly using the button in the top navigation bar." },
     { k: ['contact\\b', 'hire\\b', 'email\\b', 'reach\\b', 'touch\\b', 'message\\b'], r: "You can get in touch with Lokesh through the Contact section below, or simply tell me your name, email, and message and I'll help you send it!" },
     { k: ['work\\b', 'project', 'portfolio\\b', 'freelance\\b'], r: "Lokesh's projects are featured in the Work section, and his client case studies are under Freelance. You can ask me about Purnima Kalamkari, JavaMentor, or Attendance Management!" },
-    { k: ['skill', 'stack\\b', 'build\\b', 'tech\\b', 'code\\b', 'database\\b'], r: "The Skills section details his verified stack across JavaScript, React.js, Node.js, Express.js, MySQL, Firebase, and development tools." },
+    { k: ['education\\b', 'college\\b', 'degree\\b', 'btech\\b', 'b\\.tech', 'university\\b', 'study\\b', 'graduat'], r: "Lokesh has completed his B.Tech in Computer Science & Engineering (Artificial Intelligence & Machine Learning) from Sri Vasavi Institute of Engineering & Technology with a CGPA of 8.0. He is currently working as an Associate Software Engineer at Charani Infotech Pvt Ltd." },
     { k: ['who\\b', 'about\\b', 'lokesh\\b'], r: "Lokesh Kagitha is a Full Stack Developer based in Andhra Pradesh, India, specializing in production-grade web systems and interactive interfaces." }
   ];
 
@@ -397,6 +541,8 @@
     return {
       svg: svg, visible: true, rect: null, rectT: -1e9, lastT: 0,
       float: q('float'), head: q('head'), hornL: q('hornL'), hornR: q('hornR'),
+      armL: q('armL'), armR: q('armR'), handL: q('handL'), handR: q('handR'),
+      body: q('body'), legs: q('legs'), shadow: q('shadow'), core: q('core'),
       hg: qa('hg'), ear: qa('ear'), gloss: q('gloss'), eyes: q('eyes'),
       eL: eyeRef('eyeL'), eR: eyeRef('eyeR'),
       S: flat(MOODS[mood]), T: flat(MOODS[mood]),
@@ -574,15 +720,85 @@
       wake(900);
     }
 
+    /* ---------------- Companion State Controller (States A–N) ---------------- */
+    var companionState = 'idle';
+    var companionStateTimer = null;
+    var allStates = [
+      'lk-st-greeting', 'lk-st-waving', 'lk-st-curious', 'lk-st-attention',
+      'lk-st-listening', 'lk-st-thinking', 'lk-st-explaining', 'lk-st-celebrating',
+      'lk-st-pointing', 'lk-st-beckoning', 'lk-st-beckon', 'lk-st-surprised', 'lk-st-sleeping', 'lk-st-goodbye',
+      'lk-greeting', 'lk-attention'
+    ];
+
+    function setCompanionState(name, durationMs, cb) {
+      if (companionStateTimer) {
+        clearTimeout(companionStateTimer);
+        companionStateTimer = null;
+      }
+      companionState = name || 'idle';
+
+      // Priority 1: prefers-reduced-motion
+      if (reduce) {
+        if (name === 'thinking') setMood('thinking');
+        else if (name === 'listening') setMood('listening');
+        else if (name === 'sleeping') setMood('sleepy');
+        else setMood(isOpen ? 'listening' : 'happy');
+        if (durationMs && typeof cb === 'function') {
+          companionStateTimer = later(cb, durationMs);
+        }
+        return;
+      }
+
+      var hostEl = $('lHost');
+      var headEl = $('hHost');
+      function applyTo(el) {
+        if (!el) return;
+        for (var i = 0; i < allStates.length; i++) el.classList.remove(allStates[i]);
+        if (name && name !== 'idle') {
+          void el.offsetWidth;
+          el.classList.add('lk-st-' + name);
+          if (name === 'greeting') el.classList.add('lk-greeting');
+          if (name === 'attention') el.classList.add('lk-attention');
+        }
+      }
+      applyTo(hostEl);
+      applyTo(headEl);
+
+      // Coordinate mood expression (eyes, horns, gaze)
+      if (name === 'thinking') setMood('thinking');
+      else if (name === 'listening') setMood('listening');
+      else if (name === 'sleeping') setMood('sleepy');
+      else if (name === 'greeting' || name === 'waving') setMood('mischief');
+      else if (name === 'celebrating' || name === 'surprised' || name === 'curious' || name === 'beckoning' || name === 'beckon') setMood('happy');
+      else if (name === 'idle') setMood(isOpen ? 'listening' : 'happy');
+
+      wake(durationMs ? durationMs + 200 : 1200);
+
+      if (durationMs && durationMs > 0) {
+        companionStateTimer = later(function () {
+          companionStateTimer = null;
+          var nextState = busy ? 'thinking' : (isOpen && root.activeElement === input ? 'listening' : 'idle');
+          setCompanionState(nextState);
+          if (typeof cb === 'function') cb();
+        }, durationMs);
+      }
+    }
+
     /* pointer / idle */
     on(window, 'pointermove', function (e) {
       pointer.x = e.clientX; pointer.y = e.clientY; pointer.t = performance.now(); pointer.on = true;
       lastActive = pointer.t;
-      if (autoSlept) { autoSlept = false; setMood(isOpen ? 'listening' : 'happy'); }
+      if (autoSlept || companionState === 'sleeping') { autoSlept = false; setCompanionState(isOpen ? 'listening' : 'idle'); }
     }, { passive: true });
-    on(window, 'keydown', function () { lastActive = performance.now(); if (autoSlept) { autoSlept = false; setMood('happy'); } }, { passive: true });
+    on(window, 'keydown', function () {
+      lastActive = performance.now();
+      if (autoSlept || companionState === 'sleeping') { autoSlept = false; setCompanionState('idle'); }
+    }, { passive: true });
     var idleTimer = setInterval(function () {
-      if (!isOpen && !busy && current !== 'sleepy' && performance.now() - lastActive > cfg.idleSleepMs) { autoSlept = true; setMood('sleepy'); }
+      if (!isOpen && !busy && current !== 'sleepy' && performance.now() - lastActive > cfg.idleSleepMs) {
+        autoSlept = true;
+        setCompanionState('sleeping');
+      }
     }, 5000);
 
     /* viewport fitting: keeps the sheet above the on-screen keyboard on phones */
@@ -706,7 +922,7 @@
                 '<p style="margin:4px 0 0;font-size:12px;opacity:.85">Thank you, ' + escapeHtml(name) + '! Lokesh has received your message and will reply to <strong>' + escapeHtml(email) + '</strong> shortly.</p>' +
               '</div>' +
             '</div>';
-          setMood('happy');
+          setCompanionState('celebrating', 1200);
           log.scrollTop = log.scrollHeight;
         })
         .catch(function (err) {
@@ -737,7 +953,7 @@
     function finishSpeaking() {
       later(function () {
         busy = false;
-        setMood(isOpen && root.activeElement === input ? 'listening' : 'happy');
+        setCompanionState('explaining', 1350);
       }, 400);
     }
 
@@ -805,7 +1021,7 @@
       if (greetingTimer) { clearTimeout(greetingTimer); greetingTimer = null; }
       if (invitationTimer) { clearTimeout(invitationTimer); invitationTimer = null; }
       busy = true; addMsg(text, 'me'); input.value = ''; chips.hidden = true;
-      setMood('thinking');
+      setCompanionState('thinking');
       var dots = addMsg('', 'bot dots'); dots.setAttribute('aria-hidden', 'true'); dots.innerHTML = '<i></i><i></i><i></i>';
       var started = Date.now(), p;
 
@@ -845,9 +1061,9 @@
     if (!(cfg.chips && cfg.chips.length)) chips.hidden = true;
 
     on($('form'), 'submit', function (e) { e.preventDefault(); ask(input.value); });
-    on(input, 'focus', function () { if (!busy) setMood('listening'); });
-    on(input, 'input', function () { if (!busy && current !== 'listening') setMood('listening'); });
-    on(input, 'blur', function () { if (!busy && current === 'listening') setMood('happy'); });
+    on(input, 'focus', function () { if (!busy) setCompanionState('listening'); });
+    on(input, 'input', function () { if (!busy && companionState !== 'listening') setCompanionState('listening'); });
+    on(input, 'blur', function () { if (!busy && companionState === 'listening') setCompanionState('idle'); });
 
     /* open / close */
     function open() {
@@ -861,7 +1077,7 @@
       headAv.visible = true;
       launchAv.visible = !(mq && mq.matches); // hidden behind the sheet on phones
       fitViewport();
-      if (current === 'sleepy') setMood('happy');
+      setCompanionState('idle');
       wake(900);
       later(function () { log.scrollTop = log.scrollHeight; input.focus({ preventScroll: true }); }, 30);
     }
@@ -873,7 +1089,7 @@
       launcher.setAttribute('aria-expanded', 'false');
       headAv.visible = false; launchAv.visible = true;
       lastActive = performance.now();
-      if (!busy) setMood('happy');
+      if (!busy) setCompanionState('goodbye', 700);
       launcher.focus({ preventScroll: true });
     }
 
@@ -925,7 +1141,50 @@
     on(launcher, 'click', function () { isOpen ? close() : open(); });
     on($('close'), 'click', close);
     on(root, 'keydown', function (e) { if (e.key === 'Escape' && isOpen) { e.stopPropagation(); close(); } });
-    on(launcher, 'pointerenter', function () { if (current === 'sleepy') setMood('happy'); wake(900); });
+    var hasHovered = false;
+
+    on(launcher, 'pointerenter', function () {
+      var now = performance.now();
+      var wasSleeping = autoSlept || current === 'sleepy' || companionState === 'sleeping';
+      autoSlept = false;
+      wake(1200);
+
+      // Do not interrupt active chat request or open panel
+      if (isOpen || busy) return;
+
+      var bubbleShowing = bubble && bubble.classList.contains('show');
+
+      if (bubbleShowing) {
+        // Hover while an invitation is visible: welcoming beckon gesture
+        setCompanionState('beckoning', 1150);
+      } else if (wasSleeping || (now - lastActive > 45000 && hasHovered)) {
+        // Hover after prolonged absence or waking: friendly wave
+        setCompanionState('waving', 1050);
+      } else if (!hasHovered) {
+        // First hover: curious head tilt, gaze shift, and antenna wiggle
+        hasHovered = true;
+        setCompanionState('curious', 950);
+      } else {
+        // Subsequent hover: subtle attentive perk
+        setCompanionState('attention', 750);
+      }
+      lastActive = now;
+    });
+
+    on(launcher, 'pointerleave', function () {
+      if (!isOpen && !busy) {
+        if (companionState === 'attention') {
+          setCompanionState('idle');
+        }
+      }
+    });
+
+    on(launcher, 'focus', function () {
+      if (!isOpen && !busy && companionState !== 'sleeping') {
+        setCompanionState('attention', 750);
+        wake(900);
+      }
+    });
     on(launchAv.svg, 'click', function () { launchAv.sp.v = -90; });
 
     // Isolate scrolling so smooth-scroll libraries (Lenis, etc.) never hijack or block widget scrolling
@@ -953,44 +1212,26 @@
     var invitationCount = 0;
     var maxInvitations = 3;
     var invitationIndex = 0;
-    var INVITATIONS = [
-      'Want to talk?',
-      'Any questions about my work?',
-      'Curious about a project? Ask me!',
-      "I'm here if you need anything."
+    var INVITATION_ITEMS = [
+      { text: 'Curious about a project?', gesture: 'curious' },
+      { text: 'Want to explore my tech stack?', gesture: 'pointing' },
+      { text: 'Need help finding something?', gesture: 'beckoning' },
+      { text: 'Want to talk?', gesture: 'waving' },
+      { text: 'Ask me about my experience.', gesture: 'curious' },
+      { text: 'Looking for a project walkthrough?', gesture: 'pointing' },
+      { text: 'I can help you explore the portfolio.', gesture: 'beckoning' },
+      { text: "Have a question? I'm listening.", gesture: 'listening' },
+      { text: 'Want to know how I built something?', gesture: 'curious' },
+      { text: "Let's explore the projects!", gesture: 'pointing' }
     ];
+    var INVITATIONS = INVITATION_ITEMS.map(function (item) { return item.text; });
 
     function perkGreeting() {
-      if (reduce) return;
-      var hostEl = $('lHost');
-      if (hostEl) {
-        hostEl.classList.remove('lk-greeting', 'lk-attention');
-        void hostEl.offsetWidth; // force reflow so animation runs fresh
-        hostEl.classList.add('lk-greeting');
-        later(function () {
-          if (hostEl) hostEl.classList.remove('lk-greeting');
-        }, 900);
-      }
-      setMood('mischief'); // playful wink & gold horn glow
-      later(function () {
-        if (!busy && current === 'mischief') setMood('happy');
-      }, 550);
-      wake(1600);
+      setCompanionState('greeting', 1250);
     }
 
-    function perkInvitation() {
-      if (reduce) return;
-      var hostEl = $('lHost');
-      if (hostEl) {
-        hostEl.classList.remove('lk-greeting', 'lk-attention');
-        void hostEl.offsetWidth;
-        hostEl.classList.add('lk-attention');
-        later(function () {
-          if (hostEl) hostEl.classList.remove('lk-attention');
-        }, 750);
-      }
-      setMood('happy');
-      wake(1200);
+    function perkInvitation(gesture) {
+      setCompanionState(gesture || 'attention', 1200);
     }
 
     function showBubble(text, durationMs) {
@@ -1033,19 +1274,19 @@
 
       invitationTimer = later(function () {
         if (sessionDismissed || engaged || isOpen || document.hidden || root.activeElement === input) {
-          // If busy or tab is hidden, retry in 45s
-          scheduleNextInvitation(45000);
+          // If busy or tab is hidden, retry in 30s
+          scheduleNextInvitation(30000);
           return;
         }
 
-        var msg = INVITATIONS[invitationIndex % INVITATIONS.length];
+        var item = INVITATION_ITEMS[invitationIndex % INVITATION_ITEMS.length];
         invitationIndex++;
         invitationCount++;
-        perkInvitation();
-        showBubble(msg, 6000);
+        perkInvitation(item.gesture);
+        showBubble(item.text, 5500);
 
         if (invitationCount < maxInvitations) {
-          scheduleNextInvitation(140000 + Math.floor(Math.random() * 40000));
+          scheduleNextInvitation(70000 + Math.floor(Math.random() * 20000));
         }
       }, delayMs);
     }
@@ -1055,7 +1296,7 @@
       hasGreeted = true;
       perkGreeting();
       showBubble("Hi there! Need a hand?", 5500);
-      scheduleNextInvitation(26000);
+      scheduleNextInvitation(20000);
     }
 
     // Coordinate initial greeting with loader
@@ -1075,8 +1316,10 @@
       toggle: function () { isOpen ? close() : open(); },
       startContact: startContact,
       setMood: setMood,
+      setCompanionState: setCompanionState,
       destroy: function () {
         clearInterval(idleTimer);
+        if (companionStateTimer) clearTimeout(companionStateTimer);
         if (bubbleHideTimer) clearTimeout(bubbleHideTimer);
         if (invitationTimer) clearTimeout(invitationTimer);
         if (greetingTimer) clearTimeout(greetingTimer);
@@ -1118,7 +1361,7 @@
 
   var api = {
     __loaded: true,
-    version: '1.0',
+    version: '2.0',
     init: init,
     open: function () { W && W.open(); },
     close: function () { W && W.close(); },
@@ -1133,6 +1376,7 @@
       }
     },
     setMood: function (m) { W && W.setMood(m); },
+    setCompanionState: function (state, duration, cb) { W && W.setCompanionState(state, duration, cb); },
     destroy: function () { if (W) { W.destroy(); W = null; } }
   };
 
